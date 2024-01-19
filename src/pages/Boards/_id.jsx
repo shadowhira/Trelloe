@@ -1,8 +1,6 @@
 // Board details page
-import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
-import ModeSelect from '../../components/ModeSelect'
-import AppBar from '../../components/AppBar'
+import AppBar from '~/components/AppBar'
 import BoardBar from './BoardBar'
 import BoardContent from './BoardContent'
 

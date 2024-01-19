@@ -37,7 +37,9 @@ function ModeSelect() {
           </Box>
         </MenuItem>
         <MenuItem value="system">
-          <SettingsBrightnessIcon fontSize='small'/> System
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <SettingsBrightnessIcon fontSize='small'/> System
+          </Box>
         </MenuItem>
       </Select>
     </FormControl>
