@@ -11,10 +11,14 @@ import {
   useSensors,
   DragOverlay,
   defaultDropAnimationSideEffects,
-  closestCorners
+  closestCorners,
+  closestCenter,
+  pointerWithin,
+  rectIntersection,
+  getFirstCollision
 } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { cloneDeep } from 'lodash'
 
 import Column from './ListColumns/Column/Column'
@@ -43,6 +47,9 @@ function BoardContent({ board }) {
   const [activeDragItemType, setActiveDragItemType] = useState(null)
   const [activeDragItemData, setActiveDragItemData] = useState(null)
   const [oldColumnWhenDraggingCard, setOldColumnWhenDraggingCard] = useState(null)
+
+  // Điểm va chạm cuối cùng trước đó (xử lý thuật toán phát hiện va chạm video 37 34:20)
+  const lastOverId = useRef(null)
 
   useEffect(() => {
     const orderedColumns = mapOrder(board?.columns, board?.columnOrderIds, '_id')
@@ -282,6 +289,56 @@ function BoardContent({ board }) {
   // console. log('activeDragItemType: ', activeDragItemType)
   // console. log('activeDragItemData: ', activeDragItemData)
 
+  // Chúng ta sẽ custom lại chiến lược / thuật toán phát hiện va chạm tối ưu cho việc kéo thả card giữa nhiều columns (video 37 fix bug quan trong)
+  // args = arguments = Các Đoi số, tham số
+  const collisionDetectionStrategy = useCallback((args) => {
+    // Trường hợp kéo column thì dùng thuật toán closestCorners là chuẩn nhất
+    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
+      return closestCorners({ ...args })
+    }
+
+    // Tìm các điểm giao nhau, va chạm  - intersection với con trỏ
+    const pointerIntersections = pointerWithin(args)
+
+    // Video 37.1: Nếu pointerIntersections là màng rồng, return luôn không Làm gì hết.
+    // Fjx triệt để cái bug flickering của thư viện Dnd-kit trong trường hợp sau:
+    // - Kéo một cái card có image cover lớn và kéo lên phía trên cùng ra khỏi khu vực kéo thả
+    if (!pointerIntersections?.length) return
+
+    // Thuật toán phát hiện va chạm sẽ trả về một mảng các va chạm ở đây (không cần bước dưới đây nữa - video 37.1)
+    // const intersections = pointerIntersections?.length > 0
+    //   ? pointerIntersections
+    //   : rectIntersection(args)
+
+    // Tìm overId đầu tiên trong đám intersections (mảng) trên
+    let overId = getFirstCollision(pointerIntersections, 'id')
+
+    if (overId) {
+      // Video 37: Đoạn này đề fix cái vụ flickering
+      // Nếu cái over nó là column thì se tìm tới cai cardId gan nhat bên trong khu vực va cham đo dựa vao
+      // thuật toán phát hiện va chạm closestCenter hoặc closestCorners đều được. Tuy nhiên ở đây dùng
+      // closestCenter mình thấy mượt mà hơn.
+      const columnToNearCard = orderedColumnsState.find(column => column._id === overId)
+      if (columnToNearCard) {
+        // console.log('overId before: ', overId)
+        overId = closestCenter({
+          ...args,
+          droppableContainers: args.droppableContainers.filter(container => {
+            return (container.id !== overId) && (columnToNearCard?.cardOrderIds?.includes(container.id))
+          })
+        })[0]?.id
+        // console.log('overId after: ', overId)
+      }
+
+      lastOverId.current = overId
+      return [{ id: overId }]
+    }
+
+    // Nếu overId là null thì trả về mảng rỗng - tránh bug crash page
+    return lastOverId.current ? [{ id: lastOverId.current }] : []
+
+  }, [activeDragItemType, orderedColumnsState])
+
   return (
     <DndContext
       // Cảm biển (đã giải thích kỹ ở video số 30)
@@ -290,7 +347,11 @@ function BoardContent({ board }) {
       // Thuật toán phát hiện va chạm (neu không có nó thì card với ảnh cover lớn sẽ không kéo qua Column được vì
       // nó đang bị conflict giữa card và column), chúng ta sẽ dùng closestCorners thay vì closestCenter
       // https://docs.dndkit.com/api-documentation/context-provider/collision-detection-algorithms
-      collisionDetection={closestCorners}
+      // Update video 37: Nếu chỉ dùng closestCorners sẽ có bug flickering + sai lệch dữ liệu (chi tiết trong video 37)
+      // collisionDetection={closestCorners}
+
+      // Tự custom nâng cao thuật toán phát hiện va chạm (video fix bug số 37)
+      collisionDetection={collisionDetectionStrategy}
 
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
