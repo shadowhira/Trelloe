@@ -38,7 +38,8 @@ function Column({ column }) {
     // thì phải kéo ở khu vực giữa giữa rất khó chịu (demo ở video 32). 
     // Lưu ý: Lúc này phải kết hợp với {...listeners} nằm ở Box chứ không phải ở div ngoài cùng để tránh trường hợp kéo vào vùng xanh.
     height: '100%',
-    opacity: isDragging ? 0.5: undefined
+    opacity: isDragging ? 0.5: undefined,
+    border: isDragging ? '1px solid #2ecc71' : undefined
   }
 
   const [anchorEl, setAnchorEl] = useState(null)
