@@ -1,0 +1,14 @@
+{
+  "name": "firstProject-api",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "mern stack",
+  "main": "src/server.js",
+  "author": "shadowhira",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "express": "^4.18.2",
+    "kill-port": "^2.0.1"
+  }
+}
