@@ -1,6 +1,5 @@
-import { StatusCodes } from 'http-status-codes'
-import ApiError from '~/utils/ApiError'
 import { slugify } from '~/utils/formatters'
+import { boardModel } from '~/models/boardModel'
 
 // Phần này sẽ đụng nhiều vào bất đồng bộ nên ta thêm async
 const createNew = async (reqBody) => {
@@ -12,13 +11,18 @@ const createNew = async (reqBody) => {
     }
 
     // Gọi tới tằng Model để xử lý lưu bản ghi newBoard vào trong Database
-    // ...
+    const createdBoard = await boardModel.createNew(newBoard)
+    console.log(createdBoard)
+
+    // Lấy bản ghi board sau khi gọi (tùy mục đích dự án mà có cần bước này hoặc không)
+    const getNewBoard = await boardModel.findOneById(createdBoard.insertedId)
+    console.log(getNewBoard)
 
     // Làm thêm các xử lý logic khác với các Collection khác tùy đặc thù dự án ... Vv
     // Bắn email, notification về cho admin khi có 1 cái board mới dược tạo ... vv
 
     // Trả kết quả về, trong Service luôn phải có return, nếu không nó sẽ request liên tục
-    return newBoard
+    return getNewBoard
   } catch (error) {
     throw error
   }
