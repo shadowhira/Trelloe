@@ -20,6 +20,20 @@ const createNew = async (req, res, next) => {
   }
 }
 
+const getDetails = async (req, res, next) => {
+  try {
+    const boardId = req.params.id
+
+    // Điều hướng dữ liệu sang tầng Service
+    // Sau này ở khóa Advance sẽ có thêm userId nữa để chỉ lấy board thuộc về user đó chằng hạn...
+    const board = await boardService.getDetails(boardId)
+
+    // Có kết quả thì trả về phía Client
+    res.status(StatusCodes.OK).json(board)
+  } catch (error) { next(error) }
+}
+
 export const boardController = {
-  createNew
+  createNew,
+  getDetails
 }
