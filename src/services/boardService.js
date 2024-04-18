@@ -2,6 +2,7 @@ import { slugify } from '~/utils/formatters'
 import { boardModel } from '~/models/boardModel'
 import ApiError from '~/utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
+import { clone, cloneDeep } from 'lodash'
 
 // Phần này sẽ đụng nhiều vào bất đồng bộ nên ta thêm async
 const createNew = async (reqBody) => {
@@ -39,8 +40,23 @@ const getDetails = async (boardId) => {
       throw new ApiError(StatusCodes.NOT_FOUND, 'Board not found!')
     }
 
+    // Thay đổi CTDL board
+    // responseBoard: cái Board (với CTDL khác) mà ta muốn trả về
+    const resBoard = cloneDeep(board)
+    // Đưa card về đúng column của nó
+    resBoard.columns.forEach(column => {
+      // Cách dùng .equals của mongoDB support cho việc so sánh ObjectId
+      column.cards = resBoard.cards.filter(card => card.columnId.equals(column._id))
+
+      // Cách khác đơn giản là dùng toString để chuyển ObjectId về String và so sánh
+      column.cards = resBoard.cards.filter(card => card.columnId.toString() === column._id.toString())
+    })
+
+    // Xóa thằng cards trong Board ban đầu được tạo từ boardModel
+    delete resBoard.cards
+
     // Trả kết quả về, trong Service luôn phải có return, nếu không nó sẽ request liên tục
-    return board
+    return resBoard
   } catch (error) { throw error }
 }
 
