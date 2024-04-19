@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import { toast } from 'react-toastify'
 import AddCardIcon from '@mui/icons-material/AddCard'
 import Cloud from '@mui/icons-material/Cloud'
 import ContentCopy from '@mui/icons-material/ContentCopy'
@@ -15,7 +17,6 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
-import { useState } from 'react'
 import { mapOrder } from '~/utils/sorts'
 import ListCard from './ListCards/ListCard'
 import TextField from '@mui/material/TextField'
@@ -57,7 +58,7 @@ function Column({ column }) {
   const [newCardTitle, setNewCardTitle] = useState('')
   const addNewCard = () => {
     if (!newCardTitle) {
-      // console.error('Please enter Card title')
+      toast.error('Please enter Card title', { position: 'bottom-right' })
       return
     }
     // console.log(newCardTitle)
