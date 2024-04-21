@@ -38,7 +38,7 @@ function Column({ column, createNewCard }) {
     transform: CSS.Translate.toString(transform),
     transition,
     // Chiều cao phải luôn max 100% vì nếu không sẽ lỗi. Lúc kéo column ngắn qua một cái column dài
-    // thì phải kéo ở khu vực giữa giữa rất khó chịu (demo ở video 32). 
+    // thì phải kéo ở khu vực giữa giữa rất khó chịu (demo ở video 32).
     // Lưu ý: Lúc này phải kết hợp với {...listeners} nằm ở Box chứ không phải ở div ngoài cùng để tránh trường hợp kéo vào vùng xanh.
     height: '100%',
     opacity: isDragging ? 0.5: undefined,
@@ -56,7 +56,7 @@ function Column({ column, createNewCard }) {
   const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm)
 
   const [newCardTitle, setNewCardTitle] = useState('')
-  const addNewCard = async () => {
+  const addNewCard = () => {
     if (!newCardTitle) {
       toast.error('Please enter Card title', { position: 'bottom-right' })
       return
@@ -68,8 +68,8 @@ function Column({ column, createNewCard }) {
       columnId: column._id
     }
 
-    // Gọi lên props function createNewCard nåm & component cha cao nhắt (boards/_id.jsx)
-    await createNewCard(newCardData)
+    // Gọi lên props function createNewCard nằm ở component cha cao nhắt (boards/_id.jsx)
+    createNewCard(newCardData)
 
     // Đóng state và clear input
     toggleOpenNewCardForm()

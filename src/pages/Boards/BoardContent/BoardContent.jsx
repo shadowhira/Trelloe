@@ -4,7 +4,7 @@ import { mapOrder } from '~/utils/sorts'
 
 import {
   DndContext,
-  PointerSensor,
+  // PointerSensor,
   // MouseSensor,
   // TouchSensor,
   useSensor,
@@ -14,7 +14,7 @@ import {
   closestCorners,
   closestCenter,
   pointerWithin,
-  rectIntersection,
+  // rectIntersection,
   getFirstCollision
 } from '@dnd-kit/core'
 import { MouseSensor, TouchSensor } from '~/customLibraries/DndKitSensors'
@@ -32,8 +32,8 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board, createNewColumn, createNewCard }) {
-  const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
+function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
+  // const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
   const mouseSensor = useSensor(MouseSensor, { activationConstraint: { distance: 10 } })
 
   // Nhận giữ 250ms và dung sai (tolerance) của cảm ứng (dễ hiểu là di chuyển/chênh lệch 5px) thì mới kích hoạt event
@@ -164,7 +164,7 @@ function BoardContent({ board, createNewColumn, createNewCard }) {
     if (!active || !over) return
 
     // activeDraggingCard: Là cái card đang được kéo
-    const { id: activeDraggingCardId, data: { current: activeDraggingCardData} } = active
+    const { id: activeDraggingCardId, data: { current: activeDraggingCardData } } = active
     // overCard: là cái ta đang tương tác trên hoặc dưới (đích) so với cái card ta kéo ở trên
     const { id: overCardId } = over
 
@@ -207,7 +207,7 @@ function BoardContent({ board, createNewColumn, createNewCard }) {
       // return // dừng chương trình không cho mấy thằng bên dưới làm gì
 
       // activeDraggingCard: Là cái card đang được kéo
-      const { id: activeDraggingCardId, data: { current: activeDraggingCardData} } = active
+      const { id: activeDraggingCardId, data: { current: activeDraggingCardData } } = active
       // overCard: là cái ta đang tương tác trên hoặc dưới (đích) so với cái card ta kéo ở trên
       const { id: overCardId } = over
 
@@ -276,11 +276,19 @@ function BoardContent({ board, createNewColumn, createNewCard }) {
         // Code của arrayMove o dây: dnd-kit/packages/sortable/src/utilities/arrayMove.ts
         const dndOrderedColumns = arrayMove(orderedColumnsState, oldColumnIndex, newColumnIndex)
 
-        // Cái này để sau này làm backend sẽ dùng
-        const dndOrderedColumnsIds = dndOrderedColumns.map(column => column._id)
-
         // Cập nhật lại state columns ban đầu sau khi đã kéo thả
+        // Gọi update state ở đây để tránh việc delay khi gọi API, giúp UI mượt mà hơn
         setOrderedColumnsState(dndOrderedColumns)
+
+        /*
+        * Gọi lên props function moveColumns nằm ở component cha cao nhắt (boards/_id.jsx)
+        * Lưu ý: Về sau ở học phần MERN Stack Advance nâng cao học trực tiếp mình sẽ với mình thì chúng ta sẽ
+        đưa dữ liệu Board ra ngoài Redux Global Store,
+        * và lúc này chúng ta có thể gọi luôn API ở đây là xong thay vì phải lần lượt gọi ngược lên những
+        component cha phía bên trên. (Đồi với component con nằm càng sâu thì càng khổ :D)
+        * - Với việc sử dụng Redux như vậy thì code sẽ Clean chuẩn chỉnh hơn rất nhiều.
+        */
+        moveColumns(dndOrderedColumns)
       }
     }
 
