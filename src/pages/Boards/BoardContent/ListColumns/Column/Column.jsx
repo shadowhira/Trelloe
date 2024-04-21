@@ -17,7 +17,7 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
-import { mapOrder } from '~/utils/sorts'
+// import { mapOrder } from '~/utils/sorts'
 import ListCard from './ListCards/ListCard'
 import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
@@ -50,7 +50,9 @@ function Column({ column, createNewCard }) {
   const handleClick = (event) => { setAnchorEl(event.currentTarget) }
   const handleClose = () => { setAnchorEl(null) }
 
-  const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+  // const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+  // Card đã được sắp xếp ở _id.jsx nên không cần sắp xếp ở đây nữa (video 71)
+  const orderedCards = column.cards
 
   const [openNewCardForm, setOpenNewCardForm] = useState(false)
   const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm)
