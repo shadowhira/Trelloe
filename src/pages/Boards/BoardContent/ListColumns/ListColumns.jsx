@@ -9,19 +9,32 @@ import CloseIcon from '@mui/icons-material/Close'
 
 import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable'
 
-function ListColumns({ columns }) {
+function ListColumns({ columns, createNewColumn, createNewCard }) {
 
   const [openNewColumnForm, setOpenNewColumnForm] = useState(false)
   const toggleOpenNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm)
 
   const [newColumnTitle, setNewColumnTitle] = useState('')
-  const addNewColumn = () => {
+  const addNewColumn = async () => {
     if (!newColumnTitle) {
       toast.error('Please enter Column title')
       return
     }
-    // console.log(newColumnTitle)
-    // Gọi API ở đây ...
+
+    // Tạo dữ liệu Column để gọi API
+    const newColumnData = {
+      title: newColumnTitle
+    }
+
+    /*
+    * Cái await phía dưới sẽ Gọi lên props function createNewColumn nåm & component cha cao nhắt (boards/_id.jsx)
+    * Lưu ý: Về sau ở học phần MERN Stack Advance nâng cao học trực tiếp mình sẽ với mình thì chúng ta sẽ
+    đưa dữ liệu Board ra ngoài Redux Global Store,
+    * và lúc này chúng ta có thể gọi luôn API ở đây là xong thay vì phải lần lượt gọi ngược lên những
+    component cha phía bên trên, (Đồi với component con nắm càng sâu thì càng khổ :D)
+    * - Với việc sử dụng Redux như vậy thì code sẽ Clean chuẩn chỉnh hơn rắt nhiều.
+    */
+    await createNewColumn(newColumnData)
 
     // Đóng state và clear input
     toggleOpenNewColumnForm()
@@ -46,7 +59,11 @@ function ListColumns({ columns }) {
         '&::-webkit-scrollbar-track': { m: 2 }
       }}>
         {columns?.map(column => {
-          return <Column key={column._id} column={column} />
+          return <Column
+            key={column._id}
+            column={column}
+            createNewCard={createNewCard}
+          />
         })}
 
         {/* Box Add new column */}
