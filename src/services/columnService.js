@@ -1,5 +1,9 @@
+/* eslint-disable no-useless-catch */
 import { columnModel } from '~/models/columnModel'
+import { cardModel } from '~/models/cardModel'
 import { boardModel } from '~/models/boardModel'
+import ApiError from '~/utils/ApiError'
+import { StatusCodes } from 'http-status-codes'
 
 // Phần này sẽ đụng nhiều vào bất đồng bộ nên ta thêm async
 const createNew = async (reqBody) => {
@@ -27,7 +31,6 @@ const createNew = async (reqBody) => {
 }
 
 const update = async (columnId, reqBody) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const updateData = {
       ...reqBody,
@@ -39,7 +42,28 @@ const update = async (columnId, reqBody) => {
   } catch (error) { throw error }
 }
 
+const deleteItem = async (columnId) => {
+  try {
+    const targetColumn = await columnModel.findOneById(columnId)
+    if (!targetColumn) {
+      throw new ApiError(StatusCodes.NOT_FOUND, 'Column not found!')
+    }
+
+    // Xóa Column
+    await columnModel.deleteOneById(columnId)
+
+    // Xóa toàn bộ Cards thuộc cái Column trên
+    await cardModel.deleteManyByColumnId(columnId)
+
+    // Xóa columnId trong mảng columnOrderIds của cái Board chứa nó
+    await boardModel.pushColumnOrderIds(targetColumn)
+
+    return { deleteResult: `Column ${targetColumn.title} deleted successfully!` }
+  } catch (error) { throw error }
+}
+
 export const columnService = {
   createNew,
-  update
+  update,
+  deleteItem
 }
