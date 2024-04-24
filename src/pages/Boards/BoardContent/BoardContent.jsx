@@ -32,7 +32,14 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board, createNewColumn, createNewCard, moveColumns, moveCardInTheSameColumn }) {
+function BoardContent({
+  board,
+  createNewColumn,
+  createNewCard,
+  moveColumns,
+  moveCardInTheSameColumn,
+  moveCardToDifferentColumn
+}) {
   // const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
   const mouseSensor = useSensor(MouseSensor, { activationConstraint: { distance: 10 } })
 
@@ -75,7 +82,8 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns, move
     over,
     activeColumn,
     activeDraggingCardId,
-    activeDraggingCardData
+    activeDraggingCardData,
+    triggerFrom
   ) => {
     setOrderedColumnsState(prevColumns => {
       // Tìm vị trí (index) của cái overCard trong column đích (nơi card sắp được thả)
@@ -134,6 +142,22 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns, move
       }
       // console.log('nextColumns: ', nextColumns)
 
+      // Nếu func này được gọi từ handleDragEnd nghĩa là đã kéo thả xong, lúc này mới xử lý gọi API 1 lần ở đây
+      if (triggerFrom === 'handleDragEnd') {
+        /*
+        Goi lên props function moveCardToDifferentColumn nåm & component cha cao nhắt (boards/_id.jsx)
+        Phải dùng tới activeDragItemData.columnId hoặc tốt nhắt là oldColumnWhenDraggingCard._id (set vao state
+        từ bước handleDragStart) chu không phai activeData trong scope handleDragEnd nay vi sau khi đi qua
+        onDragOver và tới đây là state của card đã bị cập nhật một Lần rồi.
+        */
+        moveCardToDifferentColumn(
+          activeDraggingCardId,
+          oldColumnWhenDraggingCard._id,
+          nextOverColumn._id,
+          nextColumns
+        )
+      }
+
       return nextColumns
     })
   }
@@ -189,7 +213,8 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns, move
         over,
         activeColumn,
         activeDraggingCardId,
-        activeDraggingCardData
+        activeDraggingCardData,
+        'handleDragOver'
       )
     }
   }
@@ -233,7 +258,8 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns, move
           over,
           activeColumn,
           activeDraggingCardId,
-          activeDraggingCardData
+          activeDraggingCardData,
+          'handleDragEnd'
         )
       } else {
         // Hành động kéo thả card giữa 2 column giống nhau (kéo thả trên cùng column)
