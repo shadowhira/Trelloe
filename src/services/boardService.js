@@ -1,5 +1,7 @@
 import { slugify } from '~/utils/formatters'
 import { boardModel } from '~/models/boardModel'
+import { columnModel } from '~/models/columnModel'
+import { cardModel } from '~/models/cardModel'
 import ApiError from '~/utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
 import { clone, cloneDeep } from 'lodash'
@@ -48,8 +50,8 @@ const getDetails = async (boardId) => {
       // Cách dùng .equals của mongoDB support cho việc so sánh ObjectId
       column.cards = resBoard.cards.filter(card => card.columnId.equals(column._id))
 
-      // Cách khác đơn giản là dùng toString để chuyển ObjectId về String và so sánh
-      column.cards = resBoard.cards.filter(card => card.columnId.toString() === column._id.toString())
+      // // Cách khác đơn giản là dùng toString để chuyển ObjectId về String và so sánh
+      // column.cards = resBoard.cards.filter(card => card.columnId.toString() === column._id.toString())
     })
 
     // Xóa thằng cards trong Board ban đầu được tạo từ boardModel
@@ -73,8 +75,35 @@ const update = async (boardId, reqBody) => {
   } catch (error) { throw error }
 }
 
+const moveCardToDifferentColumn = async (reqBody) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    // * Khi di chuyển card sang Column khác:
+    // * B1: Cập nhật mảng cardOrderIds của Column ban đầu chứa nó (Hiều bản chất là xóa cái _id của Card ra khỏi mảng)
+    await columnModel.update(reqBody.prevColumnId, {
+      cardOrderIds: reqBody.prevCardOrderIds,
+      updatedAt: Date.now()
+    })
+    
+    // * B2: Cập nhật mảng cardOrderIds của Column tiếp theo (Hiều bản chất là thêm _id của Card vào mảng)
+    await columnModel.update(reqBody.nextColumnId, {
+      cardOrderIds: reqBody.nextCardOrderIds,
+      updatedAt: Date.now()
+    })
+
+
+    // * B3: Cập nhật lại trường columnId mới của cái Card đã kéo
+    await cardModel.update(reqBody.currentCardId, {
+      columnId: reqBody.nextColumnId
+    })
+
+    return { updateResult: 'Successfully' }
+  } catch (error) { throw error }
+}
+
 export const boardService = {
   createNew,
   getDetails,
-  update
+  update,
+  moveCardToDifferentColumn
 }
