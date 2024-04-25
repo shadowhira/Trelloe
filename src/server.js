@@ -26,12 +26,19 @@ const START_SERVER = () => {
   if (env.BUILD_MODE == 'production') {
     // Môi trường production (support cho render.com)
     app.listen(process.env.PORT, () => {
-      console.log(`3. Production: \nHellop ${env.AUTHOR}, Backend is running at Port: ${process.env.PORT}`)
+      console.log(
+        `3. Production: \nHellop ${env.AUTHOR}, 
+        Backend is running at Port: ${process.env.PORT}`
+      )
     })
   } else {
     // Môi trường dev
     app.listen(env.LOCAL_DEV_APP_PORT, env.LOCAL_DEV_APP_HOST, () => {
-      console.log(`3. Local Development: \nHellop ${env.AUTHOR}, Backend is running at: \nHost: ${env.LOCAL_DEV_APP_HOST} \nPort: ${env.LOCAL_DEV_APP_PORT}`)
+      console.log(
+        `3. Local Development:\nHellop ${env.AUTHOR}, 
+        Backend is running at:
+        \nHost: ${env.LOCAL_DEV_APP_HOST} \nPort: ${env.LOCAL_DEV_APP_PORT}`
+      )
     })
   }
 
