@@ -26,7 +26,6 @@ import { useConfirm } from 'material-ui-confirm'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
-
 function Column({ column, createNewCard, deleteColumnDetails }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: column._id,
@@ -114,7 +113,9 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
           ml: 2,
           borderRadius: '6px',
           height: 'fit-content',
-          maxHeight: (theme) => `calc(${theme.trello.boardContentHeight} - ${theme.spacing(3)})`
+          maxHeight: (theme) => `calc(${theme.trello.boardContentHeight} - ${theme.spacing(3)})`,
+          overflowY: 'auto',
+          overflowX: 'hidden'
         }}
       >
         {/* Header */}

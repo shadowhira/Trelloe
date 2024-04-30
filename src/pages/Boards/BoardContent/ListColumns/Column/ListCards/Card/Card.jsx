@@ -44,7 +44,9 @@ function Card({ card }) {
         // overflow: card?.FE_PlaceholderCard ? 'hidden' : 'unset',
         // height: card?.FE_PlaceholderCard ? '0px' : 'unset'
       }}>
+
       {card?.cover && <CardMedia sx={{ height: 140 }} image={card?.cover} /> }
+
       <CardContent sx={{
         p: 1.5,
         '&:last-child': { p: 1.5 }
