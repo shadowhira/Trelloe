@@ -15,44 +15,61 @@ chúng ta muôn.
 này chuần chình cho các bạn. )
 */
 
+let api_root = API_ROOT
+let res = {}
+const checkStatus = async () => {
+  const response = await axios.get(`${api_root}/v1/status`)
+  if (!response) return
+  res = response.data
+}
+
+checkStatus()
+if (!res.message) {
+  api_root = 'https://trello-api-z8ri.onrender.com'
+}
+console.log('🐛: ➡️ api_root:', api_root)
+
+
 /* Board */
 // Hậu tố là API để đánh dấu
 export const fetchBoardDetailsAPI = async (boardId) => {
-  const response = await axios.get(`${API_ROOT}/v1/boards/${boardId}`)
+  const response = await axios.get(`${api_root}/v1/boards/${boardId}`)
   // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
   return response.data
 }
 
+
+
 export const updateBoardDetailsAPI = async (boardId, updateData) => {
-  const response = await axios.put(`${API_ROOT}/v1/boards/${boardId}`, updateData)
+  const response = await axios.put(`${api_root}/v1/boards/${boardId}`, updateData)
   return response.data
 }
 
 export const moveCardToDifferentColumnAPI = async (updateData) => {
-  const response = await axios.put(`${API_ROOT}/v1/boards/supports/moving_card`, updateData)
+  const response = await axios.put(`${api_root}/v1/boards/supports/moving_card`, updateData)
   return response.data
 }
 
 /* Column */
 export const createNewColumnAPI = async (newColumnData) => {
-  const response = await axios.post(`${API_ROOT}/v1/columns`, newColumnData)
+  const response = await axios.post(`${api_root}/v1/columns`, newColumnData)
   return response.data
 }
 
 export const updateColumnDetailsAPI = async (columnId, updateData) => {
-  const response = await axios.put(`${API_ROOT}/v1/columns/${columnId}`, updateData)
+  const response = await axios.put(`${api_root}/v1/columns/${columnId}`, updateData)
   // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
   return response.data
 }
 
 export const deleteColumnDetailsAPI = async (columnId) => {
-  const response = await axios.delete(`${API_ROOT}/v1/columns/${columnId}`)
+  const response = await axios.delete(`${api_root}/v1/columns/${columnId}`)
   // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
   return response.data
 }
 
 /* Cards */
 export const createNewCardAPI = async (newCardData) => {
-  const response = await axios.post(`${API_ROOT}/v1/cards`, newCardData)
+  const response = await axios.post(`${api_root}/v1/cards`, newCardData)
   return response.data
 }

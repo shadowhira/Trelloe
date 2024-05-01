@@ -1,7 +1,6 @@
 import Box from '@mui/material/Box'
 import Card from './Card/Card'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
-import { Typography } from '@mui/material'
 
 function ListCard({ cards }) {
   return (
@@ -12,14 +11,17 @@ function ListCard({ cards }) {
         display: 'flex',
         flexDirection: 'column',
         gap: 1,
-        // overflowX: 'hidden',
-        // overflowY: 'auto',
+        // overflow: 'auto',
+        overflowX: 'hidden',
+        overflowY: 'auto',
+        // overflow: 'unset',
         maxHeight: (theme) => `calc(
                 ${theme.trello.boardContentHeight} -
                 ${theme.spacing(3)} -
-                ${(theme) => theme.trello.columnHeaderHeight} -
-                ${(theme) => theme.trello.columnFooterHeight}
+                ${theme.trello.columnHeaderHeight} -
+                ${theme.trello.columnFooterHeight}
               )`,
+        // maxHeight: (theme) => `calc(${theme.trello.boardContentHeight} - ${theme.spacing(3)})`,
         '&::-webkit-scrollbar-thumb': { backgroundColor: '#ced0da' },
         '&::-webkit-scrollbar-thumb:hover': { backgroundColor: '#bfc2cf' }
       }}
@@ -29,6 +31,7 @@ function ListCard({ cards }) {
         })}
       </Box>
     </SortableContext>
+
   )
 }
 

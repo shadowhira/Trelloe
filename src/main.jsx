@@ -12,6 +12,17 @@ import 'react-toastify/dist/ReactToastify.css'
 // Cấu hình MUI Dialog
 import { ConfirmProvider } from 'material-ui-confirm'
 
+// Clerk
+import { ClerkProvider } from '@clerk/clerk-react'
+
+
+// Import your publishable key
+const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+
+if (!PUBLISHABLE_KEY) {
+  throw new Error('Missing Publishable Key')
+}
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   // <React.StrictMode>
   <CssVarsProvider theme={theme}>
@@ -22,7 +33,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       confirmationButtonProps: { color: 'secondary', variant: 'outlined' }
     }}>
       <CssBaseline />
-      <App />
+      <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+        <App />
+      </ClerkProvider>
       <ToastContainer position="bottom-left" theme="colored" />
     </ConfirmProvider>
   </CssVarsProvider>

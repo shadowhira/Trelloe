@@ -11,6 +11,9 @@ import MenuItem from '@mui/material/MenuItem'
 import Tooltip from '@mui/material/Tooltip'
 import * as React from 'react'
 
+// Clerk
+import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react'
+
 function Profiles() {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const open = Boolean(anchorEl)
@@ -72,7 +75,22 @@ function Profiles() {
           </ListItemIcon>
           Logout
         </MenuItem>
+
+        <MenuItem>
+          <SignedOut>
+            <SignInButton />
+          </SignedOut>
+        </MenuItem>
+
+        <MenuItem>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+        </MenuItem>
       </Menu>
+
+      {/* Clerk */}
+   
     </Box>
   )
 }

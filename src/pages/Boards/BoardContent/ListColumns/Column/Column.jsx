@@ -114,8 +114,9 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
           borderRadius: '6px',
           height: 'fit-content',
           maxHeight: (theme) => `calc(${theme.trello.boardContentHeight} - ${theme.spacing(3)})`,
-          overflowY: 'auto',
-          overflowX: 'hidden'
+          // overflow: 'unset',
+          // overflowY: 'auto',
+          // overflowX: 'hidden'
         }}
       >
         {/* Header */}
