@@ -6,6 +6,7 @@ import ApiError from '~/utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
 import { clone, cloneDeep } from 'lodash'
 
+
 // Phần này sẽ đụng nhiều vào bất đồng bộ nên ta thêm async
 const createNew = async (reqBody) => {
   // eslint-disable-next-line no-useless-catch
@@ -84,7 +85,7 @@ const moveCardToDifferentColumn = async (reqBody) => {
       cardOrderIds: reqBody.prevCardOrderIds,
       updatedAt: Date.now()
     })
-    
+
     // * B2: Cập nhật mảng cardOrderIds của Column tiếp theo (Hiều bản chất là thêm _id của Card vào mảng)
     await columnModel.update(reqBody.nextColumnId, {
       cardOrderIds: reqBody.nextCardOrderIds,

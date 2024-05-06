@@ -11,8 +11,9 @@ Router.route('/')
   })
   .post(userValidation.createNew, userController.createNew)
 
-// Router.route('/:id')
-//   .put(userValidation.update, userController.update)
-//   .delete(userValidation.deleteItem, userController.deleteItem)
+Router.route('/:id')
+  .get(userController.getDetails)
+  .put(userValidation.update, userController.update)
+  .delete(userValidation.deleteItem, userController.deleteItem)
 
 export const userRoute = Router

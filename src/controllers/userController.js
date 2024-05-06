@@ -29,8 +29,22 @@ const deleteItem = async (req, res, next) => {
   } catch (error) { next(error) }
 }
 
+const getDetails = async (req, res, next) => {
+  try {
+    const userId = req.params.id
+
+    // Điều hướng dữ liệu sang tầng Service
+    // Sau này ở khóa Advance sẽ có thêm userId nữa để chỉ lấy user thuộc về user đó chằng hạn...
+    const user = await userService.getDetails(userId)
+
+    // Có kết quả thì trả về phía Client
+    res.status(StatusCodes.OK).json(user)
+  } catch (error) { next(error) }
+}
+
 export const userController = {
   createNew,
   update,
-  deleteItem
+  deleteItem,
+  getDetails
 }

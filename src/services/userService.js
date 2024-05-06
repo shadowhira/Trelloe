@@ -41,21 +41,30 @@ const deleteItem = async (userId) => {
       throw new ApiError(StatusCodes.NOT_FOUND, 'User not found!')
     }
 
-    // Xóa User
+    // Xóa cái id owner trong board tương ứng
+
+    // Xóa user
     await userModel.deleteOneById(userId)
 
-    // Xóa toàn bộ Cards thuộc cái User trên
-    await cardModel.deleteManyByUserId(userId)
-
-    // Xóa userId trong mảng userOrderIds của cái Board chứa nó
-    await boardModel.pushUserOrderIds(targetUser)
-
-    return { deleteResult: `User ${targetUser.title} deleted successfully!` }
+    return { deleteResult: `User ${targetUser.username} deleted successfully!` }
   } catch (error) { throw error }
+}
+
+const getDetails = async (userId) => {
+  try {
+    const user = await userModel.getDetails(userId)
+    if (!user) {
+      throw new ApiError(StatusCodes.NOT_FOUND, 'User not found')
+    }
+    return user
+  } catch (error) {
+    throw error
+  }
 }
 
 export const userService = {
   createNew,
   update,
-  deleteItem
+  deleteItem,
+  getDetails
 }

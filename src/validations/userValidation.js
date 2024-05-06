@@ -30,17 +30,14 @@ const update = async (req, res, next) => {
   const correctCondition = Joi.object({
     // Nếu cần làm tính năng di chuyển Column sang Board khác thì mới cần thêm validate boardId
     // boardId: Joi.string ().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
-    title: Joi.string().min(3).max(50).trim().strict(),
-    cardOrderIds: Joi.array().items(
-      Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)
-    )
+    username: Joi.string().required().alphanum().min(3).max(50),
+    email: Joi.string().required().email().trim().strict(),
   })
 
   try {
     // Chỉ định abortEarly: false để trường hợp có nhiều lỗi validation thì trả về tất cả lỗi (video 52)
     await correctCondition.validateAsync(req.body, {
-      abortEarly: false,
-      allowUnknown: true
+      abortEarly: false
     })
 
     next()
