@@ -64,28 +64,27 @@ const getDetails = async (userId) => {
     //     _id: new ObjectId(userId),
     //     _destroy: false
     //   } },
-      // { $lookup: {
-      //   from: boardModel.BOARD_COLLECTION_NAME,
-      //   localField: '_id',
-      //   foreignField: 'userId',
-      //   as: 'ownerIds'
-      // } }
+    // { $lookup: {
+    //   from: boardModel.BOARD_COLLECTION_NAME,
+    //   localField: '_id',
+    //   foreignField: 'userId',
+    //   as: 'ownerIds'
+    // } }
     // ]).toArray()
 
-    const user = await GET_DB().collection(USER_COLLECTION_NAME).findOne({ _id: new ObjectId(userId) });
+    const user = await GET_DB().collection(USER_COLLECTION_NAME).findOne({ _id: new ObjectId(userId) })
 
     if (!user) {
       throw new ApiError(StatusCodes.NOT_FOUND, 'User not found')
     }
 
-    return user;
+    return user
 
     // return result[0] || null
   } catch (error) {
     throw new Error(error)
   }
 }
-
 
 const update = async (userId, updateData) => {
   try {
@@ -132,6 +131,16 @@ const deleteOneById = async (userId) => {
   }
 }
 
+const findByEmail = async (email) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const user = await GET_DB().collection(USER_COLLECTION_NAME).findOne({ email })
+    return user
+  } catch (error) {
+    throw error
+  }
+}
+
 export const userModel = {
   USER_COLLECTION_NAME,
   USER_COLLECTION_SCHEMA,
@@ -139,5 +148,6 @@ export const userModel = {
   findOneById,
   getDetails,
   update,
-  deleteOneById
+  deleteOneById,
+  findByEmail
 }

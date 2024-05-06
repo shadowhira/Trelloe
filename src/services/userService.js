@@ -1,7 +1,5 @@
 /* eslint-disable no-useless-catch */
 import { userModel } from '~/models/userModel'
-import { cardModel } from '~/models/cardModel'
-import { boardModel } from '~/models/boardModel'
 import ApiError from '~/utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
 

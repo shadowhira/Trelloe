@@ -62,8 +62,24 @@ const deleteItem = async (req, res, next) => {
   }
 }
 
+const signup = async (req, res, next) => {
+  const schema = Joi.object({
+    email: Joi.string().required().email().trim().strict(),
+    password: Joi.string().required().min(6), // Set minimum password length
+    username: Joi.string().required().alphanum().min(3).max(50), // Restrict username to alphanumeric characters
+  })
+
+  try {
+    await schema.validateAsync(req.body)
+    next()
+  } catch (error) {
+    next(new ApiError(StatusCodes.BAD_REQUEST, error.message))
+  }
+}
+
 export const userValidation = {
   createNew,
   update,
-  deleteItem
+  deleteItem,
+  signup
 }
