@@ -104,6 +104,20 @@ const deleteOneById = async (columnId) => {
   }
 }
 
+// Handle việc xóa id khỏi cardOrderIds khi xóa card
+const deleteCardFromColumn = async (boardId, columnId, cardId) => {
+  try {
+    const result = await GET_DB().collection(COLUMN_COLLECTION_NAME).updateOne(
+      { boardId: new ObjectId(boardId), _id: new ObjectId(columnId) },
+      { $pull: { cardOrderIds: new ObjectId(cardId) } }, // Xóa cardId khỏi mảng cardOrderIds
+      { returnDocument: 'after' }
+    )
+    return result // Số lượng cột được cập nhật
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 export const columnModel = {
   COLUMN_COLLECTION_NAME,
   COLUMN_COLLECTION_SCHEMA,
@@ -111,5 +125,6 @@ export const columnModel = {
   findOneById,
   pushCardOrderIds,
   update,
-  deleteOneById
+  deleteOneById,
+  deleteCardFromColumn
 }

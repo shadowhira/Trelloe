@@ -23,6 +23,26 @@ const createNew = async (reqBody) => {
   }
 }
 
+const update = async (cardId, updateData) => {
+  try {
+    const updatedCard = await cardModel.update(cardId, updateData)
+    return updatedCard
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+const deleteItem = async (cardId) => {
+  try {
+    await cardModel.deleteOneById(cardId)
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+
 export const cardService = {
-  createNew
+  createNew,
+  update,
+  deleteItem
 }
