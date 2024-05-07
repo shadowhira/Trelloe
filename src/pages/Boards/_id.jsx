@@ -18,19 +18,23 @@ import {
   updateBoardDetailsAPI,
   updateColumnDetailsAPI,
   moveCardToDifferentColumnAPI,
-  deleteColumnDetailsAPI
+  deleteColumnDetailsAPI,
+  deleteCardDetailsAPI
 } from '~/apis'
 import { generatePlaceholderCard } from '~/utils/formatters'
 import { isEmpty } from 'lodash'
 import { Typography } from '@mui/material'
+import { useParams } from 'react-router-dom'
 
 function Board() {
   const [board, setBoard] = useState(null)
-
+  let { boardId } = useParams()
+  
   useEffect(() => {
     // Tạm thời fix cứng boardId, phần nâng cao sẽ sử dụng react-router-dom để lấy chuẩn boardId từ URL
-    const boardId = '66211a046153d6ad75302de9'
+    // const boardId = '66211a046153d6ad75302de9'
 
+    console.log('🐛: ➡️ useEffect ➡️ boardId:', boardId)
     // Call API
     fetchBoardDetailsAPI(boardId).then(board => {
       // Sắp xếp thứ tự Column luôn từ đây để tránh lỗi (video 71)
@@ -179,6 +183,20 @@ function Board() {
     })
   }
 
+  // Xử lý xóa một Card và CardOrderIds trên column chứa nó
+  const deleteCardDetails = (cardId) => {
+    // Update cho chuẩn dữ liệu state board
+    const newBoard = { ...board }
+    newBoard.columns.cards = newBoard.cards.filter(card => card._id !== cardId)
+    newBoard.cardOrderIds = newBoard.cardOrderIds.filter(_id => _id !== cardId)
+    setBoard(newBoard)
+
+    // Gọi API xử lý phía BE
+    deleteCardDetailsAPI(cardId).then(res => {
+      toast.success(res?.deleteResult)
+    })
+  }
+
   if (!board) {
     return (
       <Box sx={{
@@ -207,6 +225,7 @@ function Board() {
         moveCardInTheSameColumn={moveCardInTheSameColumn}
         moveCardToDifferentColumn={moveCardToDifferentColumn}
         deleteColumnDetails={deleteColumnDetails}
+        deleteCardDetails={deleteCardDetails}
       />
     </Container>
   )

@@ -15,20 +15,10 @@ chúng ta muôn.
 này chuần chình cho các bạn. )
 */
 
-let api_root = API_ROOT
-let res = {}
-const checkStatus = async () => {
-  const response = await axios.get(`${api_root}/v1/status`)
-  if (!response) return
-  res = response.data
-}
-
-checkStatus()
-if (!res.message) {
-  api_root = 'https://trello-api-z8ri.onrender.com'
-}
+// Change api_root
+let api_root = API_ROOT // http://localhost:8017
 console.log('🐛: ➡️ api_root:', api_root)
-
+// api_root = 'https://trello-api-z8ri.onrender.com'
 
 /* Board */
 // Hậu tố là API để đánh dấu
@@ -38,6 +28,11 @@ export const fetchBoardDetailsAPI = async (boardId) => {
   return response.data
 }
 
+export const fetchListBoardAPI = async () => {
+  const response = await axios.get(`${api_root}/v1/boards/`)
+  // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
+  return response.data
+}
 
 
 export const updateBoardDetailsAPI = async (boardId, updateData) => {
@@ -71,5 +66,11 @@ export const deleteColumnDetailsAPI = async (columnId) => {
 /* Cards */
 export const createNewCardAPI = async (newCardData) => {
   const response = await axios.post(`${api_root}/v1/cards`, newCardData)
+  return response.data
+}
+
+export const deleteCardDetailsAPI = async (cardId) => {
+  const response = await axios.delete(`${api_root}/v1/cards/${cardId}`)
+  // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
   return response.data
 }
