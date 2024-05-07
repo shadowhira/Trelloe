@@ -18,9 +18,12 @@ const USER_COLLECTION_SCHEMA = Joi.object({
   username: Joi.string().required().alphanum().min(3).max(50), // Restrict username to alphanumeric characters
   displayName: Joi.string().optional().allow(Joi.string().empty()), // Allow empty string for displayName
   // avatar: Joi.string().optional().allow(Joi.string().empty()), // Allow empty string for avatar
-  //   role: Joi.string().optional().allow('', ...['client', 'admin', '...']), // Allow empty string or specific roles
+  // role: Joi.string().optional().allow('', ...['client', 'admin', '...']), // Allow empty string or specific roles
   //   isActive: Joi.boolean().optional(), // Allow optional boolean for isActive
   // verifyToken: Joi.string().optional().allow(Joi.string().empty()), // Allow empty string for verifyToken
+  boards: Joi.array().items(
+    Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)
+  ).default([]),
 
   createAt: Joi.date().timestamp('javascript').default(Date.now),
   updateAt: Joi.date().timestamp('javascript').default(null)
@@ -141,6 +144,15 @@ const findByEmail = async (email) => {
   }
 }
 
+const getAllUsers = async () => {
+  try {
+    const allUsers = await GET_DB().collection(USER_COLLECTION_NAME).find({}).toArray()
+    return allUsers
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 export const userModel = {
   USER_COLLECTION_NAME,
   USER_COLLECTION_SCHEMA,
@@ -149,5 +161,6 @@ export const userModel = {
   getDetails,
   update,
   deleteOneById,
-  findByEmail
+  findByEmail,
+  getAllUsers
 }

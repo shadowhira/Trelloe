@@ -9,6 +9,7 @@ import { cardModel } from './cardModel'
 // Define Collection (Name & Schema)
 const BOARD_COLLECTION_NAME = 'boards'
 const BOARD_COLLECTION_SCHEMA = Joi.object({
+  userId: Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
   title: Joi.string().required().min(3).max(50).trim().strict(),
   slug: Joi.string().required().min(3).trim().strict(),
   description: Joi.string().required().min(3).max(256).trim().strict(),
@@ -140,6 +141,17 @@ const pullColumnOrderIds = async (column) => {
   }
 }
 
+const getListBoard = async () => {
+  try {
+    // Sử dụng method find() của MongoDB để lấy danh sách các board
+    const boardList = await GET_DB().collection(BOARD_COLLECTION_NAME).find().toArray()
+
+    return boardList
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 export const boardModel = {
   BOARD_COLLECTION_NAME,
   BOARD_COLLECTION_SCHEMA,
@@ -148,5 +160,6 @@ export const boardModel = {
   getDetails,
   pushColumnOrderIds,
   update,
-  pullColumnOrderIds
+  pullColumnOrderIds,
+  getListBoard
 }

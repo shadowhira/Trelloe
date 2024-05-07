@@ -60,9 +60,19 @@ const getDetails = async (userId) => {
   }
 }
 
+const getAllUsers = async () => {
+  try {
+    const allUsers = await userModel.getAllUsers() // Bạn cần triển khai phương thức này trong `userModel`
+    return allUsers
+  } catch (error) {
+    throw error
+  }
+}
+
 export const userService = {
   createNew,
   update,
   deleteItem,
-  getDetails
+  getDetails,
+  getAllUsers
 }

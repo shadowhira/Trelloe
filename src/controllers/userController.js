@@ -42,9 +42,19 @@ const getDetails = async (req, res, next) => {
   } catch (error) { next(error) }
 }
 
+const getAllUsers = async (req, res, next) => {
+  try {
+    const allUsers = await userService.getAllUsers()
+    res.status(StatusCodes.OK).json(allUsers)
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const userController = {
   createNew,
   update,
   deleteItem,
-  getDetails
+  getDetails,
+  getAllUsers
 }

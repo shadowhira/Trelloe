@@ -102,9 +102,22 @@ const moveCardToDifferentColumn = async (reqBody) => {
   } catch (error) { throw error }
 }
 
+const getListBoard = async () => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    // Gọi tới model để lấy danh sách các board từ database
+    const boardList = await boardModel.getListBoard()
+
+    return boardList
+  } catch (error) {
+    throw error
+  }
+}
+
 export const boardService = {
   createNew,
   getDetails,
   update,
-  moveCardToDifferentColumn
+  moveCardToDifferentColumn,
+  getListBoard
 }

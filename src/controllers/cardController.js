@@ -1,6 +1,7 @@
 import { StatusCodes } from 'http-status-codes'
 import { cardService } from '~/services/cardService'
 import { columnModel } from '~/models/columnModel'
+import { cardModel } from '~/models/cardModel'
 
 const createNew = async (req, res, next) => {
   try {
@@ -23,8 +24,10 @@ const update = async (req, res, next) => {
 const deleteItem = async (req, res, next) => {
   try {
     const cardId = req.params.cardId
-    const boardId = req.body.boardId // Lấy boardId từ body
-    const columnId = req.body.columnId // Lấy columnId từ body
+
+    const targetCard = await cardModel.findOneById(cardId)
+    const boardId = targetCard.boardId // Lấy boardId từ body
+    const columnId = targetCard.columnId // Lấy columnId từ body
 
     await cardService.deleteItem(cardId) // Xóa thẻ từ cardService
     await columnModel.deleteCardFromColumn(boardId, columnId, cardId) // Xóa ID của thẻ khỏi mảng cardOrderIds của cột

@@ -26,7 +26,7 @@ const createNew = async (req, res, next) => {
 
   try {
     // Chỉ định abortEarly: false để trường hợp có nhiều lỗi validation thì trả về tất cả lỗi (video 52)
-    await correctCondition.validateAsync(req.body, { abortEarly: false })
+    await correctCondition.validateAsync(req.body, { abortEarly: false, allowUnknown: true })
     // Validate dữ liệu xong xuôi hợp lệ thì cho request đi tiếp sang Controller
     next()
   } catch (error) {
