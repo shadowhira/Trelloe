@@ -2,7 +2,7 @@ import { userModel } from '~/models/userModel'
 import { comparePassword } from '~/utils/password'
 import { generateAccessToken } from '~/utils/token'
 
-const login = async (email, password, username) => {
+const login = async (email, password) => {
   // eslint-disable-next-line no-useless-catch
   try {
     // Find user by email
@@ -23,7 +23,7 @@ const login = async (email, password, username) => {
 
     // Generate and return access token
     const accessToken = generateAccessToken(user._id)
-    console.log(`Create success token: ${accessToken} \nFor username: ${username}`)
+    console.log(`Create success token: ${accessToken} \nFor email: ${email}`)
 
     return accessToken
   } catch (error) {

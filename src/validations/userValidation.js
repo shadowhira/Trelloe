@@ -30,7 +30,8 @@ const update = async (req, res, next) => {
   const correctCondition = Joi.object({
     // Nếu cần làm tính năng di chuyển Column sang Board khác thì mới cần thêm validate boardId
     // boardId: Joi.string ().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
-    username: Joi.string().required().alphanum().min(3).max(50),
+    // username: Joi.string().required().alphanum().min(3).max(50),
+    password: Joi.string().required().min(6),
     email: Joi.string().required().email().trim().strict(),
   })
 

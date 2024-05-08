@@ -1,10 +1,16 @@
 import { StatusCodes } from 'http-status-codes'
 import { authService } from '~/services/authService'
 import { userService } from '~/services/userService'
+import jwt from 'jsonwebtoken'
+import bcrypt from 'bcrypt'
 
 const signup = async (req, res, next) => {
   try {
-    const newUser = await userService.createNew(req.body)
+    let newUser = await userService.createNew(req.body)
+    newUser = {
+      ...req.body,
+      status: 'Success'
+    }
     res.status(StatusCodes.CREATED).json(newUser)
   } catch (error) {
     next(error)
@@ -13,11 +19,12 @@ const signup = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   try {
-    const { email, password, username } = req.body
-    const accessToken = await authService.login(email, password, username)
+    const { email, password } = req.body
+    const accessToken = await authService.login(email, password)
+    const status = 'Success'
 
     // Trả về người dùng Token
-    res.status(StatusCodes.OK).json({ accessToken })
+    res.status(StatusCodes.OK).json({ accessToken, status })
   } catch (error) {
     next(error)
   }
@@ -34,8 +41,43 @@ const logout = async (req, res, next) => {
   }
 }
 
+const checkAuth = async (req, res, next) => {
+  try {
+    const token = req.cookies.token
+    if (!token) {
+      // Nếu không có token, trả về mã trạng thái 401
+      return res.status(401).json({ error: 'Bạn chưa xác thực' })
+    }
+
+    // Xác thực token với secret key
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+        // Nếu token không hợp lệ hoặc có lỗi khi xác thực
+        console.error('Error verifying JWT token:', err)
+        return res.status(401).json({ error: 'Token không hợp lệ' })
+      }
+
+      // Kiểm tra xem decoded có thuộc tính 'name' không
+      if (!decoded.email) {
+        return res.status(401).json({ error: 'Token không hợp lệ, thiếu thông tin cần thiết' })
+      }
+
+      // Đặt thông tin người dùng vào req để sử dụng ở các middleware tiếp theo
+      req.email = decoded.email
+
+      // Tiếp tục đến middleware hoặc route tiếp theo
+      next()
+    })
+
+    res.status(StatusCodes.OK).json({ status: 'Success', name: req.name })
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const authController = {
   signup,
   login,
-  logout
+  logout,
+  checkAuth
 }
