@@ -24,15 +24,9 @@ const update = async (req, res, next) => {
 const deleteItem = async (req, res, next) => {
   try {
     const cardId = req.params.cardId
+    const result = await cardService.deleteItem(cardId) // Xóa thẻ từ cardService
 
-    const targetCard = await cardModel.findOneById(cardId)
-    const boardId = targetCard.boardId // Lấy boardId từ body
-    const columnId = targetCard.columnId // Lấy columnId từ body
-
-    await cardService.deleteItem(cardId) // Xóa thẻ từ cardService
-    await columnModel.deleteCardFromColumn(boardId, columnId, cardId) // Xóa ID của thẻ khỏi mảng cardOrderIds của cột
-
-    res.status(StatusCodes.OK).json({ message: 'Xóa thẻ thành công' }) // Trả về thông báo thành công
+    res.status(StatusCodes.OK).json(result) // Trả về thông báo thành công
   } catch (error) {
     next(error)
   }
