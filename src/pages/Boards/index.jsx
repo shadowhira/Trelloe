@@ -99,8 +99,7 @@ const BoardCardVisual = props => (
           bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#d5e9fe' : '#d5e9fe')
         }
       }}
-      to={`/boards/${props.boardId}`} // Sử dụng to để chỉ định route muốn điều hướng tới
-        // href={'facebook.com'} // Sử dụng to để chỉ định route muốn điều hướng tới
+      href={`/boards/${props.boardId}`} // Sử dụng to để chỉ định route muốn điều hướng tới
     >
       <span style={{ marginLeft: 'auto' }}>Go to board</span>
       <NavigateNextIcon style={{ marginLeft: '4px', marginRight: '8px' }}></NavigateNextIcon>

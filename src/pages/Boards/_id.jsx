@@ -29,7 +29,7 @@ import { useParams } from 'react-router-dom'
 function Board() {
   const [board, setBoard] = useState(null)
   let { boardId } = useParams()
-  
+
   useEffect(() => {
     // Tạm thời fix cứng boardId, phần nâng cao sẽ sử dụng react-router-dom để lấy chuẩn boardId từ URL
     // const boardId = '66211a046153d6ad75302de9'
@@ -185,16 +185,32 @@ function Board() {
 
   // Xử lý xóa một Card và CardOrderIds trên column chứa nó
   const deleteCardDetails = (cardId) => {
-    // Update cho chuẩn dữ liệu state board
-    const newBoard = { ...board }
-    newBoard.columns.cards = newBoard.cards.filter(card => card._id !== cardId)
-    newBoard.cardOrderIds = newBoard.cardOrderIds.filter(_id => _id !== cardId)
+    // Tìm column chứa card cần xóa
+    const updatedColumns = board.columns.map(column => {
+      // Nếu column chứa card cần xóa
+      if (column.cardOrderIds.includes(cardId)) {
+        // Loại bỏ card cần xóa khỏi mảng cards của column
+        column.cards = column.cards.filter(card => card._id !== cardId)
+        // Loại bỏ id của card cần xóa khỏi mảng cardOrderIds của column
+        column.cardOrderIds = column.cardOrderIds.filter(_id => _id !== cardId)
+      }
+      return column
+    })
+
+    // Cập nhật lại board với các thay đổi
+    const newBoard = {
+      ...board,
+      columns: updatedColumns
+    }
+
+    // Cập nhật state của board
     setBoard(newBoard)
 
-    // Gọi API xử lý phía BE
+    // Gọi API xử lý phía BE (nếu cần)
     deleteCardDetailsAPI(cardId).then(res => {
       toast.success(res?.deleteResult)
     })
+
   }
 
   if (!board) {

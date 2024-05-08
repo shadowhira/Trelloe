@@ -25,8 +25,8 @@ function App() {
           <Route path="/board" element={<Board />} />
           <Route path="/boards/:boardId" element={<Board />} />
           <Route path="/boards" element={<BoardList />} />
-          <Route path="/boards" element={<BoardList />} />
-          <Route path="/" element={<UserBar />} />
+          <Route path="/" element={<BoardList />} />
+          <Route path="/user" element={<UserBar />} />
 
         </Routes>
       </Router>

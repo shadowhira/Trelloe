@@ -1,3 +1,4 @@
+/* eslint-disable space-before-blocks */
 import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import IconButton from '@mui/material/IconButton'
@@ -22,7 +23,11 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { toast } from 'react-toastify'
 
-function Card({ card ,onCardUpdated}) {
+import avatar from '~/assets/profile.png'
+import { styled } from '@mui/material/styles'
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+
+function Card({ card, deleteCardDetails }) {
   const [anchorEl, setAnchorEl] = useState(null)
   const [isHovered, setIsHovered] = useState(false)
   const [isEditing, setIsEditing] = useState(false) // Để theo dõi trạng thái chỉnh sửa
@@ -36,6 +41,8 @@ function Card({ card ,onCardUpdated}) {
     id: card._id,
     data: { ...card }
   })
+
+  const url = 'http://localhost:8017'
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -78,7 +85,7 @@ function Card({ card ,onCardUpdated}) {
     setAnchorEl(null)
   }
 
-  const startEditing = () => {
+  const startEditTitle = () => {
     setIsEditing(true) // Bắt đầu chỉnh sửa
     closeMenu()
   }
@@ -92,19 +99,21 @@ function Card({ card ,onCardUpdated}) {
       return // Không cập nhật nếu tiêu đề trống
     }
     try {
-      await axios.put(`http://localhost:8017/v1/cards/${card._id}`, { title: newTitle }) // API cập nhật
-      if(!isHovered) {
+      await axios.put(`${url}/v1/cards/${card._id}`, { title: newTitle }) // API cập nhật
+      if (!isHovered) {
         card.title = newTitle
         setIsEditing(false)
       }
     } catch (error) {
-      console.error('Lỗi khi chỉnh sửa thẻ:', error)
+      toast.error('Lỗi khi chỉnh sửa tên card:', error)
     }
   }
 
   const handleDeleteCard = async () => {
     try {
-      await axios.delete(`http://localhost:8017/v1/cards/${card._id}`, { title: newTitle }) // API cập nhật
+      console.log('🐛: ➡️ handleDeleteCard ➡️ card?._id:', card?._id)
+      deleteCardDetails(card._id)
+      // await axios.delete(`${url}/v1/cards/${card._id}`) 
       toast.success(`Đã xóa card ${card.title}`)
       closeMenu()
     } catch (error) {
@@ -112,22 +121,58 @@ function Card({ card ,onCardUpdated}) {
     }
   }
 
-  const handleNewCoverLink = async () => {
-    if (!newCoverLink.trim()) {
-      return // Không cập nhật nếu giá trị trống
-    }
+  // const handleNewCoverLink = async () => {
+  //   if (!newCoverLink.trim()) {
+  //     return // Không cập nhật nếu giá trị trống
+  //   }
 
+  //   try {
+  //     await axios.put(`${url}/v1/cards/${card._id}`, { cover: newCoverLink }) // Cập nhật cover
+  //     if (onCardUpdated) {
+  //       onCardUpdated({ ...card, cover: newCoverLink }) // Cập nhật giao diện
+  //     }
+
+  //     setIsEditingCover(false) // Ẩn TextField sau khi cập nhật
+  //   } catch (error) {
+  //     console.error('Error updating cover:', error)
+  //   }
+  // }
+
+  const [postImage, setPostImage] = useState( { myFile : ''} )
+
+  const createPost = async (newImage) => {
     try {
-      await axios.put(`http://localhost:8017/v1/cards/${card._id}`, { cover: newCoverLink }) // Cập nhật cover
-      if (onCardUpdated) {
-        onCardUpdated({ ...card, cover: newCoverLink }) // Cập nhật giao diện
-      }
-
-      setIsEditingCover(false) // Ẩn TextField sau khi cập nhật
-    } catch (error) {
-      console.error('Error updating cover:', error)
+      await axios.post(url, newImage)
+    } catch (error){
+      console.log(error)
     }
   }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    createPost(postImage)
+    console.log('Uploaded')
+  }
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0]
+    const base64 = await convertToBase64(file)
+    console.log(base64)
+    setPostImage({ ...postImage, myFile : base64 })
+  }
+
+  const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1
+  })
+
   return (
     <MuiCard
       ref={setNodeRef} style={dndKitCardStyle} {...attributes} {...listeners}
@@ -190,30 +235,71 @@ function Card({ card ,onCardUpdated}) {
         open={Boolean(anchorEl)}
         onClose={closeMenu}
         MenuListProps={{
-          'aria-labelledby': 'more-options',
+          'aria-labelledby': 'more-options'
         }}
       >
-        <MenuItem onClick={startEditing}>Edit Title</MenuItem>
+        <MenuItem onClick={startEditTitle}>Change Title</MenuItem>
         <MenuItem onClick={startEditCover}>
           <label htmlFor={`upload-cover-${card._id}`}>Change Cover</label>
           {isEditingCover && (
-            <div style={{ display: 'flex', alignItems: 'center', marginLeft: '10px' }}> {/* Căn chỉnh và tạo khoảng cách */}
-              <TextField
-                value={newCoverLink}
-                onChange={(e) => setNewCoverLink(e.target.value)} // Cập nhật giá trị của TextField
-                placeholder="Nhập URL ảnh"
-                size="small"
+            <form onSubmit={handleSubmit}>
+
+              <label htmlFor="file-upload" className='custom-file-upload'>
+                <img src={postImage.myFile || avatar} alt="" />
+              </label>
+
+              <input
+                type="file"
+                label="Image"
+                name="myFile"
+                id='file-upload'
+                accept='.jpeg, .png, .jpg'
+                onChange={(e) => handleFileUpload(e)}
               />
-              <Button onClick={handleNewCoverLink} variant="contained" size="small" sx={{ marginLeft: '8px' }}>
-                OK
-              </Button>
-            </div>
+
+              <button type='submit'>Submit</button>
+            </form>
           )}
+          <Button
+            component="label"
+            role={undefined}
+            variant="contained"
+            tabIndex={-1}
+            onChange={(e) => handleFileUpload(e)}
+            startIcon={<CloudUploadIcon />}
+          >
+            Upload file
+            <VisuallyHiddenInput type="file" />
+          </Button>
         </MenuItem>
+
         <MenuItem onClick={handleDeleteCard}>
           <DeleteIcon />
-          Delete
+          Delete card
         </MenuItem>
+
+        {/* <MenuItem>
+          <form onSubmit={handleSubmit}>
+
+            <label htmlFor="file-upload" className='custom-file-upload'>
+              <img src={postImage.myFile || avatar} alt="" />
+            </label>
+
+            <input
+              type="file"
+              label="Image"
+              name="myFile"
+              id='file-upload'
+              accept='.jpeg, .png, .jpg'
+              onChange={(e) => handleFileUpload(e)}
+            />
+
+            <h3>Doris Wilder</h3>
+            <span>Designer</span>
+
+            <button type='submit'>Submit</button>
+          </form>
+        </MenuItem> */}
       </Menu>
       {uploading && <CircularProgress size={24} />}
       {shouldShowCardActions() &&
@@ -234,3 +320,16 @@ function Card({ card ,onCardUpdated}) {
 }
 
 export default Card
+
+function convertToBase64(file){
+  return new Promise((resolve, reject) => {
+    const fileReader = new FileReader()
+    fileReader.readAsDataURL(file)
+    fileReader.onload = () => {
+      resolve(fileReader.result)
+    }
+    fileReader.onerror = (error) => {
+      reject(error)
+    }
+  })
+}
