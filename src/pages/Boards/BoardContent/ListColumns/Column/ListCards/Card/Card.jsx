@@ -25,16 +25,23 @@ import { toast } from 'react-toastify'
 
 import avatar from '~/assets/profile.png'
 import { styled } from '@mui/material/styles'
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle
+} from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 
 function Card({ card, deleteCardDetails }) {
   const [anchorEl, setAnchorEl] = useState(null)
   const [isHovered, setIsHovered] = useState(false)
-  const [isEditing, setIsEditing] = useState(false) // Để theo dõi trạng thái chỉnh sửa
+  const [isEditingTitle, setIsEditingTitle] = useState(false) // Để theo dõi trạng thái chỉnh sửa
   const [isEditingCover, setIsEditingCover] = useState(false)
   const [newCoverLink, setNewCoverLink] = useState('')
   const [newTitle, setNewTitle] = useState(card?.title || '') // Tiêu đề mới
   const [uploading, setUploading] = useState(false) // Trạng thái tải lên
+  const [showCoverDialog, setShowCoverDialog] = useState(false)
   const menuRef = useRef(null) // Tham chiếu cho menu
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -48,7 +55,7 @@ function Card({ card, deleteCardDetails }) {
     const handleClickOutside = (event) => {
       // Kiểm tra xem click có bên ngoài vùng chứa hay không
       if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setIsEditing(false) // Ẩn khi click ra bên ngoài
+        setIsEditingTitle(false) // Ẩn khi click ra bên ngoài
         setIsEditingCover(false) // Ẩn khi click ra bên ngoài
       }
     }
@@ -86,15 +93,16 @@ function Card({ card, deleteCardDetails }) {
   }
 
   const startEditTitle = () => {
-    setIsEditing(true) // Bắt đầu chỉnh sửa
+    setIsEditingTitle(true) // Bắt đầu chỉnh sửa
     closeMenu()
   }
 
   const startEditCover = () => {
+    // setShowCoverDialog(true)
     setIsEditingCover(true)
   }
 
-  const handleEditCard = async () => {
+  const handleEditTitleCard = async () => {
     if (!newTitle.trim()) {
       return // Không cập nhật nếu tiêu đề trống
     }
@@ -102,7 +110,7 @@ function Card({ card, deleteCardDetails }) {
       await axios.put(`${url}/v1/cards/${card._id}`, { title: newTitle }) // API cập nhật
       if (!isHovered) {
         card.title = newTitle
-        setIsEditing(false)
+        setIsEditingTitle(false)
       }
     } catch (error) {
       toast.error('Lỗi khi chỉnh sửa tên card:', error)
@@ -111,54 +119,41 @@ function Card({ card, deleteCardDetails }) {
 
   const handleDeleteCard = async () => {
     try {
-      console.log('🐛: ➡️ handleDeleteCard ➡️ card?._id:', card?._id)
       deleteCardDetails(card._id)
-      // await axios.delete(`${url}/v1/cards/${card._id}`) 
-      toast.success(`Đã xóa card ${card.title}`)
       closeMenu()
     } catch (error) {
       toast.error('Không tìm thấy card')
     }
   }
 
-  // const handleNewCoverLink = async () => {
-  //   if (!newCoverLink.trim()) {
-  //     return // Không cập nhật nếu giá trị trống
-  //   }
-
-  //   try {
-  //     await axios.put(`${url}/v1/cards/${card._id}`, { cover: newCoverLink }) // Cập nhật cover
-  //     if (onCardUpdated) {
-  //       onCardUpdated({ ...card, cover: newCoverLink }) // Cập nhật giao diện
-  //     }
-
-  //     setIsEditingCover(false) // Ẩn TextField sau khi cập nhật
-  //   } catch (error) {
-  //     console.error('Error updating cover:', error)
-  //   }
-  // }
-
   const [postImage, setPostImage] = useState( { myFile : ''} )
-
-  const createPost = async (newImage) => {
-    try {
-      await axios.post(url, newImage)
-    } catch (error){
-      console.log(error)
-    }
-  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    createPost(postImage)
+    // Call your API to update the cover with newCoverLink
+    setUploading(true)
+    console.log(newCoverLink)
+
+    // Example API call
+    axios.put(`${url}/v1/cards/${card._id}`, { cover: newCoverLink })
+      .then(() => {
+        // Handle success
+        setUploading(false)
+        setShowCoverDialog(false)
+      })
+      .catch((error) => {
+        // Handle error
+        console.error('Error updating cover:', error)
+        setUploading(false)
+      })
     console.log('Uploaded')
   }
 
   const handleFileUpload = async (e) => {
     const file = e.target.files[0]
     const base64 = await convertToBase64(file)
-    console.log(base64)
     setPostImage({ ...postImage, myFile : base64 })
+    setNewCoverLink(base64)
   }
 
   const VisuallyHiddenInput = styled('input')({
@@ -199,12 +194,12 @@ function Card({ card, deleteCardDetails }) {
             p: 1.5,
             '&:last-child': { p: 1.5 }
           }}>
-          {isEditing ? (
+          {isEditingTitle ? (
             <div>
               <TextField
                 value={newTitle}
                 onChange={(e) => setNewTitle(e.target.value)} // Cập nhật giá trị mới
-                onBlur={handleEditCard} // Lưu khi rời khỏi trường
+                onBlur={handleEditTitleCard} // Lưu khi rời khỏi trường
                 autoFocus // Tự động lấy tiêu điểm
               />
             </div>
@@ -243,11 +238,9 @@ function Card({ card, deleteCardDetails }) {
           <label htmlFor={`upload-cover-${card._id}`}>Change Cover</label>
           {isEditingCover && (
             <form onSubmit={handleSubmit}>
-
               <label htmlFor="file-upload" className='custom-file-upload'>
                 <img src={postImage.myFile || avatar} alt="" />
               </label>
-
               <input
                 type="file"
                 label="Image"
@@ -256,11 +249,10 @@ function Card({ card, deleteCardDetails }) {
                 accept='.jpeg, .png, .jpg'
                 onChange={(e) => handleFileUpload(e)}
               />
-
               <button type='submit'>Submit</button>
             </form>
           )}
-          <Button
+          {/* <Button
             component="label"
             role={undefined}
             variant="contained"
@@ -271,6 +263,7 @@ function Card({ card, deleteCardDetails }) {
             Upload file
             <VisuallyHiddenInput type="file" />
           </Button>
+          <Button type='submit'>Save</Button> */}
         </MenuItem>
 
         <MenuItem onClick={handleDeleteCard}>
@@ -278,28 +271,6 @@ function Card({ card, deleteCardDetails }) {
           Delete card
         </MenuItem>
 
-        {/* <MenuItem>
-          <form onSubmit={handleSubmit}>
-
-            <label htmlFor="file-upload" className='custom-file-upload'>
-              <img src={postImage.myFile || avatar} alt="" />
-            </label>
-
-            <input
-              type="file"
-              label="Image"
-              name="myFile"
-              id='file-upload'
-              accept='.jpeg, .png, .jpg'
-              onChange={(e) => handleFileUpload(e)}
-            />
-
-            <h3>Doris Wilder</h3>
-            <span>Designer</span>
-
-            <button type='submit'>Submit</button>
-          </form>
-        </MenuItem> */}
       </Menu>
       {uploading && <CircularProgress size={24} />}
       {shouldShowCardActions() &&
@@ -315,6 +286,43 @@ function Card({ card, deleteCardDetails }) {
           }
         </CardActions>
       }
+
+      {/* <Dialog open={showCoverDialog} onClose={() => setShowCoverDialog(false)}>
+        <DialogTitle>Change Cover</DialogTitle>
+        <DialogContent>
+          <form onSubmit={handleSubmit}>
+            <label htmlFor="file-upload" className="custom-file-upload">
+              <img src={newCoverLink || card.cover || avatar} alt="" />
+            </label>
+            <input
+              type="file"
+              label="Image"
+              name="myFile"
+              id="file-upload"
+              accept=".jpeg, .png, .jpg"
+              onChange={handleFileUpload}
+            />
+            <Button
+              component="label"
+              role={undefined}
+              variant="contained"
+              tabIndex={-1}
+              onChange={handleFileUpload}
+              startIcon={<CloudUploadIcon />}
+            >
+              Upload file
+              <input type="file" hidden />
+            </Button>
+            {uploading && <CircularProgress />}
+          </form>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowCoverDialog(false)}>Cancel</Button>
+          <Button type="submit" onClick={handleSubmit} disabled={!newCoverLink}>
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog> */}
     </MuiCard>
   )
 }

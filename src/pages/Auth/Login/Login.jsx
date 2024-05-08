@@ -2,18 +2,42 @@
 /* eslint-disable no-useless-escape */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-empty */
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import './Login.css'
 import { gsap, Expo, Power2, Quad } from 'gsap-trial'
+import axios from 'axios'
+import { checkAuthAPI, checkLoginAPI } from '~/apis'
+import { Link, useNavigate } from 'react-router-dom'
 
 /* The following plugins are Club GSAP perks */
 import { MorphSVGPlugin } from 'gsap-trial/MorphSVGPlugin'
 import ModeSelect from '~/components/ModeSelect/ModeSelect'
+import { toast } from 'react-toastify'
 gsap.registerPlugin(MorphSVGPlugin)
 
-
-
 function Login() {
+  const [auth, setAuth] = useState(false)
+  const [message, setMessage] = useState('')
+  const navigate = useNavigate()
+  axios.defaults.withCredentials = true
+
+  useEffect(() => {
+    // Check authentication on component mount
+    checkAuthAPI()
+      .then((res) => {
+        if (res.status === 'Success') {
+          setAuth(true)
+          navigate('/') // Redirect on success
+        } else {
+          setAuth(false)
+        }
+      })
+      .catch((err) => {
+        console.error('Lỗi khi kiểm tra xác thực:', err)
+        setAuth(false)
+      })
+  }, [navigate])
+
   useEffect(() => {
     // Handle SVG
     var emailLabel = document.querySelector('#loginEmailLabel'),
@@ -738,10 +762,22 @@ function Login() {
         Validator.isRequired('#loginPassword')
       ],
       onSubmit: function (data) {
-        console.log(data)
         //Call API
-        console.log(data.loginEmail)
-        console.log(data.loginPassword)
+        var email = data.loginEmail
+        var password = data.loginPassword
+        checkLoginAPI(email, password)
+          .then((res) => {
+            if (res.status === 'Success') {
+              navigate('/') // Điều hướng khi đăng nhập thành công
+            } else {
+              setMessage(res.error) // Hiển thị thông báo lỗi
+            }
+          })
+          .catch((err) => {
+            // toast.error('Lỗi khi đăng nhập:', err)
+            toast.error('Đăng nhập thất bại. Vui lòng thử lại.')
+            setMessage('Đăng nhập thất bại. Vui lòng thử lại.')
+          })
       }
     })
 

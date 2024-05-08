@@ -71,6 +71,21 @@ export const createNewCardAPI = async (newCardData) => {
 
 export const deleteCardDetailsAPI = async (cardId) => {
   const response = await axios.delete(`${api_root}/v1/cards/${cardId}`)
-  // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
+  return response.data
+}
+
+/* Auth */
+export const checkLoginAPI = async (email, password) => {
+  const response = await axios.post(`${api_root}/v1/auth/login`, { email, password })
+  return response.data
+}
+
+export const checkSignupAPI = async (email, password, username) => {
+  const response = await axios.post(`${api_root}/v1/auth/signup`, { email, password, username })
+  return response.data
+}
+
+export const checkAuthAPI = async () => {
+  const response = await axios.get(`${api_root}/v1/auth/checkAuth`)
   return response.data
 }

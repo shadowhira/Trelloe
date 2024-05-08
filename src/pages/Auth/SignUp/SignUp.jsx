@@ -2,16 +2,40 @@
 /* eslint-disable no-useless-escape */
 /* eslint-disable no-empty */
 import React, { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import axios from 'axios'
 import './SignUp.css'
 import { gsap, Expo, Power2, Quad } from 'gsap-trial'
 
 /* The following plugins are Club GSAP perks */
 import { MorphSVGPlugin } from 'gsap-trial/MorphSVGPlugin'
+import { toast } from 'react-toastify'
+import { checkAuthAPI, checkSignupAPI } from '~/apis'
 gsap.registerPlugin(MorphSVGPlugin)
 
 
 
 function SignUp() {
+  const [auth, setAuth] = useState(false)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    // Check authentication on component mount
+    checkAuthAPI()
+      .then((res) => {
+        if (res.status === 'Success') {
+          setAuth(true)
+          navigate('/') // Redirect on success
+        } else {
+          setAuth(false)
+        }
+      })
+      .catch((err) => {
+        console.error('Lỗi khi kiểm tra xác thực:', err)
+        setAuth(false)
+      })
+  }, [navigate])
+
   useEffect(() => {
     // Handle SVG
     var emailLabel = document.querySelector('#signUpEmailLabel'),
@@ -773,7 +797,24 @@ function SignUp() {
       ],
       onSubmit: function (data) {
         //Call API
-        console.log(data)
+        var username = data.signUpName
+        var email = data.signUpEmail
+        var password = data.signUpPassword
+        checkSignupAPI(email, password, username)
+          .then((res) => {
+            if (res.status === 'Success') {
+              console.log('🐛: ➡️ .then ➡️ res:', res)
+              toast.success('Đăng ký thành công.') // Thông báo thành công
+              navigate('/login') // Điều hướng tới trang đăng nhập
+            } else {
+              console.log('🐛: ➡️ .then ➡️ res:', res)
+              toast.error(res.error) // Thông báo lỗi từ máy chủ
+            }
+          })
+          .catch((err) => {
+            // toast.error('Lỗi khi đăng nhập:', err)
+            toast.error('Đăng ký thất bại. Vui lòng thử lại.')
+          })
       }
     })
 
@@ -1131,6 +1172,13 @@ function SignUp() {
               </g>
             </svg>
           </div>
+        </div>
+        <div className="inputGroup inputGroup1">
+          <label htmlFor="signUpName" id="signUpNameLabel">
+                        Username
+          </label>
+          <input type="text" id="signUpName" name="signUpName" maxLength={254} />
+          <span className="form-message"></span>
         </div>
         <div className="inputGroup inputGroup1">
           <label htmlFor="signUpEmail" id="signUpEmailLabel">
