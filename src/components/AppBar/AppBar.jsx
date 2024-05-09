@@ -21,6 +21,7 @@ import Workspaces from './Menus/Workspaces'
 import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
 import SearchBar from './Menus/SearchBar'
+import CreateNewBoard from './Menus/CreateNewBoard'
 
 function AppBar() {
   const [searchValue, setSearchValue] = useState('')
@@ -49,7 +50,7 @@ function AppBar() {
           <Recent />
           <Starred />
           <Templates />
-          <Button
+          {/* <Button
             sx={{
               color: 'white',
               border: 'none',
@@ -59,7 +60,8 @@ function AppBar() {
             startIcon={<LibraryAddIcon />}
           >
             Create
-          </Button>
+          </Button> */}
+          <CreateNewBoard />
         </Box>
       </Box>
 

@@ -22,6 +22,12 @@ console.log('🐛: ➡️ api_root:', api_root)
 
 /* Board */
 // Hậu tố là API để đánh dấu
+export const createNewBoarrdAPI = async (title, description, type) => {
+  const response = await axios.post(`${api_root}/v1/boards/`, { title, description, type })
+  // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
+  return response.data
+}
+
 export const fetchBoardDetailsAPI = async (boardId) => {
   const response = await axios.get(`${api_root}/v1/boards/${boardId}`)
   // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
@@ -33,7 +39,6 @@ export const fetchListBoardAPI = async () => {
   // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
   return response.data
 }
-
 
 export const updateBoardDetailsAPI = async (boardId, updateData) => {
   const response = await axios.put(`${api_root}/v1/boards/${boardId}`, updateData)

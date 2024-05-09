@@ -127,7 +127,7 @@ function BoardList() {
         // Xử lý lỗi nếu có
         console.error('Lỗi khi lấy dữ liệu:', error)
       })
-  }, [])
+  }, [listBoard])
 
   return (
     <div>
@@ -168,7 +168,7 @@ function BoardList() {
               },
               '@media (min-width: 1600px)': { // Thêm media query để điều chỉnh số cột trên mỗi hàng cho các kích thước màn hình lớn hơn 1200px
                 gridTemplateColumns: 'repeat(5, 1fr)' // Hiển thị 3 phần tử trên một hàng
-              },
+              }
             }}
           >
             {listBoard && listBoard.length > 0 ? (

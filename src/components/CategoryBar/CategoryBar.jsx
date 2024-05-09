@@ -1,91 +1,4 @@
 /* eslint-disable no-dupe-keys */
-// import React from 'react';
-// import { Select, MenuItem, FormControl, InputLabel, Button, Grid, Stack, Box, backdropClasses } from '@mui/material';
-// import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
-// import HomeIcon from '@mui/icons-material/Home';
-// import ListAltIcon from '@mui/icons-material/ListAlt';
-// import AddBoxIcon from '@mui/icons-material/AddBox';
-// import "./CategoryBar.css";
-// const CategoryBar = ({nameActive}) => {
-//   return (
-
-//     <Stack
-//       flex = {2}
-//       sx={{
-//         pt: 2,
-//         pl: 1,
-//         pr: 1,
-//         bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#333643' : '#fff'),
-//         height: '100vh',
-//       }}
-//     >
-//       <Box className="category-item"
-//         sx={{
-//           color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#333'),
-//           color: nameActive === "Boards" ? '#1976d2' : 'inherit',
-//           bgcolor: nameActive === "Boards" ? '#e3f2fd' : 'inherit',
-//           '&:hover': {
-//             color: (theme) => (theme.palette.mode === 'dark' ? '#1976d2' : '#1976d2'),
-//             cursor: 'pointer',
-//             bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#e3f2fd' : '#e3f2fd')
-//           },
-//         }}
-//       >
-//         <SpaceDashboardIcon className="category-item-icon"></SpaceDashboardIcon>
-//         Boards
-//       </Box>
-//       <Box className="category-item"
-//         sx={{
-//           color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#333'),
-//           color: nameActive === "Templates" ? '#1976d2' : 'inherit',
-//           bgcolor: nameActive === "Templates" ? '#e3f2fd' : 'inherit',
-//           '&:hover': {
-//             color: (theme) => (theme.palette.mode === 'dark' ? '#1976d2' : '#1976d2'),
-//             cursor: 'pointer',
-//             bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#e3f2fd' : '#e3f2fd')
-//           },
-//         }}
-//       >
-//         <ListAltIcon className="category-item-icon" />
-//         Templates
-//       </Box>
-//       <Box className="category-item"
-//         sx={{
-//           color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#333'),
-//           color: nameActive === "Home" ? '#1976d2' : 'inherit',
-//           bgcolor: nameActive === "Home" ? '#e3f2fd' : 'inherit',
-//           '&:hover': {
-//             color: (theme) => (theme.palette.mode === 'dark' ? '#1976d2' : '#1976d2'),
-//             cursor: 'pointer',
-//             bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#e3f2fd' : '#e3f2fd')
-//           },
-//         }}
-//       >
-//         <HomeIcon className="category-item-icon"></HomeIcon>
-//         Home
-//       </Box>
-//       <Box className="category-item"
-//         sx={{
-//           color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#333'),
-//           color: nameActive === "Create" ? '#1976d2' : 'inherit',
-//           bgcolor: nameActive === "Create" ? '#e3f2fd' : 'inherit',
-//           '&:hover': {
-//             color: (theme) => (theme.palette.mode === 'dark' ? '#1976d2' : '#1976d2'),
-//             cursor: 'pointer',
-//             bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#e3f2fd' : '#e3f2fd')
-//           },
-//         }}
-//       >
-//         <AddBoxIcon className="category-item-icon" />
-//         Create a new board
-//       </Box>
-
-//     </Stack>
-//   );
-// };
-
-// export default CategoryBar;
-
 import * as React from 'react'
 import { styled, useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box'
@@ -110,6 +23,7 @@ import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard'
 import HomeIcon from '@mui/icons-material/Home'
 import ListAltIcon from '@mui/icons-material/ListAlt'
 import AddBoxIcon from '@mui/icons-material/AddBox'
+import CreateNewBoard from '../AppBar/Menus/CreateNewBoard'
 
 let drawerWidth = 360
 
@@ -190,17 +104,14 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   })
 )
 
-const handleOpenLink = (text) => {
-  if (text === 'Boards') {
-    window.location.href = '/boards'
-  } else if (text === 'Create a new board') {
-    window.location.href = '/login'
-  }
-}
 
-export default function CategoryBar(nameActive) {
+function CategoryBar(nameActive) {
   const theme = useTheme()
   const [open, setOpen] = React.useState(false)
+  const [openDialog, setOpenDialog] = React.useState('')
+  const [newBoardInfo, setNewBoardInfo] = React.useState({
+    title: ''
+  });
 
   const handleDrawerOpen = () => {
     setOpen(true)
@@ -209,6 +120,33 @@ export default function CategoryBar(nameActive) {
   const handleDrawerClose = () => {
     setOpen(false)
   }
+
+  const handleOpenDiaglog = () => {
+    setOpenDialog(true)
+  }
+
+  const handleCloseDiaglog = () => {
+    setOpenDialog(false)
+  }
+
+  const handleOpenLink = (text) => {
+    if (text === 'Boards') {
+      window.location.href = '/boards'
+    } else if (text === 'Create a new board') {
+      handleOpenDiaglog()
+      console.log(text);
+    }
+  }
+
+  
+  const handleSaveNewBoard = () => {
+    // Xử lý lưu thông tin bảng mới, ví dụ: gửi thông tin lên server
+    console.log('New board info:', newBoardInfo);
+    // Sau khi xử lý xong, đóng dialog
+    setOpenDialog(false);
+    
+  };
+  
 
   return (
     <Box sx={{ display: 'flex', height: '100vh', bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495E' : '#fff') }}>
@@ -239,7 +177,7 @@ export default function CategoryBar(nameActive) {
             { text: 'Templates', icon: <ListAltIcon /> },
             { text: 'Home', icon: <HomeIcon /> },
             { text: 'Create a new board', icon: <AddBoxIcon /> }
-          ].map(({ text, icon }, index) => 
+          ].map(({ text, icon }, index) =>
             (
               <ListItem key={text} disablePadding onClick={handleOpenLink ? () => handleOpenLink(text) : null}
                 sx={{
@@ -290,7 +228,10 @@ export default function CategoryBar(nameActive) {
               </ListItem>
             ))}
         </List>
+        {openDialog && (<CreateNewBoard />)}
       </Drawer>
     </Box>
   )
 }
+
+export default CategoryBar

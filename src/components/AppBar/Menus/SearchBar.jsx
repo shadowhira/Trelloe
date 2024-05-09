@@ -1,18 +1,16 @@
-import { useState, useEffect } from 'react'
-import Box from '@mui/material/Box'
-import TextField from '@mui/material/TextField'
-import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
-import Typography from '@mui/material/Typography'
+import SearchIcon from '@mui/icons-material/Search'
+import StarIcon from '@mui/icons-material/Star'
+import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
-import { fetchListBoardAPI } from '~/apis'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
-import StarIcon from '@mui/icons-material/Star'
-import { Link } from 'react-router-dom'
+import TextField from '@mui/material/TextField'
+import { useEffect, useState } from 'react'
+import { fetchListBoardAPI } from '~/apis'
 
 function SearchBar() {
   const [searchValue, setSearchValue] = useState('')
@@ -97,14 +95,14 @@ function SearchBar() {
         <Box sx={{ position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 999, marginTop: 2 }}>
           <List sx={{ width: '100%', maxWidth: 500, bgcolor: '#f4f4f4', borderRadius: '8px', boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)' }} aria-label="search-results">
             {filteredBoardList.map((board) => (
-              <ListItem 
-                disablePadding 
-                key={board._id} 
+              <ListItem
+                disablePadding
+                key={board._id}
                 onClick={() => handleOpenBoard(board._id)}
-                sx={{ 
+                sx={{
                   transition: 'background-color 0.3s',
-                  '&:hover': { 
-                    backgroundColor: '#e0e0e0' 
+                  '&:hover': {
+                    backgroundColor: '#e0e0e0'
                   }
                 }}
               >
@@ -112,9 +110,9 @@ function SearchBar() {
                   <ListItemIcon>
                     <StarIcon sx={{ color: '#ff9800' }} />
                   </ListItemIcon>
-                  <ListItemText 
-                    primary={board.title} 
-                    sx={{ 
+                  <ListItemText
+                    primary={board.title}
+                    sx={{
                       color: '#333',
                       fontFamily: 'Arial, sans-serif',
                       fontWeight: 'bold',
