@@ -10,6 +10,8 @@ import {
 } from '~/apis'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import Pagination from '@mui/material/Pagination'
+
 
 // const ListBoards = [
 //   {
@@ -111,6 +113,13 @@ const BoardCardVisual = props => (
 
 function BoardList() {
   const [listBoard, setListBoard] = useState([])
+  const [page, setPage] = useState(1)
+  const boardsPerPage = 9 // Số lượng boards hiển thị trên mỗi trang
+
+  const indexOfLastBoard = page * boardsPerPage
+  const indexOfFirstBoard = indexOfLastBoard - boardsPerPage
+  const currentBoards = listBoard.slice(indexOfFirstBoard, indexOfLastBoard)
+
 
   useEffect(() => {
     // fetchListBoardAPI()
@@ -171,20 +180,24 @@ function BoardList() {
               }
             }}
           >
-            {listBoard && listBoard.length > 0 ? (
-              listBoard.map(board => (
-                <BoardCardVisual
-                  key={board._id}
-                  title={board.title}
-                  description={board.description}
-                  color={'white'}
-                  boardId = { board._id }
-                />
-              ))
-            ) : (
-              <Typography>No board found</Typography>
-            )}
+            {currentBoards.map(board => (
+              <BoardCardVisual
+                key={board._id}
+                title={board.title}
+                description={board.description}
+                color={'white'}
+                boardId={board._id}
+              />
+            ))}
+
           </Box>
+          <Pagination
+            count={Math.ceil(listBoard.length / boardsPerPage)}
+            page={page}
+            onChange={(event, value) => setPage(value)}
+            sx={{ position: 'fixed', bottom: 0, right: 0, margin: '20px' }}
+          />
+
         </Box>
       </Stack>
     </div>
