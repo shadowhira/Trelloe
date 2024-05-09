@@ -13,11 +13,11 @@ const createNew = async (req, res, next) => {
   * Và thông thường trong thực tế, điều tốt nhất cho hệ thống là hãy luôn validate dữ Liệu ở cả Back-end và Front-end nhé.
   */
   const correctCondition = Joi.object({
-    title: Joi.string().required().min(3).max(50).trim().strict().messages({
+    title: Joi.string().required().min(3).max(30).trim().strict().messages({
       'any.required': 'Title is required',
       'string.empty': 'Title is not allowed to be empty',
       'string.min': 'Title min: 3 chars',
-      'string.max': 'Title max: 50 chars',
+      'string.max': 'Title max: 30 chars',
       'string.trim': 'Title must not have leading or trailing whitespace'
     }),
     description: Joi.string().required().min(3).max(256).trim().strict(),
