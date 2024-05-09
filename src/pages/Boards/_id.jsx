@@ -34,7 +34,6 @@ function Board() {
     // Tạm thời fix cứng boardId, phần nâng cao sẽ sử dụng react-router-dom để lấy chuẩn boardId từ URL
     // const boardId = '66211a046153d6ad75302de9'
 
-    console.log('🐛: ➡️ useEffect ➡️ boardId:', boardId)
     // Call API
     fetchBoardDetailsAPI(boardId).then(board => {
       // Sắp xếp thứ tự Column luôn từ đây để tránh lỗi (video 71)
@@ -93,7 +92,7 @@ function Board() {
     if (columnToUpdate) {
       // Nếu column rỗng: bản chất là đang chứa một cái placeholder card
       if (columnToUpdate.cards.some(card => card.FE_PlaceholderCard)) {
-        columnToUpdate.card = [createdCard]
+        columnToUpdate.cards = [createdCard]
         columnToUpdate.cardOrderIds = [createdCard._id]
       } else {
         // Ngược lại Column đã có data thì push vào cuối mảng
@@ -101,7 +100,6 @@ function Board() {
         columnToUpdate.cardOrderIds.push(createdCard._id)
       }
     }
-
     setBoard(newBoard)
   }
 
