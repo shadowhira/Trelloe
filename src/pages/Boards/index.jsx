@@ -1,13 +1,15 @@
 // Boards list
 
-import { Stack, Box, Typography, Link } from '@mui/material'
+import { Stack, Box, Typography } from '@mui/material'
 import AppBar from '~/components/AppBar/AppBar'
 import CategoryBar from '~/components/CategoryBar/CategoryBar'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import {
+  fetchBoardDetailsAPI,
   fetchListBoardAPI
 } from '~/apis'
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 // const ListBoards = [
 //   {
@@ -99,7 +101,7 @@ const BoardCardVisual = props => (
           bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#d5e9fe' : '#d5e9fe')
         }
       }}
-      href={`/boards/${props.boardId}`} // Sử dụng to để chỉ định route muốn điều hướng tới
+      to={`/boards/${props.boardId}`} // Sử dụng to để chỉ định route muốn điều hướng tới
     >
       <span style={{ marginLeft: 'auto' }}>Go to board</span>
       <NavigateNextIcon style={{ marginLeft: '4px', marginRight: '8px' }}></NavigateNextIcon>
@@ -111,14 +113,19 @@ function BoardList() {
   const [listBoard, setListBoard] = useState([])
 
   useEffect(() => {
+    // fetchListBoardAPI()
     fetch('http://localhost:8017/v1/boards')
       .then(res => res.json())
+      // .then(res => {
+      //   console.log('🐛: ➡️ useEffect ➡️ res:', res.json())
+      //   return res.json()
+      // })
       .then(listBoard => {
         setListBoard(listBoard)
       })
       .catch(error => {
         // Xử lý lỗi nếu có
-        console.error('Lỗi khi lấy dữ liệu:', error);
+        console.error('Lỗi khi lấy dữ liệu:', error)
       })
   }, [])
 
@@ -175,7 +182,7 @@ function BoardList() {
                 />
               ))
             ) : (
-              <p>Không có dữ liệu</p>
+              <Typography>No board found</Typography>
             )}
           </Box>
         </Box>

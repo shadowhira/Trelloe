@@ -75,8 +75,8 @@ function Profiles() {
           </ListItemIcon>
           Logout
         </MenuItem>
-
-        {/* Clerk */}
+{/* 
+        Clerk
         <MenuItem>
           <SignedOut>
             <SignInButton />
@@ -87,7 +87,7 @@ function Profiles() {
           <SignedIn>
             <UserButton />
           </SignedIn>
-        </MenuItem>
+        </MenuItem> */}
       </Menu>
 
     </Box>

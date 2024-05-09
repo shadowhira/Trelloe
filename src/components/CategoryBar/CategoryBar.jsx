@@ -190,6 +190,14 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   })
 )
 
+const handleOpenLink = (text) => {
+  if (text === 'Boards') {
+    window.location.href = '/boards'
+  } else if (text === 'Create a new board') {
+    window.location.href = '/login'
+  }
+}
+
 export default function CategoryBar(nameActive) {
   const theme = useTheme()
   const [open, setOpen] = React.useState(false)
@@ -231,25 +239,11 @@ export default function CategoryBar(nameActive) {
             { text: 'Templates', icon: <ListAltIcon /> },
             { text: 'Home', icon: <HomeIcon /> },
             { text: 'Create a new board', icon: <AddBoxIcon /> }
-          ].map(({ text, icon }, index) => (
-            <ListItem key={text} disablePadding
-              sx={{
-                display: 'block',
-                color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#333'),
-                color: text === nameActive ? '#1976d2' : 'inherit',
-                bgcolor: text === nameActive ? '#e3f2fd' : 'inherit',
-                '&:hover': {
-                  color: (theme) => (theme.palette.mode === 'dark' ? '#1976d2' : '#1976d2'),
-                  cursor: 'pointer',
-                  bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#e3f2fd' : '#e3f2fd')
-                }
-              }}
-            >
-              <ListItemButton
+          ].map(({ text, icon }, index) => 
+            (
+              <ListItem key={text} disablePadding onClick={handleOpenLink ? () => handleOpenLink(text) : null}
                 sx={{
-                  minHeight: 60,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
+                  display: 'block',
                   color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#333'),
                   color: text === nameActive ? '#1976d2' : 'inherit',
                   bgcolor: text === nameActive ? '#e3f2fd' : 'inherit',
@@ -260,13 +254,14 @@ export default function CategoryBar(nameActive) {
                   }
                 }}
               >
-                <ListItemIcon
+                <ListItemButton
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
+                    minHeight: 60,
+                    justifyContent: open ? 'initial' : 'center',
+                    px: 2.5,
                     color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#333'),
                     color: text === nameActive ? '#1976d2' : 'inherit',
+                    bgcolor: text === nameActive ? '#e3f2fd' : 'inherit',
                     '&:hover': {
                       color: (theme) => (theme.palette.mode === 'dark' ? '#1976d2' : '#1976d2'),
                       cursor: 'pointer',
@@ -274,12 +269,26 @@ export default function CategoryBar(nameActive) {
                     }
                   }}
                 >
-                  {icon}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          ))}
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : 'auto',
+                      justifyContent: 'center',
+                      color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#333'),
+                      color: text === nameActive ? '#1976d2' : 'inherit',
+                      '&:hover': {
+                        color: (theme) => (theme.palette.mode === 'dark' ? '#1976d2' : '#1976d2'),
+                        cursor: 'pointer',
+                        bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#e3f2fd' : '#e3f2fd')
+                      }
+                    }}
+                  >
+                    {icon}
+                  </ListItemIcon>
+                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+            ))}
         </List>
       </Drawer>
     </Box>

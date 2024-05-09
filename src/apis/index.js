@@ -29,7 +29,7 @@ export const fetchBoardDetailsAPI = async (boardId) => {
 }
 
 export const fetchListBoardAPI = async () => {
-  const response = await axios.get(`${api_root}/v1/boards/`)
+  const response = await axios.get(`${api_root}/v1/boards`)
   // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
   return response.data
 }
