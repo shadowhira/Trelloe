@@ -56,7 +56,7 @@ const deleteItem = async (columnId) => {
     await cardModel.deleteManyByColumnId(columnId)
 
     // Xóa columnId trong mảng columnOrderIds của cái Board chứa nó
-    await boardModel.pushColumnOrderIds(targetColumn)
+    await boardModel.pullColumnOrderIds(targetColumn)
 
     return { deleteResult: `Column ${targetColumn.title} deleted successfully!` }
   } catch (error) { throw error }

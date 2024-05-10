@@ -112,7 +112,6 @@ const deleteCardFromColumn = async (boardId, columnId, cardId) => {
       { $pull: { cardOrderIds: new ObjectId(cardId) } }, // Xóa cardId khỏi mảng cardOrderIds
       { returnDocument: 'after' }
     )
-
     return result // Số lượng cột được cập nhật
   } catch (error) {
     throw new Error(error)
