@@ -40,7 +40,8 @@ function BoardContent({
   moveCardInTheSameColumn,
   moveCardToDifferentColumn,
   deleteColumnDetails,
-  deleteCardDetails
+  deleteCardDetails,
+  updateColumnDetails
 }) {
   // const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
   const mouseSensor = useSensor(MouseSensor, { activationConstraint: { distance: 10 } })
@@ -423,6 +424,7 @@ function BoardContent({
           createNewCard={createNewCard}
           deleteColumnDetails={deleteColumnDetails}
           deleteCardDetails={deleteCardDetails}
+          updateColumnDetails={updateColumnDetails}
         />
         <DragOverlay dropAnimation={myDropAnimation}>
           {activeDragItemType && null}

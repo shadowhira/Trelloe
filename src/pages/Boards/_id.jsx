@@ -208,8 +208,44 @@ function Board() {
     deleteCardDetailsAPI(cardId).then(res => {
       toast.success(res?.deleteResult)
     })
-
   }
+
+  const updateColumnDetails = async (columnId, dataToUpdate) => {
+    try {
+      // Gọi API để cập nhật thông tin cột
+      const response = await updateColumnDetailsAPI(columnId, dataToUpdate)
+
+      // Kiểm tra xem API đã trả về dữ liệu mới cho cột hay không
+      if (response) {
+        // Sao chép dữ liệu cũ của bảng
+        const updatedBoard = { ...board }
+
+        // Tìm và cập nhật thông tin của cột trong bảng
+        updatedBoard.columns = updatedBoard.columns.map(column => {
+          if (column._id === columnId) {
+            return {
+              ...column,
+              ...dataToUpdate // Cập nhật thông tin mới
+            }
+          }
+          return column
+        })
+
+        // Cập nhật state của bảng với thông tin cột mới
+        setBoard(updatedBoard)
+
+        // Hiển thị thông báo cập nhật thành công
+        toast.success('Column details updated successfully')
+      } else {
+        // Hiển thị thông báo lỗi nếu không thành công
+        toast.error('Failed to update column details')
+      }
+    } catch (error) {
+      // Hiển thị thông báo lỗi nếu có lỗi trong quá trình gọi API
+      toast.error('Error updating column details: ' + error.message)
+    }
+  }
+
 
   if (!board) {
     return (
@@ -232,7 +268,6 @@ function Board() {
       <BoardBar board={board} />
       <BoardContent
         board={board}
-
         createNewColumn={createNewColumn}
         createNewCard={createNewCard}
         moveColumns={moveColumns}
@@ -240,6 +275,7 @@ function Board() {
         moveCardToDifferentColumn={moveCardToDifferentColumn}
         deleteColumnDetails={deleteColumnDetails}
         deleteCardDetails={deleteCardDetails}
+        updateColumnDetails={updateColumnDetails}
       />
     </Container>
   )

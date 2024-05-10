@@ -25,8 +25,11 @@ import { useConfirm } from 'material-ui-confirm'
 
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import axios from 'axios'
+import { updateColumnDetailsAPI } from '~/apis'
 
-function Column({ column, createNewCard, deleteColumnDetails, deleteCardDetails }) {
+function Column({ column, createNewCard, deleteColumnDetails, deleteCardDetails, updateColumnDetails }) {
+  const url = 'http://localhost:8017'
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: column._id,
     data: { ...column }
@@ -49,6 +52,9 @@ function Column({ column, createNewCard, deleteColumnDetails, deleteCardDetails 
   const open = Boolean(anchorEl)
   const handleClick = (event) => { setAnchorEl(event.currentTarget) }
   const handleClose = () => { setAnchorEl(null) }
+
+  const [newColumnTitle, setNewColumnTitle] = useState(column.title)
+  const [openTextField, setOpenTextField] = useState(false)
 
   // const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
   // Card đã được sắp xếp ở _id.jsx nên không cần sắp xếp ở đây nữa (video 71)
@@ -101,6 +107,35 @@ function Column({ column, createNewCard, deleteColumnDetails, deleteCardDetails 
     }).catch(() => {})
   }
 
+  const handleEditTitleColumn = async () => {
+    if (!newColumnTitle.trim()) {
+      return // Không cập nhật nếu tiêu đề trống
+    }
+
+    if (newColumnTitle.trim() === column.title.trim()) {
+      // Nếu không khác, không cần thực hiện cập nhật
+      setOpenTextField(false) // Đóng chế độ chỉnh sửa
+      return
+    }
+
+    try {
+      const newColumnData = {
+        title: newColumnTitle,
+        columnId: column._id
+      }
+      // await axios.put(`${url}/v1/columns/${column._id}`, { title: newColumnTitle }) // API cập nhật
+      await updateColumnDetails(column._id, newColumnData)
+      setOpenTextField(false)
+      setNewColumnTitle(newColumnTitle)
+    } catch (error) {
+      toast.error('Lỗi khi chỉnh sửa tên card:', error)
+    }
+  }
+
+  const openEditTitleColumn = () => {
+    setOpenTextField(true)
+  }
+
   return (
     // Phải bọc div ở đây vì lỗi flickering (video32)
     <div ref={setNodeRef} style={dndKitColumnStyle} {...attributes}>
@@ -113,7 +148,7 @@ function Column({ column, createNewCard, deleteColumnDetails, deleteCardDetails 
           ml: 2,
           borderRadius: '6px',
           height: 'fit-content',
-          maxHeight: (theme) => `calc(${theme.trello.boardContentHeight} - ${theme.spacing(3)})`,
+          maxHeight: (theme) => `calc(${theme.trello.boardContentHeight} - ${theme.spacing(3)})`
           // overflow: 'unset',
           // overflowY: 'auto',
           // overflowX: 'hidden'
@@ -126,15 +161,37 @@ function Column({ column, createNewCard, deleteColumnDetails, deleteCardDetails 
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between'
+
         }}
         >
-          <Typography variant="h6" sx={{
-            fontSize: '1rem',
-            fontWeight: 'bold',
-            cursor: 'pointer'
-          }}>
-            {column?.title}
-          </Typography>
+          {openTextField ? (
+            <TextField
+              value={newColumnTitle}
+              onChange={(e) => setNewColumnTitle(e.target.value)} // Cập nhật giá trị mới
+              onBlur={handleEditTitleColumn} // Lưu khi rời khỏi trường
+              autoFocus // Tự động lấy tiêu điểm
+              sx={{
+                '& input': {
+                  width: '200px', // Thiết lập chiều rộng của input
+                  height: '30px', // Thiết lập chiều cao của input
+                  padding: '5px' // Tăng padding để phù hợp với chiều cao của input
+                },
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderWidth: '1px' // Điều chỉnh độ dày của viền
+                  }
+                }
+              }}
+            />
+          ) : (
+            <Typography
+              variant="h6"
+              sx={{ fontSize: '1rem', fontWeight: 'bold', cursor: 'pointer' }}
+              onDoubleClick={openEditTitleColumn} // Thêm sự kiện double click vào tiêu đề
+            >
+              {newColumnTitle} {/* Sử dụng state mới để hiển thị tiêu đề cột */}
+            </Typography>
+          )}
           <Box>
             <Tooltip title="More options">
               <ExpandMoreIcon
@@ -169,7 +226,7 @@ function Column({ column, createNewCard, deleteColumnDetails, deleteCardDetails 
                 <ListItemIcon><AddCardIcon className="add-card-icon" fontSize="small" /></ListItemIcon>
                 <ListItemText>Add new card</ListItemText>
               </MenuItem>
-              <MenuItem>
+              {/* <MenuItem>
                 <ListItemIcon><ContentCut fontSize="small" /></ListItemIcon>
                 <ListItemText>Cut</ListItemText>
               </MenuItem>
@@ -180,12 +237,12 @@ function Column({ column, createNewCard, deleteColumnDetails, deleteCardDetails 
               <MenuItem>
                 <ListItemIcon><ContentPaste fontSize="small" /></ListItemIcon>
                 <ListItemText>Paste</ListItemText>
-              </MenuItem>
-              <Divider />
+              </MenuItem> */}
+              {/* <Divider />
               <MenuItem>
                 <ListItemIcon><Cloud fontSize="small" /></ListItemIcon>
                 <ListItemText>Archive this column</ListItemText>
-              </MenuItem>
+              </MenuItem> */}
               <MenuItem
                 onClick={handleDeleteColumn}
                 sx={{
@@ -202,6 +259,7 @@ function Column({ column, createNewCard, deleteColumnDetails, deleteCardDetails 
             </Menu>
           </Box>
         </Box>
+
         {/* List card */}
         <ListCard cards={orderedCards} deleteCardDetails={deleteCardDetails} />
         {/* Footer */}

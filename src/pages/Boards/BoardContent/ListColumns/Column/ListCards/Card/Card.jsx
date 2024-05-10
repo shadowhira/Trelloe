@@ -32,6 +32,8 @@ import {
   DialogTitle
 } from '@mui/material'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import TitleIcon from '@mui/icons-material/Title'
+import ImageIcon from '@mui/icons-material/Image'
 
 function Card({ card, deleteCardDetails }) {
   const [anchorEl, setAnchorEl] = useState(null)
@@ -232,15 +234,25 @@ function Card({ card, deleteCardDetails }) {
         MenuListProps={{
           'aria-labelledby': 'more-options'
         }}
+        sx={{
+          p: 3,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}
       >
-        <MenuItem onClick={startEditTitle}>Change Title</MenuItem>
+        <MenuItem onClick={startEditTitle}>
+          <TitleIcon />
+          Change Title
+        </MenuItem>
         <MenuItem onClick={startEditCover}>
+          <ImageIcon />
           <label htmlFor={`upload-cover-${card._id}`}>Change Cover</label>
           {isEditingCover && (
             <form onSubmit={handleSubmit}>
-              <label htmlFor="file-upload" className='custom-file-upload'>
+              {/* <label htmlFor="file-upload" className='custom-file-upload'>
                 <img src={postImage.myFile || avatar} alt="" />
-              </label>
+              </label> */}
               <input
                 type="file"
                 label="Image"
