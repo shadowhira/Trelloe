@@ -25,6 +25,7 @@ import { generatePlaceholderCard } from '~/utils/formatters'
 import { isEmpty } from 'lodash'
 import { Typography } from '@mui/material'
 import { useParams } from 'react-router-dom'
+import CategoryBar from '~/components/CategoryBar/CategoryBar'
 
 function Board() {
   const [board, setBoard] = useState(null)
@@ -265,18 +266,23 @@ function Board() {
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh', backgroundColor: 'primary.main' }}>
       <AppBar />
-      <BoardBar board={board} />
-      <BoardContent
-        board={board}
-        createNewColumn={createNewColumn}
-        createNewCard={createNewCard}
-        moveColumns={moveColumns}
-        moveCardInTheSameColumn={moveCardInTheSameColumn}
-        moveCardToDifferentColumn={moveCardToDifferentColumn}
-        deleteColumnDetails={deleteColumnDetails}
-        deleteCardDetails={deleteCardDetails}
-        updateColumnDetails={updateColumnDetails}
-      />
+      <Box sx={{ display: 'flex' }}>
+        <CategoryBar nameActive="Boards"/>
+        <Box sx={{ width: '100%' }}>
+          <BoardBar board={board} />
+          <BoardContent
+            board={board}
+            createNewColumn={createNewColumn}
+            createNewCard={createNewCard}
+            moveColumns={moveColumns}
+            moveCardInTheSameColumn={moveCardInTheSameColumn}
+            moveCardToDifferentColumn={moveCardToDifferentColumn}
+            deleteColumnDetails={deleteColumnDetails}
+            deleteCardDetails={deleteCardDetails}
+            updateColumnDetails={updateColumnDetails}
+          />
+        </Box>
+      </Box>
     </Container>
   )
 }

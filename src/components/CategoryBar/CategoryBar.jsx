@@ -24,25 +24,26 @@ import HomeIcon from '@mui/icons-material/Home'
 import ListAltIcon from '@mui/icons-material/ListAlt'
 import AddBoxIcon from '@mui/icons-material/AddBox'
 import CreateNewBoard from '../AppBar/Menus/CreateNewBoard'
+import { useParams } from 'react-router-dom'
 
 let drawerWidth = 360
 
 const openedMixin = (theme) => ({
   '@media (min-width: 807px)': { // Thêm media query để điều chỉnh số cột trên mỗi hàng cho các kích thước màn hình lớn hơn 768px
     drawerWidth: 120,
-    width: 200
+    width: 150
   },
   '@media (min-width: 997px)': { // Thêm media query để điều chỉnh số cột trên mỗi hàng cho các kích thước màn hình lớn hơn 768px
     drawerWidth: 180,
-    width: 240
+    width: 180
   },
   '@media (min-width: 1221px)': { // Thêm media query để điều chỉnh số cột trên mỗi hàng cho các kích thước màn hình lớn hơn 992px
     drawerWidth: 240,
-    width: 280
+    width: 210
   },
   '@media (min-width: 1600px)': { // Thêm media query để điều chỉnh số cột trên mỗi hàng cho các kích thước màn hình lớn hơn 1200px
     drawerWidth: 360,
-    width: 360
+    width: 240
   },
   transition: theme.transitions.create('width', {
     easing: theme.transitions.easing.sharp,
@@ -60,7 +61,7 @@ const closedMixin = (theme) => ({
   width: `calc(${theme.spacing(7)} + 1px)`,
   [theme.breakpoints.up('sm')]: {
     width: `calc(${theme.spacing(8)} + 1px)`
-  },
+  }
 })
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -111,7 +112,7 @@ function CategoryBar(nameActive) {
   const [openDialog, setOpenDialog] = React.useState('')
   const [newBoardInfo, setNewBoardInfo] = React.useState({
     title: ''
-  });
+  })
 
   const handleDrawerOpen = () => {
     setOpen(true)
@@ -130,26 +131,33 @@ function CategoryBar(nameActive) {
   }
 
   const handleOpenLink = (text) => {
-    if (text === 'Boards') {
-      window.location.href = '/boards'
-    } else if (text === 'Create a new board') {
-      handleOpenDiaglog()
-      console.log(text);
-    }
+    window.location.href = '/boards'
   }
 
-  
-  const handleSaveNewBoard = () => {
-    // Xử lý lưu thông tin bảng mới, ví dụ: gửi thông tin lên server
-    console.log('New board info:', newBoardInfo);
-    // Sau khi xử lý xong, đóng dialog
-    setOpenDialog(false);
-    
-  };
-  
+  // const handleOpenLink = (text) => {
+  //   if (text === 'Boards') {
+  //     window.location.href = '/boards'
+  //   } else if (text === 'Create a new board') {
+  //     handleOpenDiaglog()
+  //     console.log(text)
+  //   }
+  // }
+
+  // const isListBoard = true
+  let { boardId } = useParams()
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh', bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495E' : '#fff') }}>
+    <Box sx={{ display: 'flex',
+      height: (theme) => {
+        if (boardId) {
+          return theme.trello.boardContentHeight + theme.trello.boardBarHeight
+        } else {
+          return '100vh'
+        }
+      },
+      // width: '100%',
+      bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495E' : '#fff')
+    }}>
 
       <Drawer variant="permanent" open={open}
         sx={{
@@ -158,7 +166,7 @@ function CategoryBar(nameActive) {
             // width: open ? "100%" : 64,
             boxSizing: 'border-box',
             position: 'relative'
-          },
+          }
         }}
       >
         <DrawerHeader
@@ -173,13 +181,12 @@ function CategoryBar(nameActive) {
         <Divider />
         <List>
           {[
-            { text: 'Boards', icon: <SpaceDashboardIcon /> },
+            { text: 'Boards', icon: <SpaceDashboardIcon />, onClick: handleOpenLink },
             { text: 'Templates', icon: <ListAltIcon /> },
-            { text: 'Home', icon: <HomeIcon /> },
-            { text: 'Create a new board', icon: <AddBoxIcon /> }
-          ].map(({ text, icon }, index) =>
+            { text: 'Home', icon: <HomeIcon />, onClick: handleOpenLink }
+          ].map(({ text, icon, onClick }, index) =>
             (
-              <ListItem key={text} disablePadding onClick={handleOpenLink ? () => handleOpenLink(text) : null}
+              <ListItem key={text} disablePadding onClick={onClick}
                 sx={{
                   display: 'block',
                   color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#333'),
@@ -228,7 +235,7 @@ function CategoryBar(nameActive) {
               </ListItem>
             ))}
         </List>
-        {openDialog && (<CreateNewBoard />)}
+        {/* {openDialog && (<CreateNewBoard />)} */}
       </Drawer>
     </Box>
   )
