@@ -121,7 +121,7 @@ function Column({ column, createNewCard, deleteColumnDetails, deleteCardDetails,
     try {
       const newColumnData = {
         title: newColumnTitle,
-        columnId: column._id
+        // columnId: column._id
       }
       // await axios.put(`${url}/v1/columns/${column._id}`, { title: newColumnTitle }) // API cập nhật
       await updateColumnDetails(column._id, newColumnData)
@@ -188,6 +188,7 @@ function Column({ column, createNewCard, deleteColumnDetails, deleteCardDetails,
               variant="h6"
               sx={{ fontSize: '1rem', fontWeight: 'bold', cursor: 'pointer' }}
               onDoubleClick={openEditTitleColumn} // Thêm sự kiện double click vào tiêu đề
+              data-no-dnd="true"
             >
               {newColumnTitle} {/* Sử dụng state mới để hiển thị tiêu đề cột */}
             </Typography>
