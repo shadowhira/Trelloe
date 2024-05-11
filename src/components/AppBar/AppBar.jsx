@@ -25,6 +25,7 @@ import CreateNewBoard from './Menus/CreateNewBoard'
 
 function AppBar({ updateBoardUpdated }) {
   const [searchValue, setSearchValue] = useState('')
+
   return (
     <Box sx={{
       width: '100%',

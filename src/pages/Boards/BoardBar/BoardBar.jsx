@@ -11,10 +11,12 @@ import Tooltip from '@mui/material/Tooltip'
 import Button from '@mui/material/Button'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import { capitalizeFirstLetter } from '~/utils/formatters'
-import { Alert, Snackbar, TextField } from '@mui/material'
-import { useState } from 'react'
+import { Alert, IconButton, Snackbar, TextField } from '@mui/material'
+import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import StarIcon from '@mui/icons-material/Star'
+import StarOutlineIcon from '@mui/icons-material/StarOutline'
 
 const MENU_STYLES = {
   color: 'white',
@@ -36,14 +38,35 @@ function BoardBar({ board }) {
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [snackbarSeverity, setSnackbarSeverity] = useState('info')
-  const [inviteeId, setInviteeId] = useState(null); // ID của người được mời
-  const [userId, setUserId] = useState(null);
+  const [inviteeId, setInviteeId] = useState(null) // ID của người được mời
+  const [userId, setUserId] = useState(null)
+
+  const [isFavorite, setIsFavorite] = useState(board.favorite)
+
+  const menuRef = useRef(null)
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Kiểm tra xem click có bên ngoài vùng chứa hay không
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowInput(false) // Ẩn khi click ra bên ngoài
+      }
+    }
+
+    // Thêm trình nghe sự kiện để phát hiện click bên ngoài
+    document.addEventListener('click', handleClickOutside)
+
+    // Xóa trình nghe sự kiện khi component bị hủy
+    return () => {
+      document.removeEventListener('click', handleClickOutside)
+    }
+  }, []) // Chỉ chạy một lần khi component được tạo
 
   // Trong React, bạn có thể lấy token từ cookie hoặc local storage
   const token = document.cookie
     .split('; ')
     .find(row => row.startsWith('token='))
-    ?.split('=')[1];
+    ?.split('=')[1]
 
   const fetchUserId = async () => {
     try {
@@ -51,31 +74,31 @@ function BoardBar({ board }) {
         headers: {
           Authorization: `Bearer ${token}` // Gửi token trong header
         }
-      });
-      setUserId(response.data.userId); // Lấy userId từ phản hồi
+      })
+      setUserId(response.data.userId) // Lấy userId từ phản hồi
     } catch (error) {
-      console.log('Error fetching userId:', error.message);
+      console.log('Error fetching userId:', error.message)
     }
   }
 
 
   // Xử lý khi nút "Invite" được nhấp
   const handleInviteClick = async () => {
-    setShowInput(true); // Hiển thị thanh input khi nhấp "Invite"
+    setShowInput(true) // Hiển thị thanh input khi nhấp "Invite"
   }
 
   // Gọi API để lấy ID của người dùng theo email
   const fetchInviteeId = async () => {
     try {
       const response = await axios.get(`http://localhost:8017/v1/users/email?email=${email}`)
-      setInviteeId(response.data._id); // Lấy ID từ phản hồi
+      setInviteeId(response.data._id) // Lấy ID từ phản hồi
     } catch (error) {
-      toast.error('Error fetching invitee ID:', error.message);
-      setSnackbarMessage('Failed to find user by email.');
-      setSnackbarSeverity('error');
-      setSnackbarOpen(true); // Mở Snackbar để thông báo lỗi
+      toast.error('Error fetching invitee ID:', error.message)
+      setSnackbarMessage('Failed to find user by email.')
+      setSnackbarSeverity('error')
+      setSnackbarOpen(true) // Mở Snackbar để thông báo lỗi
     }
-  };
+  }
 
   const handleSendInvite = async () => {
     // Lấy inviteeId trước khi gửi lời mời
@@ -115,6 +138,28 @@ function BoardBar({ board }) {
       setShowInput(false) // Ẩn thanh input sau khi gửi
     }
   }
+
+  const handleToggleFavorite = async () => {
+    try {
+      // Gọi API để cập nhật trạng thái "yêu thích" của board
+      // Ví dụ: Sử dụng axios để gửi request POST tới backend
+      // console.log('🐛: ➡️ handleToggleFavorite ➡️ board._id:', board._id)
+      const response = await axios.put(`http://localhost:8017/v1/boards/boardId/${board._id}`, {
+        ...board,
+        favorite: !isFavorite
+      })
+
+      // Nếu API trả về thành công, cập nhật trạng thái "yêu thích" của board trên frontend
+      if (response.status === 200) {
+        setIsFavorite(!isFavorite)
+        // console.log('điiid')
+      }
+      // console.log('🐛: ➡️ handleToggleFavorite ➡️ isFavorite:', isFavorite)
+    } catch (error) {
+      console.error('Error toggling favorite:', error)
+    }
+  }
+
   return (
     <Box sx={{
       width: '100%',
@@ -151,19 +196,26 @@ function BoardBar({ board }) {
         />
         <Chip
           sx={MENU_STYLES}
-          icon={<BoltIcon />}
-          label="Automation"
-          clickable
-        />
-        <Chip
-          sx={MENU_STYLES}
           icon={<FilterList />}
           label="Filter"
           clickable
         />
+        <Chip
+          sx={MENU_STYLES}
+          onClick={handleToggleFavorite}
+          icon={(
+
+            <IconButton>
+              {isFavorite ? <StarIcon /> : <StarOutlineIcon />}
+            </IconButton>
+          )
+          }
+          label="Favorite"
+          clickable
+        />
       </Box>
 
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      <Box ref = {menuRef} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         {/* Các thành phần khác của BoardBar */}
         <Button
           variant="outlined"
@@ -182,24 +234,15 @@ function BoardBar({ board }) {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <TextField
               label="Enter Email"
+              size="small"
               value={email}
               onChange={(e) => setEmail(e.target.value)} // Cập nhật email khi nhập
             />
             <Button variant="contained" onClick={handleSendInvite}>
-              Send
+                Send
             </Button>
           </Box>
         )}
-        {/* Snackbar để thông báo kết quả */}
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={3000} // Thời gian hiển thị
-          onClose={() => setSnackbarOpen(false)} // Đóng sau thời gian nhất định
-        >
-          <Alert severity={snackbarSeverity} onClose={() => setSnackbarOpen(false)}>
-            {snackbarMessage}
-          </Alert>
-        </Snackbar>
         <AvatarGroup
           sx={{
             gap: '10px',

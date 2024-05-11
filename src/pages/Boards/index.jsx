@@ -103,7 +103,7 @@ function BoardList() {
 
   return (
     <div>
-      <AppBar updateBoardUpdated={updateBoardUpdated} ></AppBar>
+      <AppBar updateBoardUpdated={updateBoardUpdated}></AppBar>
       <Stack direction="row" justifyContent="space-between"
       >
         <CategoryBar
@@ -152,6 +152,7 @@ function BoardList() {
                 color={(theme) => (theme.palette.info.main)}
                 boardId={board._id}
                 updateBoardUpdated={updateBoardUpdated} 
+                board={board}
               />
             ))}
             

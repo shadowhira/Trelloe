@@ -3,7 +3,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
-import { Box, Typography } from '@mui/material'
+import { Box, IconButton, Typography } from '@mui/material'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
@@ -18,19 +18,23 @@ import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import TextField from '@mui/material/TextField'
 import Tooltip from '@mui/material/Tooltip'
+import StarIcon from '@mui/icons-material/Star'
+import StarOutlineIcon from '@mui/icons-material/StarOutline'
 import { useConfirm } from 'material-ui-confirm'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { updateBoardDetailsAPI, deleteBoardAPI } from '~/apis'
+import axios from 'axios'
 
-function BoardCardVisual({ title, description, color, boardId, type, updateBoardUpdated }) {
+function BoardCardVisual({ title, description, color, boardId, type, updateBoardUpdated, board }) {
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => { setAnchorEl(event.currentTarget) }
   const handleClose = () => { setAnchorEl(null) }
   const [boardUpdated, setBoardUpdated] = useState(false)
 
+  const [isFavorite, setIsFavorite] = useState(board.favorite)
 
   const [openForm, setOpenForm] = useState(false)
 
@@ -67,6 +71,26 @@ function BoardCardVisual({ title, description, color, boardId, type, updateBoard
     }).catch(() => {})
   }
 
+  const handleToggleFavorite = async () => {
+    try {
+      // Gọi API để cập nhật trạng thái "yêu thích" của board
+      // Ví dụ: Sử dụng axios để gửi request POST tới backend
+      console.log('🐛: ➡️ handleToggleFavorite ➡️ board._id:', board._id)
+      const response = await axios.put(`http://localhost:8017/v1/boards/boardId/${board._id}`, {
+        ...board,
+        favorite: !isFavorite
+      })
+
+      // Nếu API trả về thành công, cập nhật trạng thái "yêu thích" của board trên frontend
+      if (response.status === 200) {
+        setIsFavorite(!isFavorite)
+        // console.log('điiid')
+      }
+      // console.log('🐛: ➡️ handleToggleFavorite ➡️ isFavorite:', isFavorite)
+    } catch (error) {
+      console.error('Error toggling favorite:', error)
+    }
+  }
 
   return ( <Box
     sx={{
@@ -94,6 +118,11 @@ function BoardCardVisual({ title, description, color, boardId, type, updateBoard
     >
       {title}
     </Typography>
+
+    <IconButton onClick={handleToggleFavorite}>
+      {isFavorite ? <StarIcon /> : <StarOutlineIcon />}
+    </IconButton>
+
     <Box>
       <Tooltip title="More options">
         <ExpandMoreIcon
@@ -268,6 +297,6 @@ function BoardCardVisual({ title, description, color, boardId, type, updateBoard
       </DialogActions>
     </Dialog>
   </Box>
-)}
+  )}
 
 export default BoardCardVisual

@@ -1,6 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close'
 import SearchIcon from '@mui/icons-material/Search'
 import StarIcon from '@mui/icons-material/Star'
+import StarOutlineIcon from '@mui/icons-material/StarOutline'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import List from '@mui/material/List'
@@ -50,7 +51,7 @@ function SearchBar() {
     // }
 
     fetchUserId()
-    console.log(userId)
+    // console.log(userId)
     // fetchListBoardAPI()
     if (userId) { // Kiểm tra xem userId đã có giá trị hay chưa
       // getListBoardByUserId(userId)
@@ -58,7 +59,7 @@ function SearchBar() {
         .then(res => res.json())
         .then(listBoard => {
           setBoardList(listBoard)
-          console.log('🐛: ➡️ useEffect ➡️ listBoard:', listBoard)
+          // console.log('🐛: ➡️ useEffect ➡️ listBoard:', listBoard)
         })
         .catch(error => {
           console.error('Error fetching boards:', error)
@@ -143,9 +144,9 @@ function SearchBar() {
                 }}
               >
                 <ListItemButton>
-                  <ListItemIcon>
-                    <StarIcon sx={{ color: '#ff9800' }} />
-                  </ListItemIcon>
+                  <IconButton >
+                    {board.favorite ? <StarIcon /> : <StarOutlineIcon color="primary" />}
+                  </IconButton>
                   <ListItemText
                     primary={board.title}
                     sx={{

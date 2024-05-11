@@ -10,9 +10,9 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Tooltip from '@mui/material/Tooltip'
 import * as React from 'react'
-
-// Clerk
-import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import { checkLogoutAPI } from '~/apis'
 
 function Profiles() {
   const [anchorEl, setAnchorEl] = React.useState(null)
@@ -22,6 +22,21 @@ function Profiles() {
   }
   const handleClose = () => {
     setAnchorEl(null)
+  }
+
+  const navigate = useNavigate()
+  const handleLogout = async () => {
+    checkLogoutAPI()
+      .then(res => {
+        if (res.status === 'Success') {
+          navigate('/login')
+        } else {
+          toast.error('Logout Failed!')
+        }
+      })
+      .catch ( () => {
+        toast.error('Logout failed. Please try again later.') // Thông báo lỗi
+      })
   }
 
   return (
@@ -35,7 +50,7 @@ function Profiles() {
           aria-haspopup="true"
           aria-expanded={open ? 'true' : undefined}
         >
-          <Avatar 
+          <Avatar
             sx={{ width: 36, height: 36 }}
             src=""
           />
@@ -69,25 +84,12 @@ function Profiles() {
           </ListItemIcon>
           Settings
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={handleLogout}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
           Logout
         </MenuItem>
-{/* 
-        Clerk
-        <MenuItem>
-          <SignedOut>
-            <SignInButton />
-          </SignedOut>
-        </MenuItem>
-
-        <MenuItem>
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
-        </MenuItem> */}
       </Menu>
 
     </Box>
