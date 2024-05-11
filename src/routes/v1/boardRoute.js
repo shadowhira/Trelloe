@@ -12,6 +12,7 @@ Router.route('/')
 Router.route('/:id')
   .get(boardController.getDetails)
   .put(boardValidation.update, boardController.update)
+  .delete(boardController.deleteBoard)
 
 Router.route('/supports/moving_card')
   .put(boardValidation.moveCardToDifferentColumn, boardController.moveCardToDifferentColumn)

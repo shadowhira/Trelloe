@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import { slugify } from '~/utils/formatters'
 import { boardModel } from '~/models/boardModel'
 import { columnModel } from '~/models/columnModel'
@@ -114,10 +115,46 @@ const getListBoard = async () => {
   }
 }
 
+const deleteCardsByBoardId = async (boardId) => {
+  try {
+    // Gọi phương thức xóa card từ cardModel
+    await cardModel.deleteMany({ boardId: boardId })
+  } catch (error) {
+    throw error
+  }
+}
+
+const deleteColumnsByBoardId = async (boardId) => {
+  try {
+    // Gọi phương thức xóa column từ columnModel
+    await columnModel.deleteMany({ boardId: boardId })
+  } catch (error) {
+    throw error
+  }
+}
+
+const deleteBoard = async (boardId) => {
+  try {
+    // Kiểm tra xem board có tồn tại không trước khi xóa
+    const existingBoard = await boardModel.findOneById(boardId)
+    if (!existingBoard) {
+      throw new ApiError(StatusCodes.NOT_FOUND, 'Board not found.')
+    }
+
+    // Thực hiện xóa board
+    await boardModel.deleteBoard(boardId)
+  } catch (error) {
+    throw error
+  }
+}
+
 export const boardService = {
   createNew,
   getDetails,
   update,
   moveCardToDifferentColumn,
-  getListBoard
+  getListBoard,
+  deleteCardsByBoardId,
+  deleteColumnsByBoardId,
+  deleteBoard
 }

@@ -95,6 +95,18 @@ const deleteOneById = async (cardId) => {
   }
 }
 
+const deleteMany = async (boardId) => {
+  try {
+    // Gọi hàm xóa nhiều bản ghi từ MongoDB
+    const result = await GET_DB().collection(CARD_COLLECTION_NAME).deleteMany({
+      boardId: new ObjectId(boardId)
+    })
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 export const cardModel = {
   CARD_COLLECTION_NAME,
   CARD_COLLECTION_SCHEMA,
@@ -102,5 +114,6 @@ export const cardModel = {
   findOneById,
   update,
   deleteManyByColumnId,
-  deleteOneById
+  deleteOneById,
+  deleteMany
 }

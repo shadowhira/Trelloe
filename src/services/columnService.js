@@ -62,8 +62,18 @@ const deleteItem = async (columnId) => {
   } catch (error) { throw error }
 }
 
+const deleteColumnsByBoardId = async (boardId) => {
+  try {
+    // Gọi phương thức xóa column từ columnModel
+    await columnModel.deleteMany(boardId)
+  } catch (error) {
+    throw error
+  }
+}
+
 export const columnService = {
   createNew,
   update,
-  deleteItem
+  deleteItem,
+  deleteColumnsByBoardId
 }

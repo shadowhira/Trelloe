@@ -1,5 +1,7 @@
 import { StatusCodes } from 'http-status-codes'
 import { boardService } from '~/services/boardService'
+import { cardService } from '~/services/cardService'
+import { columnService } from '~/services/columnService'
 
 const createNew = async (req, res, next) => {
   try {
@@ -62,10 +64,31 @@ const getListBoard = async (req, res, next) => {
   }
 }
 
+const deleteBoard = async (req, res, next) => {
+  try {
+    const boardId = req.params.id
+
+    // Xóa các card trong board
+    await cardService.deleteCardsByBoardId(boardId)
+
+    // Xóa các column của board
+    await columnService.deleteColumnsByBoardId(boardId)
+
+    // Xóa board chính
+    await boardService.deleteBoard(boardId)
+
+    // Trả về thông báo thành công khi xóa
+    res.status(StatusCodes.OK).json({ message: 'Board deleted successfully.' })
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const boardController = {
   createNew,
   getDetails,
   update,
   moveCardToDifferentColumn,
-  getListBoard
+  getListBoard,
+  deleteBoard
 }

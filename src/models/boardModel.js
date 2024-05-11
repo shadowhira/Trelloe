@@ -152,6 +152,17 @@ const getListBoard = async () => {
   }
 }
 
+const deleteBoard = async (boardId) => {
+  try {
+    const result = await GET_DB().collection(BOARD_COLLECTION_NAME).deleteOne({
+      _id: new ObjectId(boardId)
+    })
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 export const boardModel = {
   BOARD_COLLECTION_NAME,
   BOARD_COLLECTION_SCHEMA,
@@ -161,5 +172,6 @@ export const boardModel = {
   pushColumnOrderIds,
   update,
   pullColumnOrderIds,
-  getListBoard
+  getListBoard,
+  deleteBoard
 }

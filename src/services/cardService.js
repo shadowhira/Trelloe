@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import { cardModel } from '~/models/cardModel'
 import { columnModel } from '~/models/columnModel'
 import ApiError from '~/utils/ApiError'
@@ -53,9 +54,19 @@ const deleteItem = async (cardId) => {
   }
 }
 
+const deleteCardsByBoardId = async (boardId) => {
+  try {
+    // Gọi phương thức xóa card từ cardModel
+    await cardModel.deleteMany(boardId)
+  } catch (error) {
+    throw error
+  }
+}
+
 
 export const cardService = {
   createNew,
   update,
-  deleteItem
+  deleteItem,
+  deleteCardsByBoardId
 }
