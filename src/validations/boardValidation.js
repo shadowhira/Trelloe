@@ -20,7 +20,7 @@ const createNew = async (req, res, next) => {
       'string.max': 'Title max: 30 chars',
       'string.trim': 'Title must not have leading or trailing whitespace'
     }),
-    description: Joi.string().required().min(3).max(256).trim().strict(),
+    description: Joi.string().required().min(0).max(256).trim().strict(),
     type: Joi.string().valid(BOARD_TYPES.PUBLIC, BOARD_TYPES.PRIVATE).required()
   })
 
@@ -45,7 +45,7 @@ const update = async (req, res, next) => {
   // Lưu ý không dùng require() trong trường hợp update
   const correctCondition = Joi.object({
     title: Joi.string().min(3).max(50).trim().strict(),
-    description: Joi.string().min(3).max(256).trim().strict(),
+    description: Joi.string().min(0).max(256).trim().strict(),
     type: Joi.string().valid(BOARD_TYPES.PUBLIC, BOARD_TYPES.PRIVATE),
     columnOrderIds: Joi.array().items(
       Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)

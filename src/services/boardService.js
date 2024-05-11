@@ -142,9 +142,13 @@ const deleteColumnsByBoardId = async (boardId) => {
 const getListBoardByUserId = async (userId) => {
   try {
     const boardList = await boardModel.getListBoardByUserId(userId)
+    if (!boardList) {
+      throw new ApiError(StatusCodes.NOT_FOUND, 'No board found!')
+    }
+    // console.log('🐛: ➡️ getListBoardByUserId ➡️ boardList:', boardList)
     return boardList
   } catch (error) {
-    throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, `Error fetching boards by user ID: ${error.message}`);
+    throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, `Error fetching boards by user ID: ${error.message}`)
   }
 }
 

@@ -15,7 +15,7 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
   userId: Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE),
   title: Joi.string().required().min(3).max(50).trim().strict(),
   slug: Joi.string().required().min(3).trim().strict(),
-  description: Joi.string().required().min(3).max(256).trim().strict(),
+  description: Joi.string().required().min(0).max(256).trim().strict(),
 
   type: Joi.string().valid(BOARD_TYPES.PUBLIC, BOARD_TYPES.PRIVATE).required(),
 
@@ -28,6 +28,8 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
 
   createAt: Joi.date().timestamp('javascript').default(Date.now),
   updateAt: Joi.date().timestamp('javascript').default(null),
+
+  favorite: Joi.boolean().default(false),
 
   _destroy: Joi.boolean().default(false)
 })
@@ -184,7 +186,7 @@ const getListBoardByUserId = async (userId) => {
     // Lấy danh sách các bảng dựa trên boardOrderIds của người dùng
     const boardList = await GET_DB().collection(BOARD_COLLECTION_NAME).find({
       _id: { $in: user.boardOrderIds.map(id => new ObjectId(id)) },
-      _destroy: false,  // Nếu bảng bị xóa mềm, hãy lọc ra
+      _destroy: false// Nếu bảng bị xóa mềm, hãy lọc ra
     }).toArray()
 
     return boardList // Trả về danh sách các bảng

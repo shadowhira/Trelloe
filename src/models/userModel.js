@@ -21,7 +21,7 @@ const USER_COLLECTION_SCHEMA = Joi.object({
   // role: Joi.string().optional().allow('', ...['client', 'admin', '...']), // Allow empty string or specific roles
   //   isActive: Joi.boolean().optional(), // Allow optional boolean for isActive
   // verifyToken: Joi.string().optional().allow(Joi.string().empty()), // Allow empty string for verifyToken
-  boards: Joi.array().items(
+  boardOrderIds: Joi.array().items(
     Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)
   ).default([]),
 

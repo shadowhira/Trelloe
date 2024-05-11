@@ -13,11 +13,11 @@ const INVITATION_COLLECTION_SCHEMA = Joi.object({
   type: Joi.string().required(), // Loại lời mời
   boardInvitation: Joi.object({
     boardId: Joi.string().pattern(OBJECT_ID_RULE).optional(),
-    status: Joi.string().default('pending'), // Trạng thái lời mời
+    status: Joi.string().default('pending') // Trạng thái lời mời
   }),
   createdAt: Joi.date().timestamp('javascript').default(Date.now),
   updatedAt: Joi.date().timestamp('javascript').default(null),
-  destroy: Joi.boolean().default(false),
+  destroy: Joi.boolean().default(false)
 })
 
 // Chỉ định các fields không được cập nhật
@@ -52,7 +52,7 @@ const createNew = async (data) => {
 const findOneById = async (invitationId) => {
   try {
     const invitation = await GET_DB().collection(INVITATION_COLLECTION_NAME).findOne({
-      _id: new ObjectId(invitationId),
+      _id: new ObjectId(invitationId)
     })
     if (!invitation) {
       throw new Error('Invitation not found')
@@ -75,7 +75,7 @@ const update = async (invitationId, updateData) => {
     const updatedInvitation = await GET_DB().collection(INVITATION_COLLECTION_NAME).findOneAndUpdate(
       { _id: new ObjectId(invitationId) },
       { $set: updateData },
-      { returnDocument: 'after' },
+      { returnDocument: 'after' }
     )
 
     if (!updatedInvitation) {
@@ -92,7 +92,7 @@ const update = async (invitationId, updateData) => {
 const deleteItem = async (invitationId) => {
   try {
     const deletedInvitation = await GET_DB().collection(INVITATION_COLLECTION_NAME).findOneAndDelete({
-      _id: new ObjectId(invitationId),
+      _id: new ObjectId(invitationId)
     })
 
     if (!deletedInvitation) {

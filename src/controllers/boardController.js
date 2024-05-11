@@ -79,7 +79,7 @@ const getListBoardByUserId = async (req, res, next) => {
 
     const boardList = await boardService.getListBoardByUserId(userId)
 
-    res.status(StatusCodes.OK).json(boardList)  // Trả về danh sách các bảng
+    res.status(StatusCodes.OK).json(boardList) // Trả về danh sách các bảng
   } catch (error) {
     next(error) // Xử lý lỗi bằng middleware
   }
