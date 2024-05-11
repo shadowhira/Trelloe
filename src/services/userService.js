@@ -2,21 +2,41 @@
 import { userModel } from '~/models/userModel'
 import ApiError from '~/utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
+import bcrypt from 'bcrypt'
 
 // Phần này sẽ đụng nhiều vào bất đồng bộ nên ta thêm async
 const createNew = async (reqBody) => {
-  // eslint-disable-next-line no-useless-catch
   try {
-    const newUser = {
-      ...reqBody
+    // Check if the user already exists by email
+    const existingUser = (await userModel.findByEmail(reqBody.email)) || null
+
+    if (existingUser) {
+      throw new ApiError(StatusCodes.CONFLICT, 'Email already exists')
     }
 
+    // Hash the password before storing it in the database
+    const hashedPassword = await bcrypt.hash(reqBody.password.toString(), 10)
+
+    // Prepare the new user data
+    const newUser = {
+      ...reqBody,
+      password: hashedPassword
+    }
+
+    // Create the new user
     const createdUser = await userModel.createNew(newUser)
+
+    // Fetch the newly created user to verify successful creation
     const getNewUser = await userModel.findOneById(createdUser.insertedId)
 
-    return getNewUser
+    if (!getNewUser) {
+      throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, 'User creation failed!')
+    }
+
+    return getNewUser // Return the created user
   } catch (error) {
-    throw error
+    // Return the error with an appropriate status code
+    throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, `Error creating user: ${error.message}`)
   }
 }
 
@@ -69,10 +89,23 @@ const getAllUsers = async () => {
   }
 }
 
+const findByEmail = async (email) => {
+  try {
+    const user = await userModel.findByEmail(email) // Gọi hàm từ userModel
+    if (!user) {
+      throw new ApiError(404, `No user found with email: ${email}`) // Nếu không tìm thấy người dùng
+    }
+    return user // Trả về người dùng nếu tìm thấy
+  } catch (error) {
+    throw new ApiError(500, `Error finding user by email: ${error.message}`) // Xử lý lỗi
+  }
+}
+
 export const userService = {
   createNew,
   update,
   deleteItem,
   getDetails,
-  getAllUsers
+  getAllUsers,
+  findByEmail
 }

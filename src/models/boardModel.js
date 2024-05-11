@@ -5,6 +5,9 @@ import { GET_DB } from '~/config/mongodb'
 import { BOARD_TYPES } from '~/utils/constants'
 import { columnModel } from './columnModel'
 import { cardModel } from './cardModel'
+import ApiError from '~/utils/ApiError'
+import { StatusCodes } from 'http-status-codes'
+import { userModel } from './userModel'
 
 // Define Collection (Name & Schema)
 const BOARD_COLLECTION_NAME = 'boards'
@@ -19,6 +22,9 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
   columnOrderIds: Joi.array().items(
     Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)
   ).default([]),
+  memberIds: Joi.array().items(
+    Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)
+  ).default([]),
 
   createAt: Joi.date().timestamp('javascript').default(Date.now),
   updateAt: Joi.date().timestamp('javascript').default(null),
@@ -27,7 +33,7 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
 })
 
 // Chỉ định ra những Fields mà chúng ta không muốn cho phép cập nhật trong hàm update()
-const INVALID_UPDATE_FIELDS = ['_id', 'createAt']
+const INVALID_UPDATE_FIELDS = ['_id', 'userId', 'createAt']
 
 const validateBeforeCreate = async (data) => {
   return await BOARD_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: false })
@@ -36,8 +42,12 @@ const validateBeforeCreate = async (data) => {
 const createNew = async (data) => {
   try {
     const validateData = await validateBeforeCreate(data)
+    const newBoardToAdd = {
+      ...validateData,
+      userId: new ObjectId(validateData.userId)
+    }
 
-    const createdBoard = await GET_DB().collection(BOARD_COLLECTION_NAME).insertOne(validateData)
+    const createdBoard = await GET_DB().collection(BOARD_COLLECTION_NAME).insertOne(newBoardToAdd)
     return createdBoard
   } catch (error) {
     // Nếu chỉ throw error thì không có stack (vị trí lỗi)
@@ -152,11 +162,45 @@ const getListBoard = async () => {
   }
 }
 
-const deleteBoard = async (boardId) => {
+const deleteOneById = async (boardId) => {
   try {
     const result = await GET_DB().collection(BOARD_COLLECTION_NAME).deleteOne({
       _id: new ObjectId(boardId)
     })
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+const getListBoardByUserId = async (userId) => {
+  try {
+    const user = await GET_DB().collection(userModel.USER_COLLECTION_NAME).findOne({ _id: new ObjectId(userId) })
+
+    if (!user) {
+      throw new ApiError(StatusCodes.NOT_FOUND, 'User not found')
+    }
+
+    // Lấy danh sách các bảng dựa trên boardOrderIds của người dùng
+    const boardList = await GET_DB().collection(BOARD_COLLECTION_NAME).find({
+      _id: { $in: user.boardOrderIds.map(id => new ObjectId(id)) },
+      _destroy: false,  // Nếu bảng bị xóa mềm, hãy lọc ra
+    }).toArray()
+
+    return boardList // Trả về danh sách các bảng
+  } catch (error) {
+    throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, `Error fetching boards: ${error.message}`)
+  }
+}
+
+const pushMemberIds = async (userId, boardId) => {
+  try {
+    const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(boardId) },
+      { $push: { memberIds: new ObjectId(userId) } },
+      { returnDocument: 'after' }
+    )
+
     return result
   } catch (error) {
     throw new Error(error)
@@ -173,5 +217,7 @@ export const boardModel = {
   update,
   pullColumnOrderIds,
   getListBoard,
-  deleteBoard
+  deleteOneById,
+  getListBoardByUserId,
+  pushMemberIds
 }

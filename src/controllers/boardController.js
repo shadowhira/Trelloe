@@ -67,20 +67,21 @@ const getListBoard = async (req, res, next) => {
 const deleteBoard = async (req, res, next) => {
   try {
     const boardId = req.params.id
+    const result = await boardService.deleteBoard(boardId)
 
-    // Xóa các card trong board
-    await cardService.deleteCardsByBoardId(boardId)
+    res.status(StatusCodes.OK).json(result)
+  } catch (error) { next(error) }
+}
 
-    // Xóa các column của board
-    await columnService.deleteColumnsByBoardId(boardId)
+const getListBoardByUserId = async (req, res, next) => {
+  try {
+    const userId = req.params.userId // Lấy userId từ tham số URL
 
-    // Xóa board chính
-    await boardService.deleteBoard(boardId)
+    const boardList = await boardService.getListBoardByUserId(userId)
 
-    // Trả về thông báo thành công khi xóa
-    res.status(StatusCodes.OK).json({ message: 'Board deleted successfully.' })
+    res.status(StatusCodes.OK).json(boardList)  // Trả về danh sách các bảng
   } catch (error) {
-    next(error)
+    next(error) // Xử lý lỗi bằng middleware
   }
 }
 
@@ -90,5 +91,6 @@ export const boardController = {
   update,
   moveCardToDifferentColumn,
   getListBoard,
-  deleteBoard
+  deleteBoard,
+  getListBoardByUserId
 }

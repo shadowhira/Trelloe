@@ -10,8 +10,13 @@ Router.route('/')
   .post(userValidation.createNew, userController.createNew)
 
 Router.route('/:id')
-  .get(userController.getDetails)
   .put(userValidation.update, userController.update)
   .delete(userValidation.deleteItem, userController.deleteItem)
+
+Router.route('/userId/:id')
+  .get(userController.getDetails)
+
+Router.route('/email')
+  .get(userController.findByEmail)
 
 export const userRoute = Router

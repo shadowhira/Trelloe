@@ -1,8 +1,8 @@
 import { userModel } from '~/models/userModel'
-import { comparePassword } from '~/utils/password'
-import { generateAccessToken } from '~/utils/token'
+import jwt from 'jsonwebtoken'
+import bcrypt from 'bcrypt'
 
-const login = async (email, password) => {
+const login = async (email, password, res) => {
   // eslint-disable-next-line no-useless-catch
   try {
     // Find user by email
@@ -16,14 +16,18 @@ const login = async (email, password) => {
 
     // Compare password
     // const isPasswordValid = await comparePassword(password, user.password)
-    const isPasswordValid = await password === user.password
+    const isPasswordValid = await bcrypt.compare(password.toString(), user.password)
     if (!isPasswordValid) {
       throw new Error('Invalid email or password')
     }
 
     // Generate and return access token
-    const accessToken = generateAccessToken(user._id)
-    console.log(`Create success token: ${accessToken} \nFor email: ${email}`)
+    const accessToken = jwt.sign({ email: user.email, userId: user._id.toString() }, process.env.JWT_SECRET, {
+      expiresIn: '1d' // Thời hạn token
+    })
+
+    res.cookie('token', accessToken, {
+    })
 
     return accessToken
   } catch (error) {

@@ -2,7 +2,6 @@ import { StatusCodes } from 'http-status-codes'
 import { authService } from '~/services/authService'
 import { userService } from '~/services/userService'
 import jwt from 'jsonwebtoken'
-import bcrypt from 'bcrypt'
 
 const signup = async (req, res, next) => {
   try {
@@ -20,7 +19,7 @@ const signup = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body
-    const accessToken = await authService.login(email, password)
+    const accessToken = await authService.login(email, password, res)
     const status = 'Success'
 
     // Trả về người dùng Token
@@ -33,9 +32,13 @@ const login = async (req, res, next) => {
 const logout = async (req, res, next) => {
   try {
     // Thực hiện các logic đăng xuất ở đây, chẳng hạn như hủy token của người dùng từ hệ thống.
-
+    res.clearCookie('token', {
+      httpOnly: true,
+      sameSite: 'strict',
+      secure: process.env.NODE_ENV === 'production' // Sử dụng secure trong môi trường production
+    })
     // Sau khi đăng xuất thành công, trả về thông báo hoặc mã trạng thái tùy chỉnh.
-    res.status(StatusCodes.OK).json({ message: 'Logout successfully.' })
+    res.status(StatusCodes.OK).json({ status: 'Success', message: 'Logout successfully.' })
   } catch (error) {
     next(error)
   }
@@ -43,6 +46,10 @@ const logout = async (req, res, next) => {
 
 const checkAuth = async (req, res, next) => {
   try {
+    if (!req.cookies) {
+      // Nếu `req.cookies` là undefined
+      return res.status(400).json({ error: 'Cookies are missing' })
+    }
     const token = req.cookies.token
     if (!token) {
       // Nếu không có token, trả về mã trạng thái 401
@@ -53,7 +60,6 @@ const checkAuth = async (req, res, next) => {
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
         // Nếu token không hợp lệ hoặc có lỗi khi xác thực
-        console.error('Error verifying JWT token:', err)
         return res.status(401).json({ error: 'Token không hợp lệ' })
       }
 

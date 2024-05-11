@@ -7,9 +7,11 @@ import { CONNECT_DB, GET_DB, CLOSE_DB } from '~/config/mongodb'
 import { env } from '~/config/environment'
 import { APIs_V1 } from '~/routes/v1'
 import { errorHandlingMiddleware } from './middlewares/errorHandlingMiddleware'
+import cookieParser from 'cookie-parser'
 
 const START_SERVER = () => {
   const app = express()
+  app.use(cookieParser())
   // Xử lý CORS
   app.use(cors(corsOptions))
   // Enable req.body json data

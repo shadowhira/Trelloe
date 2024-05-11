@@ -153,6 +153,33 @@ const getAllUsers = async () => {
   }
 }
 
+const pullBoardOrderIds = async (boardId, userId) => {
+  try {
+    const result = await GET_DB().collection(USER_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(userId) },
+      { $pull: { boardOrderIds: new ObjectId(boardId) } },
+      { returnDocument: 'after' }
+    )
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+const pushBoardOrderIds = async (board) => {
+  try {
+    const result = await GET_DB().collection(USER_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(board.userId) },
+      { $push: { boardOrderIds: new ObjectId(board._id) } },
+      { returnDocument: 'after' }
+    )
+
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 export const userModel = {
   USER_COLLECTION_NAME,
   USER_COLLECTION_SCHEMA,
@@ -162,5 +189,7 @@ export const userModel = {
   update,
   deleteOneById,
   findByEmail,
-  getAllUsers
+  getAllUsers,
+  pullBoardOrderIds,
+  pushBoardOrderIds
 }

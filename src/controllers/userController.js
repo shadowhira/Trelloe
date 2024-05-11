@@ -1,5 +1,6 @@
 import { StatusCodes } from 'http-status-codes'
 import { userService } from '~/services/userService'
+import ApiError from '~/utils/ApiError'
 
 const createNew = async (req, res, next) => {
   try {
@@ -51,10 +52,26 @@ const getAllUsers = async (req, res, next) => {
   }
 }
 
+const findByEmail = async (req, res, next) => {
+  try {
+    const { email } = req.query // Lấy email từ query parameters
+    const user = await userService.findByEmail(email) // Gọi hàm trong userService
+
+    if (!user) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: 'User not found' })
+    }
+
+    res.status(StatusCodes.OK).json(user) // Trả về người dùng nếu tìm thấy
+  } catch (error) {
+    next(new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, `Error finding user by email: ${error.message}`))
+  }
+}
+
 export const userController = {
   createNew,
   update,
   deleteItem,
   getDetails,
-  getAllUsers
+  getAllUsers,
+  findByEmail
 }

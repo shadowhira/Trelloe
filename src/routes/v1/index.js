@@ -6,6 +6,8 @@ import { columnRoute } from './columnRoute'
 import { cardRoute } from './cardRoute'
 import { userRoute } from './userRoute'
 import { authRoute } from './authRoute'
+import { invitationRouter } from './invitationRoute'
+import { authenticateTokenRouter } from './authenticateToken'
 
 const Router = express.Router()
 
@@ -28,5 +30,7 @@ Router.use('/users', userRoute)
 
 // Auth APIs
 Router.use('/auth', authRoute)
+Router.use('/invitation', invitationRouter)
+Router.use('/authenticateToken', authenticateTokenRouter)
 
 export const APIs_V1 = Router

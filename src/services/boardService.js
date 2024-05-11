@@ -6,6 +6,9 @@ import { cardModel } from '~/models/cardModel'
 import ApiError from '~/utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
 import { clone, cloneDeep } from 'lodash'
+import { invitationModel } from '~/models/invitationModel'
+import { columnService } from './columnService'
+import { userModel } from '~/models/userModel'
 
 
 // Phần này sẽ đụng nhiều vào bất đồng bộ nên ta thêm async
@@ -23,10 +26,13 @@ const createNew = async (reqBody) => {
 
     // Lấy bản ghi board sau khi gọi (tùy mục đích dự án mà có cần bước này hoặc không)
     const getNewBoard = await boardModel.findOneById(createdBoard.insertedId)
-    // console.log(getNewBoard)
+    if (getNewBoard) {
+      // Xử lý cấu trúc data ở đây trước khi trả dữ liệu về
+      getNewBoard.columns = []
 
-    // Làm thêm các xử lý logic khác với các Collection khác tùy đặc thù dự án ... Vv
-    // Bắn email, notification về cho admin khi có 1 cái board mới dược tạo ... vv
+      // Cập nhật mảng columnOrderIds trong collection boards
+      await userModel.pushBoardOrderIds(getNewBoard)
+    }
 
     // Trả kết quả về, trong Service luôn phải có return, nếu không nó sẽ request liên tục
     return getNewBoard
@@ -133,19 +139,42 @@ const deleteColumnsByBoardId = async (boardId) => {
   }
 }
 
-const deleteBoard = async (boardId) => {
+const getListBoardByUserId = async (userId) => {
   try {
-    // Kiểm tra xem board có tồn tại không trước khi xóa
-    const existingBoard = await boardModel.findOneById(boardId)
-    if (!existingBoard) {
-      throw new ApiError(StatusCodes.NOT_FOUND, 'Board not found.')
-    }
-
-    // Thực hiện xóa board
-    await boardModel.deleteBoard(boardId)
+    const boardList = await boardModel.getListBoardByUserId(userId)
+    return boardList
   } catch (error) {
-    throw error
+    throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, `Error fetching boards by user ID: ${error.message}`);
   }
+}
+
+const deleteBoard = async (boardId) => {
+  const targetBoard = await boardModel.findOneById(boardId)
+  if (!targetBoard) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'Board not found!')
+  }
+
+  // Xóa các lời mời có boardId tương ứng
+  await invitationModel.deleteManyItem(targetBoard._id)
+
+  const columnOrderIds = targetBoard.columnOrderIds
+  for (const columnId of columnOrderIds) {
+    await columnService.deleteItem(columnId)
+  }
+  
+  const memberIds = targetBoard.memberIds
+  
+  // await columnModel.deleteManyByBoardId(boardId)
+  await boardModel.deleteOneById(boardId)
+
+  // Xóa columnId trong mảng columnOrderIds của cái Board chứa nó
+  await userModel.pullBoardOrderIds(targetBoard._id, targetBoard.userId)
+
+  for (const memberId of memberIds) {
+    await userModel.pullBoardOrderIds(targetBoard._id, memberId)
+  }
+
+  return { deleteResult: `Column ${targetBoard.title} deleted successfully!` }
 }
 
 export const boardService = {
@@ -156,5 +185,6 @@ export const boardService = {
   getListBoard,
   deleteCardsByBoardId,
   deleteColumnsByBoardId,
-  deleteBoard
+  deleteBoard,
+  getListBoardByUserId
 }

@@ -9,7 +9,15 @@ Router.route('/')
   .get(boardController.getListBoard)
   .post(boardValidation.createNew, boardController.createNew)
 
-Router.route('/:id')
+Router.route('/userId/:userId')
+  .get(boardController.getListBoardByUserId)
+
+// Router.route('/:id')
+//   .get(boardController.getDetails)
+//   .put(boardValidation.update, boardController.update)
+//   .delete(boardController.deleteBoard)
+
+Router.route('/boardId/:id')
   .get(boardController.getDetails)
   .put(boardValidation.update, boardController.update)
   .delete(boardController.deleteBoard)
