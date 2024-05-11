@@ -155,7 +155,6 @@ function BoardList() {
                 board={board}
               />
             ))}
-            
 
           </Box>
           <Pagination

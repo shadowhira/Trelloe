@@ -150,9 +150,13 @@ function CategoryBar(nameActive) {
     <Box sx={{ display: 'flex',
       height: (theme) => {
         if (boardId) {
-          return theme.trello.boardContentHeight + theme.trello.boardBarHeight
+          return `calc(100vh -
+            ${theme.trello.appBarHeight}
+          )`
         } else {
-          return '100vh'
+          return `calc(100vh -
+            ${theme.trello.appBarHeight}
+          )`
         }
       },
       // width: '100%',

@@ -3,7 +3,9 @@ import Login from '~/pages/Auth/Login/Login'
 import SignUp from '~/pages/Auth/SignUp/SignUp'
 import CategoryBar from './components/CategoryBar/CategoryBar'
 import BoardList from '~/pages/Boards/index'
-import UserBar from '~/pages/Users/UserBar'
+import UserDetails from '~/pages/Users/UserDetails'
+import Account from '~/pages/Users/Account'
+import Security from '~/pages/Users/Security'
 import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom'
 
 function App() {
@@ -26,7 +28,9 @@ function App() {
           <Route path="/boards/:boardId" element={<Board />} />
           <Route path="/boards" element={<BoardList />} />
           <Route path="/" element={<BoardList />} />
-          <Route path="/user" element={<UserBar />} />
+          <Route path="/security" element={<Security />} />
+          <Route path="/account" element={<Account />} />
+          <Route path="/user" element={<UserDetails />} />
 
         </Routes>
       </Router>

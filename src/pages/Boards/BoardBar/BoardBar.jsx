@@ -114,25 +114,28 @@ function BoardBar({ board }) {
           boardInvitation: {
             boardId: board._id,
             status: 'pending'
-          },
+          }
         })
 
         if (response.status === 201) {
-          setSnackbarMessage(`Invite ${email} success`)
-          setSnackbarSeverity('success')
-          setEmail('')
-          setSnackbarOpen(true)
+          // setSnackbarMessage(`Invite ${email} success`)
+          // setSnackbarSeverity('success')
+          // setEmail('')
+          // setSnackbarOpen(true)
+          toast.success(`Invite ${email} success`)
         } else {
-          setSnackbarMessage(response.status.message)
-          setSnackbarSeverity('error')
-          setEmail('')
-          setSnackbarOpen(true)
+          // setSnackbarMessage(response.status.message)
+          // setSnackbarSeverity('error')
+          // setEmail('')
+          // setSnackbarOpen(true)
+          toast.error(`Invite ${email} fail!`)
         }
       } catch (error) {
-        setSnackbarMessage('Error sending invitation')
-        setSnackbarSeverity('error')
-        setEmail('')
-        setSnackbarOpen(true)
+        // setSnackbarMessage('Error sending invitation')
+        // setSnackbarSeverity('error')
+        // setEmail('')
+        // setSnackbarOpen(true)
+        toast.error('Error sending invitation')
       }
 
       setShowInput(false) // Ẩn thanh input sau khi gửi

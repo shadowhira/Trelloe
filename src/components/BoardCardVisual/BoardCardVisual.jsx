@@ -85,6 +85,8 @@ function BoardCardVisual({ title, description, color, boardId, type, updateBoard
       if (response.status === 200) {
         setIsFavorite(!isFavorite)
         // console.log('điiid')
+        setBoardUpdated(true)
+        updateBoardUpdated()
       }
       // console.log('🐛: ➡️ handleToggleFavorite ➡️ isFavorite:', isFavorite)
     } catch (error) {

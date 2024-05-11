@@ -24,7 +24,6 @@ import SearchBar from './Menus/SearchBar'
 import CreateNewBoard from './Menus/CreateNewBoard'
 
 function AppBar({ updateBoardUpdated }) {
-  const [searchValue, setSearchValue] = useState('')
 
   return (
     <Box sx={{
@@ -67,7 +66,7 @@ function AppBar({ updateBoardUpdated }) {
       </Box>
 
       <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 2 }}>
-        <SearchBar />
+        <SearchBar updateBoardUpdated={updateBoardUpdated} />
         <ModeSelect />
         <Tooltip title="Notifications">
           <Badge color="warning" variant="dot" sx={{ cursor: 'pointer' }}>

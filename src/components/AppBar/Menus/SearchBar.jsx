@@ -10,15 +10,20 @@ import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import TextField from '@mui/material/TextField'
+import DashboardIcon from '@mui/icons-material/Dashboard'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { fetchListBoardAPI } from '~/apis'
 
-function SearchBar() {
+function SearchBar({ updateBoardUpdated }) {
   const [searchValue, setSearchValue] = useState('')
   const [boardList, setBoardList] = useState([])
   const [filteredBoardList, setFilteredBoardList] = useState([])
   const [userId, setUserId] = useState(null)
+
+  const [boardUpdated, setBoardUpdated] = useState(false)
+
+  // const [isFavorite, setIsFavorite] = useState(board.favorite)!isFavorite
 
   const token = document.cookie
     .split('; ')
@@ -92,6 +97,29 @@ function SearchBar() {
     window.location.href = `/boards/${boardId}`
   }
 
+  // const handleToggleFavorite = async () => {
+  //   try {
+  //     // Gọi API để cập nhật trạng thái "yêu thích" của board
+  //     // Ví dụ: Sử dụng axios để gửi request POST tới backend
+  //     console.log('🐛: ➡️ handleToggleFavorite ➡️ board._id:', board._id)
+  //     const response = await axios.put(`http://localhost:8017/v1/boards/boardId/${board._id}`, {
+  //       ...board,
+  //       favorite: !isFavorite
+  //     })
+
+  //     // Nếu API trả về thành công, cập nhật trạng thái "yêu thích" của board trên frontend
+  //     if (response.status === 200) {
+  //       setIsFavorite(!isFavorite)
+  //       // console.log('điiid')
+  //       setBoardUpdated(true)
+  //       updateBoardUpdated()
+  //     }
+  //     // console.log('🐛: ➡️ handleToggleFavorite ➡️ isFavorite:', isFavorite)
+  //   } catch (error) {
+  //     console.error('Error toggling favorite:', error)
+  //   }
+  // }
+
   return (
     <Box sx={{ position: 'relative', width: '100%' }}>
       <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%' }}>
@@ -135,7 +163,6 @@ function SearchBar() {
               <ListItem
                 disablePadding
                 key={board._id}
-                onClick={() => handleOpenBoard(board._id)}
                 sx={{
                   transition: 'background-color 0.3s',
                   '&:hover': {
@@ -145,7 +172,7 @@ function SearchBar() {
               >
                 <ListItemButton>
                   <IconButton >
-                    {board.favorite ? <StarIcon /> : <StarOutlineIcon color="primary" />}
+                    <DashboardIcon />
                   </IconButton>
                   <ListItemText
                     primary={board.title}
@@ -156,6 +183,7 @@ function SearchBar() {
                       fontSize: '16px',
                       paddingLeft: '8px'
                     }}
+                    onClick={() => handleOpenBoard(board._id)}
                   />
                 </ListItemButton>
               </ListItem>
