@@ -30,19 +30,16 @@ export const createNewBoardAPI = async (title, description, type, userId) => {
 
 export const deleteBoardAPI = async (boardId) => {
   const response = await axios.delete(`${api_root}/v1/boards/boardId/${boardId}`)
-  // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
   return response.data
 }
 
 export const fetchBoardDetailsAPI = async (boardId) => {
   const response = await axios.get(`${api_root}/v1/boards/boardId/${boardId}`)
-  // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
   return response.data
 }
 
 export const fetchListBoardAPI = async () => {
   const response = await axios.get(`${api_root}/v1/boards`)
-  // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
   return response.data
 }
 
@@ -56,6 +53,11 @@ export const moveCardToDifferentColumnAPI = async (updateData) => {
   return response.data
 }
 
+export const getListBoardByUserId = async (userId) => {
+  const response = await axios.get(`${api_root}/v1/boards/userId/${userId}`, userId)
+  return response.data
+}
+
 /* Column */
 export const createNewColumnAPI = async (newColumnData) => {
   const response = await axios.post(`${api_root}/v1/columns`, newColumnData)
@@ -64,13 +66,11 @@ export const createNewColumnAPI = async (newColumnData) => {
 
 export const updateColumnDetailsAPI = async (columnId, updateData) => {
   const response = await axios.put(`${api_root}/v1/columns/${columnId}`, updateData)
-  // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
   return response.data
 }
 
 export const deleteColumnDetailsAPI = async (columnId) => {
   const response = await axios.delete(`${api_root}/v1/columns/${columnId}`)
-  // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
   return response.data
 }
 

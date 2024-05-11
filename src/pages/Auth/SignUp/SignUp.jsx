@@ -14,7 +14,6 @@ import { checkAuthAPI, checkSignupAPI } from '~/apis'
 gsap.registerPlugin(MorphSVGPlugin)
 
 
-
 function SignUp() {
   const [auth, setAuth] = useState(false)
   const navigate = useNavigate()

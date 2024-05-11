@@ -8,7 +8,9 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import {
   checkAuthAPI,
   fetchBoardDetailsAPI,
-  fetchListBoardAPI
+  fetchListBoardAPI,
+  getListBoardByUserId,
+  updateBoardDetailsAPI
 } from '~/apis'
 import { useEffect, useState } from 'react'
 import { Link , useNavigate} from 'react-router-dom'
@@ -18,19 +20,18 @@ import { toast } from 'react-toastify'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import BoardCardVisual from '~/components/BoardCardVisual/BoardCardVisual'
 
-const ListBoard = [
-  {
-    _id: 'board-id-01',
-    title: 'MERN Stack Board 1',
-    description: 'MERN stack Course 1',
-    color: 'red'
-  }
-]
-
+// const ListBoard = [
+//   {
+//     _id: 'board-id-01',
+//     title: 'MERN Stack Board 1',
+//     description: 'MERN stack Course 1',
+//     color: 'red'
+//   }
+// ]
 
 function BoardList() {
   const [listBoard, setListBoard] = useState([])
-  const [userId, setUserId] = useState(null);
+  const [userId, setUserId] = useState(null)
   const [page, setPage] = useState(1)
   const boardsPerPage = 9 // Số lượng boards hiển thị trên mỗi trang
 
@@ -40,6 +41,13 @@ function BoardList() {
   const [auth, setAuth] = useState(false)
   const navigate = useNavigate()
   axios.defaults.withCredentials = true
+
+  const [boardUpdated, setBoardUpdated] = useState(false)
+
+  // Render Board khi update
+  const updateBoardUpdated = () => {
+    setBoardUpdated(prevState => !prevState)
+  }
 
   const token = document.cookie
     .split('; ')
@@ -80,18 +88,18 @@ function BoardList() {
     fetchUserId()
     // fetchListBoardAPI()
     if (userId) { // Kiểm tra xem userId đã có giá trị hay chưa
+      // getListBoardByUserId(userId)
       fetch(`http://localhost:8017/v1/boards/userId/${userId}`)
         .then(res => res.json())
         .then(listBoard => {
           setListBoard(listBoard)
-          
-          // console.log('🐛: ➡️ useEffect ➡️ listBoard:', listBoard)
         })
         .catch(error => {
-          console.error('Error fetching boards:', error);
-        });
+          console.error('Error fetching boards:', error)
+        })
     }
-  }, [userId, listBoard]) // Chạy khi userId thay đổi
+  }, [userId, boardUpdated]) // Chạy khi userId thay đổi
+
 
   return (
     <div>
@@ -141,10 +149,12 @@ function BoardList() {
                 title={board.title}
                 description={board.description}
                 type={board.type}
-                color={'red'}
+                color={(theme) => (theme.palette.info.main)}
                 boardId={board._id}
+                updateBoardUpdated={updateBoardUpdated} 
               />
             ))}
+            
 
           </Box>
           <Pagination

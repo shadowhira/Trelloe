@@ -19,16 +19,18 @@ import RadioGroup from '@mui/material/RadioGroup'
 import TextField from '@mui/material/TextField'
 import Tooltip from '@mui/material/Tooltip'
 import { useConfirm } from 'material-ui-confirm'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { updateBoardDetailsAPI, deleteBoardAPI } from '~/apis'
 
-function BoardCardVisual({ title, description, color, boardId, type }) {
+function BoardCardVisual({ title, description, color, boardId, type, updateBoardUpdated }) {
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => { setAnchorEl(event.currentTarget) }
   const handleClose = () => { setAnchorEl(null) }
+  const [boardUpdated, setBoardUpdated] = useState(false)
+
 
   const [openForm, setOpenForm] = useState(false)
 
@@ -62,6 +64,7 @@ function BoardCardVisual({ title, description, color, boardId, type }) {
       deleteBoardAPI(boardId)
     }).catch(() => {})
   }
+
 
   return ( <Box
     sx={{
@@ -193,7 +196,9 @@ function BoardCardVisual({ title, description, color, boardId, type }) {
           updateBoardDetailsAPI(boardId, { title, description, type })
             .then((res) => {
               if (res) {
-                toast.success(`Update board ${title} success!`)
+                toast.success('Update board success!')
+                setBoardUpdated(true) // Thay đổi giá trị của boardUpdated
+                updateBoardUpdated()
               } else {
                 toast.error('Error when update board!')
               }
@@ -232,7 +237,6 @@ function BoardCardVisual({ title, description, color, boardId, type }) {
           sx={{ marginTop: 2 }}
         />
         <TextField
-          autoFocus
           margin="dense"
           id="name"
           name="description"
