@@ -11,7 +11,7 @@ import RadioGroup from '@mui/material/RadioGroup'
 import TextField from '@mui/material/TextField'
 import * as React from 'react'
 import { toast } from 'react-toastify'
-import { createNewBoarrdAPI } from '~/apis'
+import { createNewBoardAPI } from '~/apis'
 
 function CreateNewBoard() {
   const [open, setOpen] = React.useState(false)
@@ -53,7 +53,7 @@ function CreateNewBoard() {
             const title = formJson.title
             const description = formJson.description
             const type = formJson.type
-            createNewBoarrdAPI(title, description, type)
+            createNewBoardAPI(title, description, type)
               .then((res) => {
                 if (res) {
                   toast.success(`Create board ${title} success!`)

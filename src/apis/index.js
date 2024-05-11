@@ -22,8 +22,14 @@ console.log('🐛: ➡️ api_root:', api_root)
 
 /* Board */
 // Hậu tố là API để đánh dấu
-export const createNewBoarrdAPI = async (title, description, type) => {
+export const createNewBoardAPI = async (title, description, type) => {
   const response = await axios.post(`${api_root}/v1/boards/`, { title, description, type })
+  // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
+  return response.data
+}
+
+export const deleteBoardAPI = async (boardId) => {
+  const response = await axios.delete(`${api_root}/v1/boards/${boardId}`)
   // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
   return response.data
 }

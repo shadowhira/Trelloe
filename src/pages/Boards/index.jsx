@@ -1,17 +1,11 @@
 // Boards list
 
-import { Stack, Box, Typography } from '@mui/material'
-import AppBar from '~/components/AppBar/AppBar'
-import CategoryBar from '~/components/CategoryBar/CategoryBar'
-import NavigateNextIcon from '@mui/icons-material/NavigateNext'
-import {
-  fetchBoardDetailsAPI,
-  fetchListBoardAPI
-} from '~/apis'
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Box, Stack, Typography } from '@mui/material'
 import Pagination from '@mui/material/Pagination'
-
+import { useEffect, useState } from 'react'
+import AppBar from '~/components/AppBar/AppBar'
+import BoardCardVisual from '~/components/BoardCardVisual/BoardCardVisual'
+import CategoryBar from '~/components/CategoryBar/CategoryBar'
 
 // const ListBoards = [
 //   {
@@ -52,65 +46,6 @@ import Pagination from '@mui/material/Pagination'
 //   }
 // ]
 
-const BoardCardVisual = props => (
-  <Box
-    sx={{
-      bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#333643' : '#fff'),
-      boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
-      borderRadius: '10px'
-    }}
-  >
-    <Box
-      sx={{
-        height: '50px',
-        bgcolor: props.color,
-        borderTopLeftRadius: '10px', // Áp dụng bo tròn cho góc trên bên trái
-        borderTopRightRadius: '10px' // Áp dụng bo tròn cho góc trên bên phải
-      }}
-    ></Box>
-    <Typography
-      sx={{
-        fontSize: '16px',
-        ml: '16px',
-        mt: '12px',
-        mb: '6px',
-        fontWeight: '500'
-      }}
-    >
-      {props.title}
-    </Typography>
-    <Typography
-      sx={{
-        fontSize: '12px',
-        ml: '16px',
-        mt: '6px',
-        mb: '6px',
-        fontWeight: '400'
-      }}
-    >
-      {props.description}
-    </Typography>
-    <Link
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        mt: '6px',
-        mb: '12px',
-        textDecoration: 'none',
-        '&:hover': {
-          color: (theme) => (theme.palette.mode === 'dark' ? '#1976d2' : '#1976d2'),
-          cursor: 'pointer',
-          bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#d5e9fe' : '#d5e9fe')
-        }
-      }}
-      to={`/boards/${props.boardId}`} // Sử dụng to để chỉ định route muốn điều hướng tới
-    >
-      <span style={{ marginLeft: 'auto' }}>Go to board</span>
-      <NavigateNextIcon style={{ marginLeft: '4px', marginRight: '8px' }}></NavigateNextIcon>
-    </Link>
-  </Box>
-)
-
 function BoardList() {
   const [listBoard, setListBoard] = useState([])
   const [page, setPage] = useState(1)
@@ -119,7 +54,6 @@ function BoardList() {
   const indexOfLastBoard = page * boardsPerPage
   const indexOfFirstBoard = indexOfLastBoard - boardsPerPage
   const currentBoards = listBoard.slice(indexOfFirstBoard, indexOfLastBoard)
-
 
   useEffect(() => {
     // fetchListBoardAPI()
@@ -187,6 +121,7 @@ function BoardList() {
                 description={board.description}
                 color={'white'}
                 boardId={board._id}
+                type={board.type}
               />
             ))}
 

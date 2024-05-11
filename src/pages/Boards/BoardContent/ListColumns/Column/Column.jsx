@@ -120,7 +120,7 @@ function Column({ column, createNewCard, deleteColumnDetails, deleteCardDetails,
 
     try {
       const newColumnData = {
-        title: newColumnTitle,
+        title: newColumnTitle
         // columnId: column._id
       }
       // await axios.put(`${url}/v1/columns/${column._id}`, { title: newColumnTitle }) // API cập nhật
