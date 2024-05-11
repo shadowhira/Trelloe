@@ -62,6 +62,8 @@ function BoardCardVisual({ title, description, color, boardId, type, updateBoard
       // confirmationKeyword: 'Ok'
     }).then(() => {
       deleteBoardAPI(boardId)
+      setBoardUpdated(true)
+      updateBoardUpdated()
     }).catch(() => {})
   }
 

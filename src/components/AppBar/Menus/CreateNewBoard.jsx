@@ -14,9 +14,10 @@ import * as React from 'react'
 import { toast } from 'react-toastify'
 import { createNewBoardAPI } from '~/apis'
 
-function CreateNewBoard() {
+function CreateNewBoard({ updateBoardUpdated }) {
   const [userId, setUserId] = React.useState(null)
   const [open, setOpen] = React.useState(false)
+  const [boardUpdated, setBoardUpdated] = React.useState(false)
 
   const handleClickOpen = () => {
     setOpen(true)
@@ -79,6 +80,8 @@ function CreateNewBoard() {
               .then((res) => {
                 if (res) {
                   toast.success(`Create board ${title} success!`)
+                  setBoardUpdated(true)
+                  updateBoardUpdated()
                 } else {
                   toast.error('Error when create board!')
                 }

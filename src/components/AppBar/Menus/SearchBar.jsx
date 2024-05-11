@@ -9,6 +9,7 @@ import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import TextField from '@mui/material/TextField'
+import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { fetchListBoardAPI } from '~/apis'
 
@@ -16,21 +17,56 @@ function SearchBar() {
   const [searchValue, setSearchValue] = useState('')
   const [boardList, setBoardList] = useState([])
   const [filteredBoardList, setFilteredBoardList] = useState([])
+  const [userId, setUserId] = useState(null)
+
+  const token = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('token='))
+    ?.split('=')[1]
+
+  const fetchUserId = async () => {
+    try {
+      const response = await axios.get('http://localhost:8017/v1/authenticateToken/user-id', {
+        headers: {
+          Authorization: `Bearer ${token}` // Gửi token trong header
+        }
+      })
+      setUserId(response.data.userId) // Lấy userId từ phản hồi
+    } catch (error) {
+      console.log('Error fetching userId')
+    }
+  }
 
   useEffect(() => {
     // Gọi hàm API để lấy danh sách bảng khi component được render
-    const fetchBoardList = async () => {
-      try {
-        const boards = await fetchListBoardAPI()
-        setBoardList(boards)
-        setFilteredBoardList(boards)
-      } catch (error) {
-        console.error('Error fetching board list: ', error)
-      }
+    // const fetchBoardList = async () => {
+    //   try {
+    //     const boards = await fetchListBoardAPI()
+    //     setBoardList(boards)
+    //     setFilteredBoardList(boards)
+    //   } catch (error) {
+    //     console.error('Error fetching board list: ', error)
+    //   }
+    // }
+
+    fetchUserId()
+    console.log(userId)
+    // fetchListBoardAPI()
+    if (userId) { // Kiểm tra xem userId đã có giá trị hay chưa
+      // getListBoardByUserId(userId)
+      fetch(`http://localhost:8017/v1/boards/userId/${userId}`)
+        .then(res => res.json())
+        .then(listBoard => {
+          setBoardList(listBoard)
+          console.log('🐛: ➡️ useEffect ➡️ listBoard:', listBoard)
+        })
+        .catch(error => {
+          console.error('Error fetching boards:', error)
+        })
     }
 
-    fetchBoardList()
-  }, [])
+    // fetchBoardList()
+  }, [userId])
 
   const handleSearchChange = (e) => {
     const { value } = e.target

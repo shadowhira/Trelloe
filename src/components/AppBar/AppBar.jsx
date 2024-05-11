@@ -23,7 +23,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import SearchBar from './Menus/SearchBar'
 import CreateNewBoard from './Menus/CreateNewBoard'
 
-function AppBar() {
+function AppBar({ updateBoardUpdated }) {
   const [searchValue, setSearchValue] = useState('')
   return (
     <Box sx={{
@@ -61,7 +61,7 @@ function AppBar() {
           >
             Create
           </Button> */}
-          <CreateNewBoard />
+          <CreateNewBoard updateBoardUpdated={updateBoardUpdated} />
         </Box>
       </Box>
 

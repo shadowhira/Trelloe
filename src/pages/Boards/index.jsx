@@ -103,7 +103,7 @@ function BoardList() {
 
   return (
     <div>
-      <AppBar></AppBar>
+      <AppBar updateBoardUpdated={updateBoardUpdated} ></AppBar>
       <Stack direction="row" justifyContent="space-between"
       >
         <CategoryBar
