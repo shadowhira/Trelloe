@@ -1,76 +1,97 @@
+/* eslint-disable no-trailing-spaces */
 // Boards list
 
-import { Box, Stack, Typography } from '@mui/material'
-import Pagination from '@mui/material/Pagination'
-import { useEffect, useState } from 'react'
+import { Stack, Box, Typography, Tooltip } from '@mui/material'
 import AppBar from '~/components/AppBar/AppBar'
-import BoardCardVisual from '~/components/BoardCardVisual/BoardCardVisual'
 import CategoryBar from '~/components/CategoryBar/CategoryBar'
+import NavigateNextIcon from '@mui/icons-material/NavigateNext'
+import {
+  checkAuthAPI,
+  fetchBoardDetailsAPI,
+  fetchListBoardAPI
+} from '~/apis'
+import { useEffect, useState } from 'react'
+import { Link , useNavigate} from 'react-router-dom'
+import Pagination from '@mui/material/Pagination'
+import axios from 'axios'
+import { toast } from 'react-toastify'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import BoardCardVisual from '~/components/BoardCardVisual/BoardCardVisual'
 
-// const ListBoards = [
-//   {
-//     _id: 'board-id-01',
-//     title: 'MERN Stack Board 1',
-//     description: 'MERN stack Course 1',
-//     color: 'red'
-//   },
-//   {
-//     _id: 'board-id-02',
-//     title: 'MERN Stack Board 2',
-//     description: 'MERN stack Course 2',
-//     color: 'blue'
-//   },
-//   {
-//     _id: 'board-id-03',
-//     title: 'MERN Stack Board 3',
-//     description: 'MERN stack Course 3',
-//     color: 'green'
-//   },
-//   {
-//     _id: 'board-id-04',
-//     title: 'MERN Stack Board 4',
-//     description: 'MERN stack Course 4',
-//     color: 'yellow'
-//   },
-//   {
-//     _id: 'board-id-05',
-//     title: 'MERN Stack Board 5',
-//     description: 'MERN stack Course 5',
-//     color: 'pink'
-//   },
-//   {
-//     _id: 'board-id-06',
-//     title: 'MERN Stack Board 6',
-//     description: 'MERN stack Course 6',
-//     color: 'orange'
-//   }
-// ]
+const ListBoard = [
+  {
+    _id: 'board-id-01',
+    title: 'MERN Stack Board 1',
+    description: 'MERN stack Course 1',
+    color: 'red'
+  }
+]
+
 
 function BoardList() {
   const [listBoard, setListBoard] = useState([])
+  const [userId, setUserId] = useState(null);
   const [page, setPage] = useState(1)
   const boardsPerPage = 9 // Số lượng boards hiển thị trên mỗi trang
 
   const indexOfLastBoard = page * boardsPerPage
   const indexOfFirstBoard = indexOfLastBoard - boardsPerPage
   const currentBoards = listBoard.slice(indexOfFirstBoard, indexOfLastBoard)
+  const [auth, setAuth] = useState(false)
+  const navigate = useNavigate()
+  axios.defaults.withCredentials = true
+
+  const token = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('token='))
+    ?.split('=')[1]
+
+  const fetchUserId = async () => {
+    try {
+      const response = await axios.get('http://localhost:8017/v1/authenticateToken/user-id', {
+        headers: {
+          Authorization: `Bearer ${token}` // Gửi token trong header
+        }
+      })
+      setUserId(response.data.userId) // Lấy userId từ phản hồi
+    } catch (error) {
+      console.log('Error fetching userId')
+    }
+  }
 
   useEffect(() => {
+    // Check authentication on component mount
+    checkAuthAPI()
+      .then((res) => {
+        if (res.status === 'Success') {
+          setAuth(true)
+        } else {
+          navigate('/login')
+          setAuth(false)
+        }
+      })
+      .catch(() => {
+        navigate('/login')
+        setAuth(false)
+      })
+  }, [navigate])
+
+  useEffect(() => {
+    fetchUserId()
     // fetchListBoardAPI()
-    fetch('http://localhost:8017/v1/boards')
-      .then(res => res.json())
-      // .then(res => {
-      //   console.log('🐛: ➡️ useEffect ➡️ res:', res.json())
-      //   return res.json()
-      // })
-      .then(listBoard => {
-        setListBoard(listBoard)
-      })
-      .catch(error => {
-        // Xử lý lỗi nếu có
-        console.error('Lỗi khi lấy dữ liệu:', error)
-      })
-  }, [listBoard])
+    if (userId) { // Kiểm tra xem userId đã có giá trị hay chưa
+      fetch(`http://localhost:8017/v1/boards/userId/${userId}`)
+        .then(res => res.json())
+        .then(listBoard => {
+          setListBoard(listBoard)
+          
+          // console.log('🐛: ➡️ useEffect ➡️ listBoard:', listBoard)
+        })
+        .catch(error => {
+          console.error('Error fetching boards:', error);
+        });
+    }
+  }, [userId, listBoard]) // Chạy khi userId thay đổi
 
   return (
     <div>
@@ -119,9 +140,9 @@ function BoardList() {
                 key={board._id}
                 title={board.title}
                 description={board.description}
-                color={'white'}
-                boardId={board._id}
                 type={board.type}
+                color={'red'}
+                boardId={board._id}
               />
             ))}
 

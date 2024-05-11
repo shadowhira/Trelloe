@@ -18,6 +18,7 @@ gsap.registerPlugin(MorphSVGPlugin)
 function SignUp() {
   const [auth, setAuth] = useState(false)
   const navigate = useNavigate()
+  axios.defaults.withCredentials = true
 
   useEffect(() => {
     // Check authentication on component mount
@@ -25,7 +26,7 @@ function SignUp() {
       .then((res) => {
         if (res.status === 'Success') {
           setAuth(true)
-          navigate('/') // Redirect on success
+          navigate('/')
         } else {
           setAuth(false)
         }
@@ -803,7 +804,6 @@ function SignUp() {
         checkSignupAPI(email, password, username)
           .then((res) => {
             if (res.status === 'Success') {
-              console.log('🐛: ➡️ .then ➡️ res:', res)
               toast.success('Đăng ký thành công.') // Thông báo thành công
               navigate('/login') // Điều hướng tới trang đăng nhập
             } else {
@@ -1215,7 +1215,7 @@ function SignUp() {
           <button id="signUp">Sign Up</button>
         </div>
         <div className="createAcc">
-          <a href=''>Login!</a>
+          <a href='/login'>Login!</a>
         </div>
       </form>
 

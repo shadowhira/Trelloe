@@ -9,11 +9,13 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import TextField from '@mui/material/TextField'
+import axios from 'axios'
 import * as React from 'react'
 import { toast } from 'react-toastify'
 import { createNewBoardAPI } from '~/apis'
 
 function CreateNewBoard() {
+  const [userId, setUserId] = React.useState(null)
   const [open, setOpen] = React.useState(false)
 
   const handleClickOpen = () => {
@@ -23,6 +25,26 @@ function CreateNewBoard() {
   const handleClose = () => {
     setOpen(false)
   }
+
+  const token = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('token='))
+    ?.split('=')[1]
+
+  const fetchUserId = async () => {
+    try {
+      const response = await axios.get('http://localhost:8017/v1/authenticateToken/user-id', {
+        headers: {
+          Authorization: `Bearer ${token}` // Gửi token trong header
+        }
+      })
+      setUserId(response.data.userId) // Lấy userId từ phản hồi
+    } catch (error) {
+      console.log('Error fetching userId:', error.message)
+    }
+  }
+
+  fetchUserId()
 
   return (
     <React.Fragment>
@@ -53,7 +75,7 @@ function CreateNewBoard() {
             const title = formJson.title
             const description = formJson.description
             const type = formJson.type
-            createNewBoardAPI(title, description, type)
+            createNewBoardAPI(title, description, type, userId)
               .then((res) => {
                 if (res) {
                   toast.success(`Create board ${title} success!`)
@@ -95,7 +117,6 @@ function CreateNewBoard() {
             sx={{ marginTop: 2 }}
           />
           <TextField
-            autoFocus
             margin="dense"
             id="name"
             name="description"

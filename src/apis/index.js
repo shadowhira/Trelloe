@@ -17,25 +17,25 @@ này chuần chình cho các bạn. )
 
 // Change api_root
 let api_root = API_ROOT // http://localhost:8017
-console.log('🐛: ➡️ api_root:', api_root)
+// console.log('🐛: ➡️ api_root:', api_root)
 // api_root = 'https://trello-api-z8ri.onrender.com'
 
 /* Board */
 // Hậu tố là API để đánh dấu
-export const createNewBoardAPI = async (title, description, type) => {
-  const response = await axios.post(`${api_root}/v1/boards/`, { title, description, type })
+export const createNewBoardAPI = async (title, description, type, userId) => {
+  const response = await axios.post(`${api_root}/v1/boards`, { title, description, type, userId })
   // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
   return response.data
 }
 
 export const deleteBoardAPI = async (boardId) => {
-  const response = await axios.delete(`${api_root}/v1/boards/${boardId}`)
+  const response = await axios.delete(`${api_root}/v1/boards/boardId/${boardId}`)
   // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
   return response.data
 }
 
 export const fetchBoardDetailsAPI = async (boardId) => {
-  const response = await axios.get(`${api_root}/v1/boards/${boardId}`)
+  const response = await axios.get(`${api_root}/v1/boards/boardId/${boardId}`)
   // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
   return response.data
 }
@@ -47,7 +47,7 @@ export const fetchListBoardAPI = async () => {
 }
 
 export const updateBoardDetailsAPI = async (boardId, updateData) => {
-  const response = await axios.put(`${api_root}/v1/boards/${boardId}`, updateData)
+  const response = await axios.put(`${api_root}/v1/boards/boardId/${boardId}`, updateData)
   return response.data
 }
 
@@ -97,6 +97,11 @@ export const checkSignupAPI = async (email, password, username) => {
 }
 
 export const checkAuthAPI = async () => {
-  const response = await axios.get(`${api_root}/v1/auth/checkAuth`)
+  const response = await axios.post(`${api_root}/v1/auth/checkAuth`)
+  return response.data
+}
+
+export const checkLogoutAPI = async () => {
+  const response = await axios.post(`${api_root}/v1/auth/logout`)
   return response.data
 }

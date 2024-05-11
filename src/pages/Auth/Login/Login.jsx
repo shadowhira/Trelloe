@@ -27,13 +27,12 @@ function Login() {
       .then((res) => {
         if (res.status === 'Success') {
           setAuth(true)
-          navigate('/') // Redirect on success
+          navigate('/')
         } else {
           setAuth(false)
         }
       })
       .catch((err) => {
-        console.error('Lỗi khi kiểm tra xác thực:', err)
         setAuth(false)
       })
   }, [navigate])
@@ -640,9 +639,6 @@ function Login() {
           ease: Power2.easeInOut
         })
       }
-
-      // clear the console
-      console.clear()
     }
 
     initLoginForm()
@@ -781,7 +777,7 @@ function Login() {
       }
     })
 
-  }, []) // [] ensures that this effect will only run once after the initial render
+  }) // [] ensures that this effect will only run once after the initial render
 
   return (
     <div className="login-container">
@@ -1158,7 +1154,7 @@ function Login() {
           <button id="login">Log in</button>
         </div>
         <div className="createAcc">
-          <a href=''>Create account!</a>
+          <a href='/signup'>Create account!</a>
         </div>
       </form>
 

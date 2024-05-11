@@ -11,6 +11,10 @@ import Tooltip from '@mui/material/Tooltip'
 import Button from '@mui/material/Button'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import { capitalizeFirstLetter } from '~/utils/formatters'
+import { Alert, Snackbar, TextField } from '@mui/material'
+import { useState } from 'react'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
 const MENU_STYLES = {
   color: 'white',
@@ -26,7 +30,91 @@ const MENU_STYLES = {
   }
 }
 
-function index({ board }) {
+function BoardBar({ board }) {
+  const [showInput, setShowInput] = useState(false) // Kiểm soát việc hiển thị input
+  const [email, setEmail] = useState('') // Lưu trữ email nhập vào
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState('')
+  const [snackbarSeverity, setSnackbarSeverity] = useState('info')
+  const [inviteeId, setInviteeId] = useState(null); // ID của người được mời
+  const [userId, setUserId] = useState(null);
+
+  // Trong React, bạn có thể lấy token từ cookie hoặc local storage
+  const token = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('token='))
+    ?.split('=')[1];
+
+  const fetchUserId = async () => {
+    try {
+      const response = await axios.get('http://localhost:8017/v1/authenticateToken/user-id', {
+        headers: {
+          Authorization: `Bearer ${token}` // Gửi token trong header
+        }
+      });
+      setUserId(response.data.userId); // Lấy userId từ phản hồi
+    } catch (error) {
+      console.log('Error fetching userId:', error.message);
+    }
+  }
+
+
+  // Xử lý khi nút "Invite" được nhấp
+  const handleInviteClick = async () => {
+    setShowInput(true); // Hiển thị thanh input khi nhấp "Invite"
+  }
+
+  // Gọi API để lấy ID của người dùng theo email
+  const fetchInviteeId = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8017/v1/users/email?email=${email}`)
+      setInviteeId(response.data._id); // Lấy ID từ phản hồi
+    } catch (error) {
+      toast.error('Error fetching invitee ID:', error.message);
+      setSnackbarMessage('Failed to find user by email.');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true); // Mở Snackbar để thông báo lỗi
+    }
+  };
+
+  const handleSendInvite = async () => {
+    // Lấy inviteeId trước khi gửi lời mời
+    await fetchInviteeId()
+    await fetchUserId()
+
+    if (inviteeId) {
+      try {
+        const response = await axios.post('http://localhost:8017/v1/invitation', {
+          inviterId: userId, // ID của người dùng hiện tại
+          inviteeId, // Sử dụng ID đã lấy
+          type: 'board_invitation',
+          boardInvitation: {
+            boardId: board._id,
+            status: 'pending'
+          },
+        })
+
+        if (response.status === 201) {
+          setSnackbarMessage(`Invite ${email} success`)
+          setSnackbarSeverity('success')
+          setEmail('')
+          setSnackbarOpen(true)
+        } else {
+          setSnackbarMessage(response.status.message)
+          setSnackbarSeverity('error')
+          setEmail('')
+          setSnackbarOpen(true)
+        }
+      } catch (error) {
+        setSnackbarMessage('Error sending invitation')
+        setSnackbarSeverity('error')
+        setEmail('')
+        setSnackbarOpen(true)
+      }
+
+      setShowInput(false) // Ẩn thanh input sau khi gửi
+    }
+  }
   return (
     <Box sx={{
       width: '100%',
@@ -76,6 +164,7 @@ function index({ board }) {
       </Box>
 
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        {/* Các thành phần khác của BoardBar */}
         <Button
           variant="outlined"
           startIcon={<PersonAddIcon />}
@@ -84,9 +173,33 @@ function index({ board }) {
             borderColor: 'white',
             '&:hover': { borderColor: 'white' }
           }}
+          onClick={handleInviteClick} // Thêm sự kiện khi nhấp
         >
           Invite
         </Button>
+        {/* Thanh input và nút "Send" sẽ xuất hiện bên dưới nút "Invite" */}
+        {showInput && (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <TextField
+              label="Enter Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)} // Cập nhật email khi nhập
+            />
+            <Button variant="contained" onClick={handleSendInvite}>
+              Send
+            </Button>
+          </Box>
+        )}
+        {/* Snackbar để thông báo kết quả */}
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={3000} // Thời gian hiển thị
+          onClose={() => setSnackbarOpen(false)} // Đóng sau thời gian nhất định
+        >
+          <Alert severity={snackbarSeverity} onClose={() => setSnackbarOpen(false)}>
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
         <AvatarGroup
           sx={{
             gap: '10px',
@@ -138,4 +251,4 @@ function index({ board }) {
   )
 }
 
-export default index
+export default BoardBar

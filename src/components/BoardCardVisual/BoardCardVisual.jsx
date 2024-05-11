@@ -262,7 +262,6 @@ function BoardCardVisual({ title, description, color, boardId, type }) {
       </DialogActions>
     </Dialog>
   </Box>
-
-  )}
+)}
 
 export default BoardCardVisual
