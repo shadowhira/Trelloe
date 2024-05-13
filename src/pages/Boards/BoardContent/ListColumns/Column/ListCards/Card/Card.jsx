@@ -1,21 +1,20 @@
 /* eslint-disable space-before-blocks */
-import React, { useState, useEffect, useRef } from 'react'
-import axios from 'axios'
-import IconButton from '@mui/material/IconButton'
-import MoreVert from '@mui/icons-material/MoreVert'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
-import { CardMedia, Card as MuiCard, Box } from '@mui/material'
-import CardContent from '@mui/material/CardContent'
-import Typography from '@mui/material/Typography'
-import TextField from '@mui/material/TextField'
-import Button from '@mui/material/Button'
-import CircularProgress from '@mui/material/CircularProgress'
 import AttachmentIcon from '@mui/icons-material/Attachment'
 import CommentIcon from '@mui/icons-material/Comment'
-import GroupIcon from '@mui/icons-material/Group'
-import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
+import EditIcon from '@mui/icons-material/Edit'
+import GroupIcon from '@mui/icons-material/Group'
+import { Box, CardMedia, Card as MuiCard } from '@mui/material'
+import Button from '@mui/material/Button'
+import CardContent from '@mui/material/CardContent'
+import CircularProgress from '@mui/material/CircularProgress'
+import IconButton from '@mui/material/IconButton'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
+import axios from 'axios'
+import { useEffect, useRef, useState } from 'react'
 
 import CardActions from '@mui/material/CardActions'
 
@@ -23,17 +22,8 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { toast } from 'react-toastify'
 
-import avatar from '~/assets/profile.png'
-import { styled } from '@mui/material/styles'
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle
-} from '@mui/material'
-import CloudUploadIcon from '@mui/icons-material/CloudUpload'
-import TitleIcon from '@mui/icons-material/Title'
 import ImageIcon from '@mui/icons-material/Image'
+import TitleIcon from '@mui/icons-material/Title'
 
 function Card({ card, deleteCardDetails }) {
   const [anchorEl, setAnchorEl] = useState(null)
@@ -45,6 +35,7 @@ function Card({ card, deleteCardDetails }) {
   const [uploading, setUploading] = useState(false) // Trạng thái tải lên
   const [showCoverDialog, setShowCoverDialog] = useState(false)
   const menuRef = useRef(null) // Tham chiếu cho menu
+  const [file, setFile] = useState()
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: card._id,
@@ -128,47 +119,39 @@ function Card({ card, deleteCardDetails }) {
     }
   }
 
-  const [postImage, setPostImage] = useState( { myFile : ''} )
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Call your API to update the cover with newCoverLink
     setUploading(true)
-    console.log(newCoverLink)
+    let newCoverLink = null
+    if (file) {
+      const formData = new FormData()
+      formData.append('file', file)
+      try {
+        const response = await axios.post('http://localhost:8017/upload', formData)
+        newCoverLink = response.data // Lưu URL mới của ảnh
+        setNewCoverLink(newCoverLink) // Cập nhật trạng thái của component với URL mới
+      } catch (error) {
+        toast.error('Error uploading file')
+        setUploading(false)
+        return
+      }
+    }
 
-    // Example API call
-    axios.put(`${url}/v1/cards/${card._id}`, { cover: newCoverLink })
-      .then(() => {
-        // Handle success
-        setUploading(false)
-        setShowCoverDialog(false)
-      })
-      .catch((error) => {
-        // Handle error
-        console.error('Error updating cover:', error)
-        setUploading(false)
-      })
-    console.log('Uploaded')
+    try {
+      // Sau khi đã nhận được URL mới, cập nhật cover của card thông qua API
+      await axios.put(`${url}/v1/cards/${card._id}`, { cover: newCoverLink })
+      setUploading(false)
+      setShowCoverDialog(false)
+    } catch (error) {
+      toast.error('Error updating cover')
+      setUploading(false)
+    }
   }
 
   const handleFileUpload = async (e) => {
-    const file = e.target.files[0]
-    const base64 = await convertToBase64(file)
-    setPostImage({ ...postImage, myFile : base64 })
-    setNewCoverLink(base64)
+    setFile(e.target.files[0])
   }
 
-  const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1
-  })
 
   return (
     <MuiCard
@@ -250,9 +233,6 @@ function Card({ card, deleteCardDetails }) {
           <label htmlFor={`upload-cover-${card._id}`}>Change Cover</label>
           {isEditingCover && (
             <form onSubmit={handleSubmit}>
-              {/* <label htmlFor="file-upload" className='custom-file-upload'>
-                <img src={postImage.myFile || avatar} alt="" />
-              </label> */}
               <input
                 type="file"
                 label="Image"
@@ -264,18 +244,6 @@ function Card({ card, deleteCardDetails }) {
               <button type='submit'>Submit</button>
             </form>
           )}
-          {/* <Button
-            component="label"
-            role={undefined}
-            variant="contained"
-            tabIndex={-1}
-            onChange={(e) => handleFileUpload(e)}
-            startIcon={<CloudUploadIcon />}
-          >
-            Upload file
-            <VisuallyHiddenInput type="file" />
-          </Button>
-          <Button type='submit'>Save</Button> */}
         </MenuItem>
 
         <MenuItem onClick={handleDeleteCard}>
@@ -298,58 +266,8 @@ function Card({ card, deleteCardDetails }) {
           }
         </CardActions>
       }
-
-      {/* <Dialog open={showCoverDialog} onClose={() => setShowCoverDialog(false)}>
-        <DialogTitle>Change Cover</DialogTitle>
-        <DialogContent>
-          <form onSubmit={handleSubmit}>
-            <label htmlFor="file-upload" className="custom-file-upload">
-              <img src={newCoverLink || card.cover || avatar} alt="" />
-            </label>
-            <input
-              type="file"
-              label="Image"
-              name="myFile"
-              id="file-upload"
-              accept=".jpeg, .png, .jpg"
-              onChange={handleFileUpload}
-            />
-            <Button
-              component="label"
-              role={undefined}
-              variant="contained"
-              tabIndex={-1}
-              onChange={handleFileUpload}
-              startIcon={<CloudUploadIcon />}
-            >
-              Upload file
-              <input type="file" hidden />
-            </Button>
-            {uploading && <CircularProgress />}
-          </form>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowCoverDialog(false)}>Cancel</Button>
-          <Button type="submit" onClick={handleSubmit} disabled={!newCoverLink}>
-            Submit
-          </Button>
-        </DialogActions>
-      </Dialog> */}
     </MuiCard>
   )
 }
 
 export default Card
-
-function convertToBase64(file){
-  return new Promise((resolve, reject) => {
-    const fileReader = new FileReader()
-    fileReader.readAsDataURL(file)
-    fileReader.onload = () => {
-      resolve(fileReader.result)
-    }
-    fileReader.onerror = (error) => {
-      reject(error)
-    }
-  })
-}

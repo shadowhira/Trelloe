@@ -1,30 +1,21 @@
-import { useState } from 'react'
 import AppsIcon from '@mui/icons-material/Apps'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
-import LibraryAddIcon from '@mui/icons-material/LibraryAdd'
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone'
-import Badge from '@mui/material/Badge'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import InputAdornment from '@mui/material/InputAdornment'
 import SvgIcon from '@mui/material/SvgIcon'
-import TextField from '@mui/material/TextField'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import { ReactComponent as TrelloIcon } from '~/assets/trello.svg'
 import ModeSelect from '~/components/ModeSelect/ModeSelect'
+import CreateNewBoard from './Menus/CreateNewBoard'
+import Notification from './Menus/Notification'
 import Profiles from './Menus/Profiles'
 import Recent from './Menus/Recent'
+import SearchBar from './Menus/SearchBar'
 import Starred from './Menus/Starred'
 import Templates from './Menus/Templates'
 import Workspaces from './Menus/Workspaces'
-import SearchIcon from '@mui/icons-material/Search'
-import CloseIcon from '@mui/icons-material/Close'
-import SearchBar from './Menus/SearchBar'
-import CreateNewBoard from './Menus/CreateNewBoard'
 
 function AppBar({ updateBoardUpdated }) {
-
   return (
     <Box sx={{
       width: '100%',
@@ -68,11 +59,7 @@ function AppBar({ updateBoardUpdated }) {
       <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 2 }}>
         <SearchBar updateBoardUpdated={updateBoardUpdated} />
         <ModeSelect />
-        <Tooltip title="Notifications">
-          <Badge color="warning" variant="dot" sx={{ cursor: 'pointer' }}>
-            <NotificationsNoneIcon sx={{ color: 'white' }} />
-          </Badge>
-        </Tooltip>
+        <Notification updateBoardUpdated={updateBoardUpdated}/>
         <Tooltip title="Help">
           <HelpOutlineIcon sx={{ cursor: 'pointer', color: 'white' }}/>
         </Tooltip>

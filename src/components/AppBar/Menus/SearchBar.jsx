@@ -1,19 +1,15 @@
 import CloseIcon from '@mui/icons-material/Close'
+import DashboardIcon from '@mui/icons-material/Dashboard'
 import SearchIcon from '@mui/icons-material/Search'
-import StarIcon from '@mui/icons-material/Star'
-import StarOutlineIcon from '@mui/icons-material/StarOutline'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
-import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import TextField from '@mui/material/TextField'
-import DashboardIcon from '@mui/icons-material/Dashboard'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-import { fetchListBoardAPI } from '~/apis'
 
 function SearchBar({ updateBoardUpdated }) {
   const [searchValue, setSearchValue] = useState('')
@@ -172,7 +168,7 @@ function SearchBar({ updateBoardUpdated }) {
               >
                 <ListItemButton>
                   <IconButton >
-                    <DashboardIcon />
+                    <DashboardIcon sx = {{ color: 'black', backgroundColor: 'white' }} />
                   </IconButton>
                   <ListItemText
                     primary={board.title}

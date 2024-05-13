@@ -22,6 +22,9 @@ let api_root = API_ROOT // http://localhost:8017
 
 /* Board */
 // Hậu tố là API để đánh dấu
+
+
+// Board
 export const createNewBoardAPI = async (title, description, type, userId) => {
   const response = await axios.post(`${api_root}/v1/boards`, { title, description, type, userId })
   // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
@@ -48,13 +51,13 @@ export const updateBoardDetailsAPI = async (boardId, updateData) => {
   return response.data
 }
 
-export const moveCardToDifferentColumnAPI = async (updateData) => {
-  const response = await axios.put(`${api_root}/v1/boards/supports/moving_card`, updateData)
+export const getListBoardByUserId = async (userId) => {
+  const response = await axios.get(`${api_root}/v1/boards/userId/${userId}`, userId)
   return response.data
 }
 
-export const getListBoardByUserId = async (userId) => {
-  const response = await axios.get(`${api_root}/v1/boards/userId/${userId}`, userId)
+export const pushBoardAPI = async (userId, boardId) => {
+  const response = await axios.put(`${api_root}/v1/users/pushBoard`, { userId, boardId })
   return response.data
 }
 
@@ -75,6 +78,12 @@ export const deleteColumnDetailsAPI = async (columnId) => {
 }
 
 /* Cards */
+
+export const moveCardToDifferentColumnAPI = async (updateData) => {
+  const response = await axios.put(`${api_root}/v1/boards/supports/moving_card`, updateData)
+  return response.data
+}
+
 export const createNewCardAPI = async (newCardData) => {
   const response = await axios.post(`${api_root}/v1/cards`, newCardData)
   return response.data
@@ -86,13 +95,14 @@ export const deleteCardDetailsAPI = async (cardId) => {
 }
 
 /* Auth */
+
 export const checkLoginAPI = async (email, password) => {
   const response = await axios.post(`${api_root}/v1/auth/login`, { email, password })
   return response.data
 }
 
 export const checkSignupAPI = async (email, password, username) => {
-  const response = await axios.post(`${api_root}/v1/auth/signup`, { email, password, username })
+  const response = await axios.post(`${api_root}/v1/users`, { email, password, username })
   return response.data
 }
 
@@ -105,3 +115,49 @@ export const checkLogoutAPI = async () => {
   const response = await axios.post(`${api_root}/v1/auth/logout`)
   return response.data
 }
+
+export const checkPasswordAPI = async (userId, checkData) => {
+  const response = await axios.post(`${api_root}/v1/users/checkPassword/${userId}`, checkData)
+  return response.data
+}
+
+
+//Invitation
+
+export const getInvitationByInviteeIdAPI = async (inviteeId) => {
+  const response = await axios.get(`${api_root}/v1/invitation/inviteeId/${inviteeId}`)
+  return response.data
+}
+
+export const updateInvitationAPI = async (invitationId, updateData) => {
+  const response = await axios.put(`${api_root}/v1/invitation/${invitationId}`, updateData)
+  return response.data
+}
+
+/* User */
+
+export const getUserByIdAPI = async (userId) => {
+  const response = await axios.get(`${api_root}/v1/users/userId/${userId}`)
+  return response.data
+}
+
+export const getUserByEmailAPI = async (email) => {
+  const response = await axios.get(`${api_root}/v1/users/email?email=${email}`)
+  return response.data
+}
+
+export const getUsersAPI = async () => {
+  const response = await axios.get(`${api_root}/v1/users`)
+  return response.data
+}
+
+export const updateUserByIdAPI = async (userId, updateData) => {
+  const response = await axios.put(`${api_root}/v1/users/userId/${userId}`, updateData)
+  return response.data
+}
+
+export const deleteUserAPI = async (userId) => {
+  const response = await axios.delete(`${api_root}/v1/users/userId/${userId}`)
+  return response.data
+}
+

@@ -27,7 +27,8 @@ function Login() {
       .then((res) => {
         if (res.status === 'Success') {
           setAuth(true)
-          navigate('/')
+          if (res.role === 'user' ) navigate('/')
+          else navigate('/admin')
         } else {
           setAuth(false)
         }
@@ -763,9 +764,12 @@ function Login() {
         var password = data.loginPassword
         checkLoginAPI(email, password)
           .then((res) => {
-            if (res.status === 'Success') {
+            if (res.status === 'Success' && res.role === 'user') {
               navigate('/') // Điều hướng khi đăng nhập thành công
-            } else {
+            } else if (res.status === 'Success' && res.role === 'admin') {
+              navigate('/admin') // Điều hướng khi đăng nhập thành công
+            }
+            else {
               setMessage(res.error) // Hiển thị thông báo lỗi
             }
           })

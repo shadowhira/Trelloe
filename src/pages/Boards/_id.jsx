@@ -1,35 +1,57 @@
 // Board details page
-import Container from '@mui/material/Container'
-import AppBar from '~/components/AppBar/AppBar'
-import BoardBar from './BoardBar/BoardBar'
-import BoardContent from './BoardContent/BoardContent'
-import { mapOrder } from '~/utils/sorts'
+
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
+import Container from '@mui/material/Container'
+import AppBar from '~/components/AppBar/AppBar'
+import { mapOrder } from '~/utils/sorts'
+import BoardBar from './BoardBar/BoardBar'
+import BoardContent from './BoardContent/BoardContent'
 
-import { mockData } from '~/apis/mock-data'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
-import {
-  fetchBoardDetailsAPI,
-  createNewColumnAPI,
-  createNewCardAPI,
-  updateBoardDetailsAPI,
-  updateColumnDetailsAPI,
-  moveCardToDifferentColumnAPI,
-  deleteColumnDetailsAPI,
-  deleteCardDetailsAPI
-} from '~/apis'
-import { generatePlaceholderCard } from '~/utils/formatters'
-import { isEmpty } from 'lodash'
 import { Typography } from '@mui/material'
-import { useParams } from 'react-router-dom'
+import axios from 'axios'
+import { isEmpty } from 'lodash'
+import { useNavigate, useParams } from 'react-router-dom'
+import {
+  checkAuthAPI,
+  createNewCardAPI,
+  createNewColumnAPI,
+  deleteCardDetailsAPI,
+  deleteColumnDetailsAPI,
+  fetchBoardDetailsAPI,
+  moveCardToDifferentColumnAPI,
+  updateBoardDetailsAPI,
+  updateColumnDetailsAPI
+} from '~/apis'
 import CategoryBar from '~/components/CategoryBar/CategoryBar'
+import { generatePlaceholderCard } from '~/utils/formatters'
 
 function Board() {
   const [board, setBoard] = useState(null)
   let { boardId } = useParams()
+  const [auth, setAuth] = useState(false)
+  const navigate = useNavigate()
+  axios.defaults.withCredentials = true
+
+  useEffect(() => {
+    // Check authentication on component mount
+    checkAuthAPI()
+      .then((res) => {
+        if (res.status === 'Success' && res.role === 'user') {
+          setAuth(true)
+        } else {
+          navigate('/login')
+          setAuth(false)
+        }
+      })
+      .catch(() => {
+        navigate('/login')
+        setAuth(false)
+      })
+  }, [navigate])
 
   useEffect(() => {
     // Tạm thời fix cứng boardId, phần nâng cao sẽ sử dụng react-router-dom để lấy chuẩn boardId từ URL
@@ -265,7 +287,7 @@ function Board() {
 
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh', backgroundColor: 'primary.main' }}>
-      <AppBar />
+      <AppBar/>
       <Box sx={{ display: 'flex' }}>
         <CategoryBar nameActive="Boards"/>
         <Box sx={{ width: '100%' }}>

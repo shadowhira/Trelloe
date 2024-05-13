@@ -25,7 +25,8 @@ function SignUp() {
       .then((res) => {
         if (res.status === 'Success') {
           setAuth(true)
-          navigate('/')
+          if (res.role === 'user' ) navigate('/')
+          else navigate('/admin')
         } else {
           setAuth(false)
         }

@@ -1,29 +1,20 @@
 /* eslint-disable no-dupe-keys */
-import * as React from 'react'
-import { styled, useTheme } from '@mui/material/styles'
-import Box from '@mui/material/Box'
-import MuiDrawer from '@mui/material/Drawer'
-import MuiAppBar from '@mui/material/AppBar'
-import Toolbar from '@mui/material/Toolbar'
-import List from '@mui/material/List'
-import CssBaseline from '@mui/material/CssBaseline'
-import Typography from '@mui/material/Typography'
-import Divider from '@mui/material/Divider'
-import IconButton from '@mui/material/IconButton'
-import MenuIcon from '@mui/icons-material/Menu'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import HomeIcon from '@mui/icons-material/Home'
+import ListAltIcon from '@mui/icons-material/ListAlt'
+import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard'
+import Box from '@mui/material/Box'
+import Divider from '@mui/material/Divider'
+import MuiDrawer from '@mui/material/Drawer'
+import IconButton from '@mui/material/IconButton'
+import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
-import InboxIcon from '@mui/icons-material/MoveToInbox'
-import MailIcon from '@mui/icons-material/Mail'
-import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard'
-import HomeIcon from '@mui/icons-material/Home'
-import ListAltIcon from '@mui/icons-material/ListAlt'
-import AddBoxIcon from '@mui/icons-material/AddBox'
-import CreateNewBoard from '../AppBar/Menus/CreateNewBoard'
+import { styled, useTheme } from '@mui/material/styles'
+import * as React from 'react'
 import { useParams } from 'react-router-dom'
 
 let drawerWidth = 360
@@ -114,21 +105,21 @@ function CategoryBar(nameActive) {
     title: ''
   })
 
-  const handleDrawerOpen = () => {
-    setOpen(true)
-  }
+  // const handleDrawerOpen = () => {
+  //   setOpen(true)
+  // }
 
-  const handleDrawerClose = () => {
-    setOpen(false)
-  }
+  // const handleDrawerClose = () => {
+  //   setOpen(false)
+  // }
 
-  const handleOpenDiaglog = () => {
-    setOpenDialog(true)
-  }
+  // const handleOpenDiaglog = () => {
+  //   setOpenDialog(true)
+  // }
 
-  const handleCloseDiaglog = () => {
-    setOpenDialog(false)
-  }
+  // const handleCloseDiaglog = () => {
+  //   setOpenDialog(false)
+  // }
 
   const handleOpenLink = (text) => {
     window.location.href = '/boards'
@@ -239,7 +230,6 @@ function CategoryBar(nameActive) {
               </ListItem>
             ))}
         </List>
-        {/* {openDialog && (<CreateNewBoard />)} */}
       </Drawer>
     </Box>
   )

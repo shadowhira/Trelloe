@@ -9,14 +9,37 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Tooltip from '@mui/material/Tooltip'
+import axios from 'axios'
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { checkLogoutAPI } from '~/apis'
+import { checkLogoutAPI, getUserByIdAPI } from '~/apis'
 
 function Profiles() {
+  const navigate = useNavigate()
   const [anchorEl, setAnchorEl] = React.useState(null)
+  const [avatar, setAvatar] = React.useState('')
   const open = Boolean(anchorEl)
+  const [userId, setUserId] = React.useState(null)
+
+  const token = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('token='))
+    ?.split('=')[1]
+
+  const fetchUserId = async () => {
+    try {
+      const response = await axios.get('http://localhost:8017/v1/authenticateToken/user-id', {
+        headers: {
+          Authorization: `Bearer ${token}` // Gửi token trong header
+        }
+      })
+      setUserId(response.data.userId) // Lấy userId từ phản hồi
+    } catch (error) {
+      console.log('Error fetching userId')
+    }
+  }
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
   }
@@ -24,7 +47,15 @@ function Profiles() {
     setAnchorEl(null)
   }
 
-  const navigate = useNavigate()
+  const handleAccount = () => {
+    const newTab = window.open('/user', '_blank')
+    if (newTab) {
+      newTab.focus()
+    } else {
+      navigate('/user')
+    }
+  }
+
   const handleLogout = async () => {
     checkLogoutAPI()
       .then(res => {
@@ -39,6 +70,21 @@ function Profiles() {
       })
   }
 
+  const getAvatar = async () => {
+    try {
+      const response = await getUserByIdAPI(userId)
+      setAvatar(response.avatar)
+
+    } catch (err) {
+      return
+    }
+  }
+  React.useEffect(() => {
+    fetchUserId()
+    if (userId) getAvatar()
+  }, [userId])
+
+
   return (
     <Box>
       <Tooltip title="Account settings">
@@ -52,7 +98,7 @@ function Profiles() {
         >
           <Avatar
             sx={{ width: 36, height: 36 }}
-            src=""
+            src= {avatar}
           />
         </IconButton>
       </Tooltip>
@@ -68,7 +114,7 @@ function Profiles() {
         <MenuItem>
           <Avatar sx={{ width: 28, height: 28, mr: 2 }}/> Profile
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={handleAccount}>
           <Avatar sx={{ width: 28, height: 28, mr: 2 }}/> My account
         </MenuItem>
         <Divider />
