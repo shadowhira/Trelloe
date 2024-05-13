@@ -26,7 +26,7 @@ const INVALID_UPDATE_FIELDS = ['_id', 'createdAt']
 // Validate dữ liệu trước khi tạo mới
 const validateBeforeCreate = async (data) => {
   return await INVITATION_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: false })
-};
+}
 
 // Tạo lời mời mới
 const createNew = async (data) => {
@@ -124,6 +124,30 @@ const deleteManyItem = async (boardId) => {
   }
 }
 
+const findInvitationsForUser = async (inviteeId) => {
+  try {
+    const invitations = await GET_DB().collection(INVITATION_COLLECTION_NAME).find({
+      'inviteeId': new ObjectId(inviteeId)
+      // 'boardInvitation.status': 'pending'
+    }).toArray()
+    return invitations
+  } catch (error) {
+    throw new Error(`Error finding invitations for user: ${error.message}`)
+  }
+}
+
+const findInvitationsByInviterId = async (inviterId) => {
+  try {
+    const invitations = await GET_DB().collection(INVITATION_COLLECTION_NAME).find({
+      'inviterId': new ObjectId(inviterId)
+      // 'boardInvitation.status': 'pending'
+    }).toArray()
+    return invitations
+  } catch (error) {
+    throw new Error(`Error finding invitations for user: ${error.message}`)
+  }
+}
+
 // Xuất mô hình và các chức năng
 export const invitationModel = {
   INVITATION_COLLECTION_NAME,
@@ -133,5 +157,7 @@ export const invitationModel = {
   update,
   deleteItem,
   deleteManyItem,
-  findOneByCondition
+  findOneByCondition,
+  findInvitationsByInviterId,
+  findInvitationsForUser
 }

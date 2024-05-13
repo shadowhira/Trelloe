@@ -5,7 +5,7 @@ import ApiError from '~/utils/ApiError'
 const createNew = async (req, res, next) => {
   try {
     const createdUser = await userService.createNew(req.body)
-    res.status(StatusCodes.CREATED).json(createdUser)
+    res.status(StatusCodes.CREATED).json( { createdUser, status:'Success' } )
   } catch (error) {
     next(error)
   }
@@ -17,7 +17,7 @@ const update = async (req, res, next) => {
     const updatedUser = await userService.update(userId, req.body)
 
     // Có kết quả thì trả về phía Client
-    res.status(StatusCodes.OK).json(updatedUser)
+    res.status(StatusCodes.OK).json({ updatedUser, status: 'Success' })
   } catch (error) { next(error) }
 }
 
@@ -26,7 +26,7 @@ const deleteItem = async (req, res, next) => {
     const userId = req.params.id
     const result = await userService.deleteItem(userId)
 
-    res.status(StatusCodes.OK).json(result)
+    res.status(StatusCodes.OK).json({ result, status: 'Success' })
   } catch (error) { next(error) }
 }
 
@@ -46,7 +46,7 @@ const getDetails = async (req, res, next) => {
 const getAllUsers = async (req, res, next) => {
   try {
     const allUsers = await userService.getAllUsers()
-    res.status(StatusCodes.OK).json(allUsers)
+    res.status(StatusCodes.OK).json({ users: allUsers, status: 'Success' })
   } catch (error) {
     next(error)
   }
@@ -67,11 +67,34 @@ const findByEmail = async (req, res, next) => {
   }
 }
 
+const pushBoardToBoardOrderIds = async (req, res, next) => {
+  try {
+    const { userId, boardId } = req.body // Lấy userId và boardId từ req.body
+    await userService.pushBoardToBoardOrderIds(userId, boardId)
+    res.sendStatus(StatusCodes.OK)
+  } catch (error) {
+    next(error)
+  }
+}
+
+const checkPassword = async (req, res, next) => {
+  try {
+    const userId = req.params.id
+    const password = req.body.currentPassword
+    await userService.checkPassword(userId, password)
+    res.status(StatusCodes.OK).json({ status: 'Success' })
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const userController = {
   createNew,
   update,
   deleteItem,
   getDetails,
   getAllUsers,
-  findByEmail
+  findByEmail,
+  pushBoardToBoardOrderIds,
+  checkPassword
 }

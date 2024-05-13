@@ -22,14 +22,14 @@ const login = async (email, password, res) => {
     }
 
     // Generate and return access token
-    const accessToken = jwt.sign({ email: user.email, userId: user._id.toString() }, process.env.JWT_SECRET, {
+    const accessToken = jwt.sign({ email: user.email, userId: user._id.toString(), role: user.role }, process.env.JWT_SECRET, {
       expiresIn: '1d' // Thời hạn token
     })
 
     res.cookie('token', accessToken, {
     })
 
-    return accessToken
+    return { accessToken, role: user.role }
   } catch (error) {
     throw error
   }

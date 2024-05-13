@@ -1,12 +1,12 @@
-import Joi from 'joi'
-import { ObjectId, ReturnDocument } from 'mongodb'
-import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
-import { GET_DB } from '~/config/mongodb'
-import { BOARD_TYPES } from '~/utils/constants'
-import { columnModel } from './columnModel'
-import { cardModel } from './cardModel'
-import ApiError from '~/utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
+import Joi from 'joi'
+import { ObjectId } from 'mongodb'
+import { GET_DB } from '~/config/mongodb'
+import ApiError from '~/utils/ApiError'
+import { BOARD_TYPES } from '~/utils/constants'
+import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
+import { cardModel } from './cardModel'
+import { columnModel } from './columnModel'
 import { userModel } from './userModel'
 
 // Define Collection (Name & Schema)
@@ -23,6 +23,9 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
     Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)
   ).default([]),
   memberIds: Joi.array().items(
+    Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)
+  ).default([]),
+  ownerIds: Joi.array().items(
     Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)
   ).default([]),
 
@@ -209,6 +212,32 @@ const pushMemberIds = async (userId, boardId) => {
   }
 }
 
+const pushOwnerIds = async (userId, boardId) => {
+  try {
+    const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(boardId) },
+      { $push: { ownerIds: new ObjectId(userId) } },
+      { returnDocument: 'after' }
+    )
+
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+const findByUserId = async (userId) => {
+  try {
+    const result = await GET_DB().collection(BOARD_COLLECTION_NAME).find({
+      userId: new ObjectId(userId)
+    }).toArray()
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+
 export const boardModel = {
   BOARD_COLLECTION_NAME,
   BOARD_COLLECTION_SCHEMA,
@@ -221,5 +250,7 @@ export const boardModel = {
   getListBoard,
   deleteOneById,
   getListBoardByUserId,
-  pushMemberIds
+  pushMemberIds,
+  pushOwnerIds,
+  findByUserId
 }

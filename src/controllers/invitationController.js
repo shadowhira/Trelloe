@@ -67,10 +67,20 @@ const deleteItem = async (req, res, next) => {
   }
 }
 
+const getInvitationsForUser = async (req, res, next) => {
+  try {
+    const { inviteeId } = req.params
+    const invitations = await invitationService.getInvitationsForUser(inviteeId)
+    res.status(StatusCodes.OK).json(invitations)
+  } catch (error) {
+    next(new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, error.message))
+  }
+}
 // Xuất các chức năng của invitationController
 export const invitationController = {
   createNew,
   findOneById,
   update,
-  deleteItem
+  deleteItem,
+  getInvitationsForUser
 }

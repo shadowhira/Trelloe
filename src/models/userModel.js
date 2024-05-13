@@ -1,13 +1,9 @@
-import Joi from 'joi'
-import { ObjectId, ReturnDocument } from 'mongodb'
-import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
-import { GET_DB } from '~/config/mongodb'
-import { USER_TYPES } from '~/utils/constants'
-import { columnModel } from './columnModel'
-import { cardModel } from './cardModel'
 import { StatusCodes } from 'http-status-codes'
+import Joi from 'joi'
+import { ObjectId } from 'mongodb'
+import { GET_DB } from '~/config/mongodb'
 import ApiError from '~/utils/ApiError'
-import { boardModel } from './boardModel'
+import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
 
 // Define Collection (Name & Schema)
 const USER_COLLECTION_NAME = 'users'
@@ -17,8 +13,8 @@ const USER_COLLECTION_SCHEMA = Joi.object({
   password: Joi.string().required().min(6), // Set minimum password length
   username: Joi.string().required().alphanum().min(3).max(50), // Restrict username to alphanumeric characters
   displayName: Joi.string().optional().allow(Joi.string().empty()), // Allow empty string for displayName
-  // avatar: Joi.string().optional().allow(Joi.string().empty()), // Allow empty string for avatar
-  // role: Joi.string().optional().allow('', ...['client', 'admin', '...']), // Allow empty string or specific roles
+  avatar: Joi.string().optional().allow(Joi.string().empty()).default(''), // Allow empty string for avatar
+  role: Joi.string().optional().allow('', ...['user', 'admin', '...']).default('user'),
   //   isActive: Joi.boolean().optional(), // Allow optional boolean for isActive
   // verifyToken: Joi.string().optional().allow(Joi.string().empty()), // Allow empty string for verifyToken
   boardOrderIds: Joi.array().items(
@@ -180,6 +176,16 @@ const pushBoardOrderIds = async (board) => {
   }
 }
 
+const findById = async (userId) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const user = await GET_DB().collection(USER_COLLECTION_NAME).findOne({ userId })
+    return user
+  } catch (error) {
+    throw error
+  }
+}
+
 export const userModel = {
   USER_COLLECTION_NAME,
   USER_COLLECTION_SCHEMA,
@@ -191,5 +197,6 @@ export const userModel = {
   findByEmail,
   getAllUsers,
   pullBoardOrderIds,
-  pushBoardOrderIds
+  pushBoardOrderIds,
+  findById
 }

@@ -1,7 +1,5 @@
 import { StatusCodes } from 'http-status-codes'
 import { cardService } from '~/services/cardService'
-import { columnModel } from '~/models/columnModel'
-import { cardModel } from '~/models/cardModel'
 
 const createNew = async (req, res, next) => {
   try {

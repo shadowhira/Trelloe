@@ -19,11 +19,11 @@ const signup = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body
-    const accessToken = await authService.login(email, password, res)
+    const { accessToken, role } = await authService.login(email, password, res)
     const status = 'Success'
 
     // Trả về người dùng Token
-    res.status(StatusCodes.OK).json({ accessToken, status })
+    res.status(StatusCodes.OK).json({ accessToken, status, role })
   } catch (error) {
     next(error)
   }
@@ -70,12 +70,12 @@ const checkAuth = async (req, res, next) => {
 
       // Đặt thông tin người dùng vào req để sử dụng ở các middleware tiếp theo
       req.email = decoded.email
+      req.role = decoded.role
 
       // Tiếp tục đến middleware hoặc route tiếp theo
       next()
     })
-
-    res.status(StatusCodes.OK).json({ status: 'Success', name: req.name })
+    res.status(StatusCodes.OK).json({ status: 'Success', name: req.name, role: req.role })
   } catch (error) {
     next(error)
   }

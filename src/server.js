@@ -1,25 +1,50 @@
 /* eslint-disable no-console */
-import express from 'express'
-import cors from 'cors'
-import { corsOptions } from './config/cors'
 import exitHook from 'async-exit-hook'
-import { CONNECT_DB, GET_DB, CLOSE_DB } from '~/config/mongodb'
-import { env } from '~/config/environment'
-import { APIs_V1 } from '~/routes/v1'
-import { errorHandlingMiddleware } from './middlewares/errorHandlingMiddleware'
+import { v2 as cloudinary } from 'cloudinary'
 import cookieParser from 'cookie-parser'
+import cors from 'cors'
+import express from 'express'
+import multer from 'multer'
+import { env } from '~/config/environment'
+import { CLOSE_DB, CONNECT_DB } from '~/config/mongodb'
+import { APIs_V1 } from '~/routes/v1'
+import { corsOptions } from './config/cors'
+import { errorHandlingMiddleware } from './middlewares/errorHandlingMiddleware'
+const bodyParser = require('body-parser')
 
 const START_SERVER = () => {
   const app = express()
+  app.use(bodyParser.json({ limit: '10mb' }))
   app.use(cookieParser())
   // Xử lý CORS
   app.use(cors(corsOptions))
   // Enable req.body json data
   app.use(express.json())
+  app.use(express.static('public'))
   // Use APIs_V1
   app.use('/v1', APIs_V1)
   // Middleware xử lý lỗi tập trung
   app.use(errorHandlingMiddleware)
+  cloudinary.config({
+    cloud_name: 'drikbhvny',
+    api_key: '291774781534755',
+    api_secret: 'cI1935A8txgDKALNI4RoP0itZ3Q'
+  })
+
+  const upload = multer({ dest: 'uploads/' })
+
+  app.post('/upload', upload.single('file'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).send('No file uploaded.')
+      }
+      const result = await cloudinary.uploader.upload(req.file.path)
+      res.json(result.secure_url)
+    } catch (error) {
+      console.error('Error uploading file:', error)
+      res.status(500).send('Error uploading file.')
+    }
+  })
 
   if (env.BUILD_MODE == 'production') {
     // Môi trường production (support cho render.com)

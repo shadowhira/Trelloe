@@ -7,12 +7,14 @@ const Router = express.Router()
 Router.post('/', invitationController.createNew) // Tạo lời mời mới
 
 // Tìm lời mời theo ID
-Router.get('/:id', invitationController.findOneById) // Tìm lời mời theo ID
+Router.get('/invitationId/:id', invitationController.findOneById) // Tìm lời mời theo ID
 
 // Cập nhật lời mời
 Router.put('/:id', invitationController.update) // Cập nhật lời mời theo ID
 
 // Xóa lời mời
 Router.delete('/:id', invitationController.deleteItem) // Xóa lời mời theo ID
+
+Router.get('/inviteeId/:inviteeId', invitationController.getInvitationsForUser)
 
 export const invitationRouter = Router

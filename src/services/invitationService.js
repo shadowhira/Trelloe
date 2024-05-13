@@ -16,14 +16,35 @@ const createNew = async (reqBody) => {
     }
 
     // Kiểm tra xem lời mời đã tồn tại chưa
-    const existingInvitation = await invitationModel.findOneByCondition({
+    const existingInvitation1 = await invitationModel.findOneByCondition({
       inviterId: new ObjectId(inviterId),
       inviteeId: new ObjectId(inviteeId),
-      'boardInvitation.boardId': boardInvitation.boardId ? new ObjectId(boardInvitation.boardId) : null
+      'boardInvitation.boardId': boardInvitation.boardId ? new ObjectId(boardInvitation.boardId) : null,
+      $or: [
+        { 'boardInvitation.status': 'accepted' },
+        { 'boardInvitation.status': 'pending' }
+      ]
+    })
+    const existingInvitation2 = await invitationModel.findOneByCondition({
+      inviteeId: new ObjectId(inviterId),
+      inviterId: new ObjectId(inviteeId),
+      'boardInvitation.boardId': boardInvitation.boardId ? new ObjectId(boardInvitation.boardId) : null,
+      $or: [
+        { 'boardInvitation.status': 'accepted' },
+        { 'boardInvitation.status': 'pending' }
+      ]
     })
 
-    if (existingInvitation) {
+    if (existingInvitation1 || existingInvitation2) {
       throw new ApiError(StatusCodes.CONFLICT, 'Invitation already exists') // Trả về khi đã có lời mời
+    }
+
+    const invitee = await userModel.findOneById(inviteeId)
+    const boardOrderIds = invitee.boardOrderIds
+
+    if (boardOrderIds.includes(boardInvitation.boardId)) {
+      // console.log('yes')
+      throw new ApiError(StatusCodes.CONFLICT, 'Invitation already exists')
     }
 
     // Kiểm tra loại bảng trước khi tạo lời mời
@@ -39,12 +60,12 @@ const createNew = async (reqBody) => {
     // Tạo lời mời mới nếu điều kiện hợp lệ
     const createdInvitation = await invitationModel.createNew(reqBody)
     // Cập nhật boardOrderIds của invitee
-    await userModel.pushBoardOrderIds({
-      userId: inviteeId,
-      _id: boardInvitation.boardId // Sử dụng _id của bảng để thêm vào boardOrderIds
-    })
+    // await userModel.pushBoardOrderIds({
+    //   userId: inviteeId,
+    //   _id: boardInvitation.boardId // Sử dụng _id của bảng để thêm vào boardOrderIds
+    // })
 
-    await boardModel.pushMemberIds(inviteeId, boardInvitation.boardId)
+    // await boardModel.pushMemberIds(inviteeId, boardInvitation.boardId)
 
     const getNewInvitation = await invitationModel.findOneById(createdInvitation.insertedId)
 
@@ -76,6 +97,9 @@ const findOneById = async (invitationId) => {
 // Cập nhật lời mời
 const update = async (invitationId, reqBody) => {
   try {
+    if (reqBody.boardInvitation && reqBody.boardInvitation.boardId) {
+      reqBody.boardInvitation.boardId = new ObjectId(reqBody.boardInvitation.boardId)
+    }
     const updatedInvitation = await invitationModel.update(invitationId, reqBody)
 
     if (!updatedInvitation) {
@@ -105,10 +129,19 @@ const deleteItem = async (invitationId) => {
   }
 }
 
+const getInvitationsForUser = async (inviteeId) => {
+  try {
+    const invitations = await invitationModel.findInvitationsForUser(inviteeId)
+    return invitations
+  } catch (error) {
+    throw new Error(`Error getting invitations for user: ${error.message}`)
+  }
+}
 // Xuất các chức năng của invitationService
 export const invitationService = {
   createNew,
   findOneById,
   update,
-  deleteItem
+  deleteItem,
+  getInvitationsForUser
 }

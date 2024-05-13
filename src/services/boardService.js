@@ -1,14 +1,14 @@
 /* eslint-disable no-useless-catch */
-import { slugify } from '~/utils/formatters'
-import { boardModel } from '~/models/boardModel'
-import { columnModel } from '~/models/columnModel'
-import { cardModel } from '~/models/cardModel'
-import ApiError from '~/utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
-import { clone, cloneDeep } from 'lodash'
+import { cloneDeep } from 'lodash'
+import { boardModel } from '~/models/boardModel'
+import { cardModel } from '~/models/cardModel'
+import { columnModel } from '~/models/columnModel'
 import { invitationModel } from '~/models/invitationModel'
-import { columnService } from './columnService'
 import { userModel } from '~/models/userModel'
+import ApiError from '~/utils/ApiError'
+import { slugify } from '~/utils/formatters'
+import { columnService } from './columnService'
 
 
 // Phần này sẽ đụng nhiều vào bất đồng bộ nên ta thêm async
@@ -32,6 +32,7 @@ const createNew = async (reqBody) => {
 
       // Cập nhật mảng columnOrderIds trong collection boards
       await userModel.pushBoardOrderIds(getNewBoard)
+      await boardModel.pushOwnerIds(reqBody.userId, getNewBoard._id)
     }
 
     // Trả kết quả về, trong Service luôn phải có return, nếu không nó sẽ request liên tục
@@ -165,9 +166,9 @@ const deleteBoard = async (boardId) => {
   for (const columnId of columnOrderIds) {
     await columnService.deleteItem(columnId)
   }
-  
+
   const memberIds = targetBoard.memberIds
-  
+
   // await columnModel.deleteManyByBoardId(boardId)
   await boardModel.deleteOneById(boardId)
 
