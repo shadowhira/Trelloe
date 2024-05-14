@@ -12,6 +12,7 @@ import { corsOptions } from './config/cors'
 import { errorHandlingMiddleware } from './middlewares/errorHandlingMiddleware'
 const bodyParser = require('body-parser')
 
+
 const START_SERVER = () => {
   const app = express()
   app.use(bodyParser.json({ limit: '10mb' }))
@@ -25,10 +26,12 @@ const START_SERVER = () => {
   app.use('/v1', APIs_V1)
   // Middleware xử lý lỗi tập trung
   app.use(errorHandlingMiddleware)
+
+  require('dotenv').config() // Load environment variables from .env file
   cloudinary.config({
-    cloud_name: 'drikbhvny',
-    api_key: '291774781534755',
-    api_secret: 'cI1935A8txgDKALNI4RoP0itZ3Q'
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
   })
 
   const upload = multer({ dest: 'uploads/' })
