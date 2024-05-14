@@ -765,7 +765,7 @@ function Login() {
         checkLoginAPI(email, password)
           .then((res) => {
             if (res.status === 'Success' && res.role === 'user') {
-              navigate('/') // Điều hướng khi đăng nhập thành công
+              navigate('/boards') // Điều hướng khi đăng nhập thành công
             } else if (res.status === 'Success' && res.role === 'admin') {
               navigate('/admin') // Điều hướng khi đăng nhập thành công
             }

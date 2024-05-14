@@ -29,6 +29,18 @@ import BoardCardVisual from '~/components/BoardCardVisual/BoardCardVisual'
 //   }
 // ]
 
+function getRandomColor() {
+  // Sinh ngẫu nhiên các giá trị RGB trong khoảng từ 0 đến 255
+  const r = Math.floor(Math.random() * 256)
+  const g = Math.floor(Math.random() * 256)
+  const b = Math.floor(Math.random() * 256)
+  
+  // Tạo mã màu từ các giá trị RGB
+  const color = `rgb(${r}, ${g}, ${b})`
+
+  return color
+}
+
 function BoardList() {
   const [listBoard, setListBoard] = useState([])
   const [userId, setUserId] = useState(null)
@@ -149,7 +161,7 @@ function BoardList() {
                 title={board.title}
                 description={board.description}
                 type={board.type}
-                color={(theme) => (theme.palette.info.main)}
+                color= {getRandomColor()}
                 boardId={board._id}
                 updateBoardUpdated={updateBoardUpdated} 
                 board={board}

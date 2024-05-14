@@ -40,35 +40,24 @@ function SearchBar({ updateBoardUpdated }) {
   }
 
   useEffect(() => {
-    // Gọi hàm API để lấy danh sách bảng khi component được render
-    // const fetchBoardList = async () => {
-    //   try {
-    //     const boards = await fetchListBoardAPI()
-    //     setBoardList(boards)
-    //     setFilteredBoardList(boards)
-    //   } catch (error) {
-    //     console.error('Error fetching board list: ', error)
-    //   }
-    // }
-
     fetchUserId()
     // console.log(userId)
     // fetchListBoardAPI()
     if (userId) { // Kiểm tra xem userId đã có giá trị hay chưa
       // getListBoardByUserId(userId)
+      // console.log(boardUpdated)
       fetch(`http://localhost:8017/v1/boards/userId/${userId}`)
         .then(res => res.json())
         .then(listBoard => {
           setBoardList(listBoard)
-          // console.log('🐛: ➡️ useEffect ➡️ listBoard:', listBoard)
+          setBoardUpdated(true)
+          // updateBoardUpdated()
         })
         .catch(error => {
           console.error('Error fetching boards:', error)
         })
     }
-
-    // fetchBoardList()
-  }, [userId])
+  }, [userId, boardUpdated])
 
   const handleSearchChange = (e) => {
     const { value } = e.target

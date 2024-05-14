@@ -68,7 +68,7 @@ function BoardCardVisual({ title, description, color, boardId, type, updateBoard
       deleteBoardAPI(boardId)
       setBoardUpdated(true)
       updateBoardUpdated()
-    }).catch(() => {})
+    }).catch(() => { })
   }
 
   const handleToggleFavorite = async () => {
@@ -94,7 +94,7 @@ function BoardCardVisual({ title, description, color, boardId, type, updateBoard
     }
   }
 
-  return ( <Box
+  return (<Box
     sx={{
       bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#333643' : '#fff'),
       boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
@@ -102,6 +102,7 @@ function BoardCardVisual({ title, description, color, boardId, type, updateBoard
     }}
   >
     <Box
+      //Random mau o day
       sx={{
         height: '50px',
         bgcolor: color,
@@ -109,110 +110,139 @@ function BoardCardVisual({ title, description, color, boardId, type, updateBoard
         borderTopRightRadius: '10px' // Áp dụng bo tròn cho góc trên bên phải
       }}
     ></Box>
-    <Typography
-      sx={{
-        fontSize: '16px',
-        ml: '16px',
-        mt: '12px',
-        mb: '6px',
-        fontWeight: '500'
-      }}
-    >
-      {title}
-    </Typography>
-
-    <IconButton onClick={handleToggleFavorite}>
-      {isFavorite ? <StarIcon /> : <StarOutlineIcon />}
-    </IconButton>
-
-    <Box>
-      <Tooltip title="More options">
-        <ExpandMoreIcon
-          sx={{ color: 'text.primary', cursor: 'pointer' }}
-          id="basic-column-dropdown"
-          aria-controls={open ? 'basic-menu-column-dropdown' : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? 'true' : undefined}
-          onClick={handleClick}
-        />
-      </Tooltip>
-      <Menu
-        id="basic-menu-column-dropdown"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        onClick={handleClose}
-        MenuListProps={{
-          'aria-labelledby': 'basic-column-dropdown'
-        }}
-      >
-        <MenuItem
-          sx={{
-            '&:hover': {
-              // backgroundColor: 'warning.dark',
-              color: 'success.light',
-              '& .add-card-icon': { color: 'success.light' }
-            }
-          }}
-          onClick={toggleOpenNewBoardForm}
-        >
-          <ListItemIcon><AddCardIcon className="add-card-icon" fontSize="small" /></ListItemIcon>
-          <ListItemText>Update Board</ListItemText>
-        </MenuItem>
-        <MenuItem
-          onClick={handleDeleteBoard}
-          sx={{
-            '&:hover': {
-              // backgroundColor: 'warning.dark',
-              color: 'warning.dark',
-              '& .delete-forever-icon': { color: 'warning.dark' }
-            }
-          }}
-        >
-          <ListItemIcon><DeleteForeverIcon className="delete-forever-icon" fontSize="small" /></ListItemIcon>
-          <ListItemText>Delete this board</ListItemText>
-        </MenuItem>
-      </Menu>
-    </Box>
-    <Typography
-      sx={{
-        fontSize: '12px',
-        ml: '16px',
-        mt: '6px',
-        mb: '6px',
-        fontWeight: '400'
-      }}
-    >
-      {description}
-    </Typography>
-    <Typography
-      sx={{
-        fontSize: '12px',
-        ml: '16px',
-        mt: '6px',
-        mb: '6px',
-        fontWeight: '400'
-      }}
-    >
-      {type}
-    </Typography>
-    <Link
+    <Box
       sx={{
         display: 'flex',
-        alignItems: 'center',
-        mt: '6px',
-        mb: '12px',
-        textDecoration: 'none',
-        '&:hover': {
-          color: (theme) => (theme.palette.mode === 'dark' ? '#1976d2' : '#1976d2'),
-          cursor: 'pointer',
-          bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#d5e9fe' : '#d5e9fe')
-        }
+        justifyContent: 'space-between',
+        alignItems: 'center'
       }}
-      to={`/boards/${boardId}`} // Sử dụng to để chỉ định route muốn điều hướng tới
     >
-      <span style={{ marginLeft: 'auto' }}>Go to board</span>
-      <NavigateNextIcon style={{ marginLeft: '4px', marginRight: '8px' }}></NavigateNextIcon>
+      <Box
+        sx={{
+          display: 'flex'
+        }}
+      >
+        <IconButton onClick={handleToggleFavorite}>
+          {isFavorite ? <StarIcon /> : <StarOutlineIcon />}
+        </IconButton>
+        <Typography
+          sx={{
+            fontSize: '16px',
+            fontWeight: '500',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
+          {title}
+        </Typography>
+      </Box>
+
+
+      <Box>
+        <Tooltip title="More options"
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
+          <ExpandMoreIcon
+            sx={{ color: 'text.primary', cursor: 'pointer', mr: '8px' }}
+            id="basic-column-dropdown"
+            aria-controls={open ? 'basic-menu-column-dropdown' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            onClick={handleClick}
+          />
+        </Tooltip>
+        <Menu
+          id="basic-menu-column-dropdown"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          onClick={handleClose}
+          MenuListProps={{
+            'aria-labelledby': 'basic-column-dropdown'
+          }}
+        >
+          <MenuItem
+            sx={{
+              '&:hover': {
+                // backgroundColor: 'warning.dark',
+                color: 'success.light',
+                '& .add-card-icon': { color: 'success.light' }
+              }
+            }}
+            onClick={toggleOpenNewBoardForm}
+          >
+            <ListItemIcon><AddCardIcon className="add-card-icon" fontSize="small" /></ListItemIcon>
+            <ListItemText>Update Board</ListItemText>
+          </MenuItem>
+          <MenuItem
+            onClick={handleDeleteBoard}
+            sx={{
+              '&:hover': {
+                // backgroundColor: 'warning.dark',
+                color: 'warning.dark',
+                '& .delete-forever-icon': { color: 'warning.dark' }
+              }
+            }}
+          >
+            <ListItemIcon><DeleteForeverIcon className="delete-forever-icon" fontSize="small" /></ListItemIcon>
+            <ListItemText>Delete this board</ListItemText>
+          </MenuItem>
+        </Menu>
+      </Box>
+    </Box>
+
+    <Typography
+      sx={{
+        fontSize: '12px',
+        ml: '16px',
+        mt: '6px',
+        mb: '6px',
+        fontWeight: '400'
+      }}
+    >
+      Description: {description}
+    </Typography>
+    <Typography
+      sx={{
+        fontSize: '12px',
+        ml: '16px',
+        mt: '6px',
+        mb: '6px',
+        fontWeight: '400'
+      }}
+    >
+      Type: {type}
+    </Typography>
+    <Link style={{
+      textDecoration: 'none'
+    }}
+    sx={{
+      display: 'block',
+      mt: '6px',
+      mb: '12px'
+    }}
+    to={`/boards/${boardId}`} // Sử dụng to để chỉ định route muốn điều hướng tới
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          p: '8px 8px',
+          '&:hover': {
+            color: (theme) => (theme.palette.mode === 'dark' ? '#1976d2' : '#1976d2'),
+            cursor: 'pointer',
+            bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#d5e9fe' : '#d5e9fe')
+          }
+        }}
+      >
+        <span style={{ marginLeft: 'auto' }}>Go to board</span>
+        <NavigateNextIcon style={{ marginLeft: '4px', marginRight: '8px' }}></NavigateNextIcon>
+      </Box>
     </Link>
     <Dialog
       open={openForm}
@@ -254,7 +284,7 @@ function BoardCardVisual({ title, description, color, boardId, type, updateBoard
 
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <LibraryAddIcon />
-            Update Board
+        Update Board
       </DialogTitle>
       <DialogContent>
         <TextField
@@ -299,6 +329,7 @@ function BoardCardVisual({ title, description, color, boardId, type, updateBoard
       </DialogActions>
     </Dialog>
   </Box>
-  )}
+  )
+}
 
 export default BoardCardVisual

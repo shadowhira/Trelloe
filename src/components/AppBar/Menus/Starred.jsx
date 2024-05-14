@@ -1,16 +1,13 @@
-import Check from '@mui/icons-material/Check'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import StarIcon from '@mui/icons-material/Star'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
-import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
-import StarIcon from '@mui/icons-material/Star'
 import axios from 'axios'
 import * as React from 'react'
-import { getListBoardByUserId } from '~/apis'
 
 
 function Starred() {
@@ -45,7 +42,7 @@ function Starred() {
   }, [])
 
   const handleClick = async (event) => {
-    setAnchorEl(event.currentTarget)
+    if (favoriteBoards.length > 0) setAnchorEl(event.currentTarget)
 
     // Lấy danh sách các board được đánh dấu là favorite khi click vào nút "Starred"
     try {

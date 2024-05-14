@@ -68,7 +68,7 @@ function Card({ card, deleteCardDetails }) {
     // https://github.com/clauderic/dnd-kit/issues/117
     transform: CSS.Translate.toString(transform),
     transition,
-    opacity: isDragging ? 0.5: undefined,
+    opacity: isDragging ? 0.5 : undefined,
     border: isDragging ? '1px solid #2ecc71' : undefined
   }
 
@@ -205,8 +205,29 @@ function Card({ card, deleteCardDetails }) {
             }}
           >
             <EditIcon />
+
           </IconButton>
         </CardContent>
+        {/* {isEditingCover && (
+            <form onSubmit={handleSubmit}
+              style = {{
+                position: 'absolute',
+                width: '500px',
+                top:"0",
+                left:"400px"
+              }}
+            >
+              <input
+                type="file"
+                label="Image"
+                name="myFile"
+                id='file-upload'
+                accept='.jpeg, .png, .jpg'
+                onChange={(e) => handleFileUpload(e)}
+              />
+              <button type='submit'>Submit</button>
+            </form>
+          )} */}
       </Box>
 
       <Menu
@@ -224,15 +245,36 @@ function Card({ card, deleteCardDetails }) {
           justifyContent: 'space-between'
         }}
       >
-        <MenuItem onClick={startEditTitle}>
-          <TitleIcon />
+        <MenuItem onClick={startEditTitle}
+          sx={{
+            p: '8px 16px'
+          }}
+        >
+          <TitleIcon
+            sx={{
+              mr: '16px'
+            }}
+          />
           Change Title
         </MenuItem>
-        <MenuItem onClick={startEditCover}>
-          <ImageIcon />
+        <MenuItem onClick={startEditCover}
+          sx={{
+            p: '8px 16px'
+          }}
+        >
+          <ImageIcon
+            sx={{
+              mr: '16px'
+            }}
+          />
           <label htmlFor={`upload-cover-${card._id}`}>Change Cover</label>
           {isEditingCover && (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit}
+              style = {{
+                position: 'absolute',
+                zIndex: 1
+              }}
+            >
               <input
                 type="file"
                 label="Image"
@@ -246,8 +288,15 @@ function Card({ card, deleteCardDetails }) {
           )}
         </MenuItem>
 
-        <MenuItem onClick={handleDeleteCard}>
-          <DeleteIcon />
+        <MenuItem onClick={handleDeleteCard}
+          sx={{
+            p: '8px 16px'
+          }}>
+          <DeleteIcon
+            sx={{
+              mr: '16px'
+            }}
+          />
           Delete card
         </MenuItem>
 

@@ -38,7 +38,7 @@ function AppBar({ updateBoardUpdated }) {
 
         <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1 }}>
           <Workspaces />
-          <Recent />
+          {/* <Recent /> */}
           <Starred />
           <Templates />
           {/* <Button

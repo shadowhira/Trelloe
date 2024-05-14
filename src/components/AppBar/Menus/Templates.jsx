@@ -1,10 +1,6 @@
-import Check from '@mui/icons-material/Check'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import ListItemText from '@mui/material/ListItemText'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import * as React from 'react'
@@ -42,30 +38,16 @@ function Templates() {
         }}
       >
         <MenuItem>
-          <ListItemText inset>Single</ListItemText>
+          <a href="/boards/6642abf8f5ce444f1c33a836" style={{ textDecoration: 'none' }}>Phân chia công việc</a>
         </MenuItem>
         <MenuItem>
-          <ListItemText inset>1.15</ListItemText>
+          <a href="/boards/6642b11ff5ce444f1c33a846" style={{ textDecoration: 'none' }}>Project Management</a>
         </MenuItem>
         <MenuItem>
-          <ListItemText inset>Double</ListItemText>
+          <a href="/boards/6642b622f5ce444f1c33a850" style={{ textDecoration: 'none' }}>Design Huddle</a>
         </MenuItem>
         <MenuItem>
-          <ListItemIcon>
-            <Check />
-          </ListItemIcon>
-          Custom: 1.2
-        </MenuItem>
-        <Divider />
-        <MenuItem>
-          <ListItemText>Add space before paragraph</ListItemText>
-        </MenuItem>
-        <MenuItem>
-          <ListItemText>Add space after paragraph</ListItemText>
-        </MenuItem>
-        <Divider />
-        <MenuItem>
-          <ListItemText>Custom spacing...</ListItemText>
+          <a href="/boards/6642b689f5ce444f1c33a856" style={{ textDecoration: 'none' }}>Dự án phần mềm</a>
         </MenuItem>
       </Menu>
     </Box>

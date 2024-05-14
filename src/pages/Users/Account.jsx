@@ -15,6 +15,8 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { getUserByIdAPI, updateUserByIdAPI } from '~/apis'
+import CircularProgress from '@mui/material/CircularProgress'
+
 
 let avatar = null
 
@@ -82,7 +84,8 @@ const CircularImageBox = ({ displayNameUser, userNameUser, userId }) => {
         padding: '0',
         '@media (min-width: 600px)': {
           // Thêm media query để điều chỉnh số cột trên mỗi hàng cho các kích thước màn hình lớn hơn 768px
-          p: '0'
+          p: '0',
+          mb: '30px'
         }
       }}
     >
@@ -172,13 +175,14 @@ export default function Account({
   userId
 }) {
   const [displayName, setDisplayName] = useState(displayNameUser)
-
+  const [uploading, setuploading] = useState(null)
   useEffect(() => {
     setDisplayName(displayNameUser)
   }, [displayNameUser])
 
   const handleSubmit = async () => {
     // Handle form submission here
+    setuploading(true);
     let url = null
     if (avatar) {
       const formdtata = new FormData()
@@ -191,6 +195,7 @@ export default function Account({
     }
     try {
       await updateUserByIdAPI(userId, updateData)
+      setuploading(false)
       toast.success('Update Success !')
     } catch (err) {
       toast.error('Change DisplayName Fail!')
@@ -213,9 +218,12 @@ export default function Account({
       >
         <div style={{ width: '400px', padding: '16px 16px' }}>
           <CircularImageBox
-            userId= {userId}
+            userId={userId}
             displayNameUser={displayName}
             userNameUser={'@' + userNameUser}
+            sx={{
+              mb: '20px'
+            }}
           />
           <Box
             sx={{
@@ -364,6 +372,7 @@ export default function Account({
               onClick={() => handleSubmit()}
             >
               Update
+              {uploading && <CircularProgress size={24} sx = {{ color: 'white', ml: 2 }} />}
             </Button>
           </Stack>
         </div>
