@@ -7,7 +7,7 @@
   "author": "shadowhira",
   "description": "shadowhira.github.io",
   "engines": {
-    "node": "18.17.0"
+    "node": "18.x"
   },
   "scripts": {
     "predeploy": "yarn run build",

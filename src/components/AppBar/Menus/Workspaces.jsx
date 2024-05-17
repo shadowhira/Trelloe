@@ -1,17 +1,12 @@
 import Cloud from '@mui/icons-material/Cloud'
-import ContentCopy from '@mui/icons-material/ContentCopy'
-import ContentCut from '@mui/icons-material/ContentCut'
-import ContentPaste from '@mui/icons-material/ContentPaste'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
-import Typography from '@mui/material/Typography'
 import * as React from 'react'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 function Workspaces() {
   const [anchorEl, setAnchorEl] = React.useState(null)
@@ -49,7 +44,8 @@ function Workspaces() {
           <ListItemIcon>
             <Cloud fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Your Space</ListItemText>
+          {/* <ListItemText>Your Space</ListItemText> */}
+          <a href="/boards/" style={{ textDecoration: 'none', color: 'black' }}>Your Space</a>
         </MenuItem>
       </Menu>
     </Box>

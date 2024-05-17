@@ -4,6 +4,10 @@ import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import * as React from 'react'
+import MenuBookIcon from '@mui/icons-material/MenuBook'
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts'
+import DesignServicesIcon from '@mui/icons-material/DesignServices'
+import SplitscreenIcon from '@mui/icons-material/Splitscreen'
 
 function Templates() {
   const [anchorEl, setAnchorEl] = React.useState(null)
@@ -36,18 +40,23 @@ function Templates() {
         MenuListProps={{
           'aria-labelledby': 'basic-button-templates'
         }}
+        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
-        <MenuItem>
-          <a href="/boards/6642abf8f5ce444f1c33a836" style={{ textDecoration: 'none' }}>Phân chia công việc</a>
+        <MenuItem sx={{ gap: 1 }}>
+          <SplitscreenIcon />
+          <a href="/boards/6642abf8f5ce444f1c33a836" style={{ textDecoration: 'none', color: 'black' }}>Phân chia công việc</a>
         </MenuItem>
-        <MenuItem>
-          <a href="/boards/6642b11ff5ce444f1c33a846" style={{ textDecoration: 'none' }}>Project Management</a>
+        <MenuItem sx={{ gap: 1 }}>
+          <ManageAccountsIcon />
+          <a href="/boards/6642b11ff5ce444f1c33a846" style={{ textDecoration: 'none', color: 'black' }}>Project Management</a>
         </MenuItem>
-        <MenuItem>
-          <a href="/boards/6642b622f5ce444f1c33a850" style={{ textDecoration: 'none' }}>Design Huddle</a>
+        <MenuItem sx={{ gap: 1 }}>
+          <DesignServicesIcon />
+          <a href="/boards/6642b622f5ce444f1c33a850" style={{ textDecoration: 'none', color: 'black' }}>Design Huddle</a>
         </MenuItem>
-        <MenuItem>
-          <a href="/boards/6642b689f5ce444f1c33a856" style={{ textDecoration: 'none' }}>Dự án phần mềm</a>
+        <MenuItem sx={{ gap: 1 }}>
+          <MenuBookIcon />
+          <a href="/boards/6642b689f5ce444f1c33a856" style={{ textDecoration: 'none', color: 'black' }}>Dự án phần mềm</a>
         </MenuItem>
       </Menu>
     </Box>

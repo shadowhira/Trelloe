@@ -1,33 +1,30 @@
 /* eslint-disable no-trailing-spaces */
 // Boards list
 
-import { Stack, Box, Typography, Tooltip } from '@mui/material'
-import AppBar from '~/components/AppBar/AppBar'
-import CategoryBar from '~/components/CategoryBar/CategoryBar'
-import NavigateNextIcon from '@mui/icons-material/NavigateNext'
-import {
-  checkAuthAPI,
-  fetchBoardDetailsAPI,
-  fetchListBoardAPI,
-  getListBoardByUserId,
-  updateBoardDetailsAPI
-} from '~/apis'
-import { useEffect, useState } from 'react'
-import { Link , useNavigate} from 'react-router-dom'
+import { Box, Stack, Typography } from '@mui/material'
 import Pagination from '@mui/material/Pagination'
 import axios from 'axios'
-import { toast } from 'react-toastify'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import {
+  checkAuthAPI
+} from '~/apis'
+import { mockData } from '~/apis/mock-data'
+import AppBar from '~/components/AppBar/AppBar'
 import BoardCardVisual from '~/components/BoardCardVisual/BoardCardVisual'
+import CategoryBar from '~/components/CategoryBar/CategoryBar'
 
 // const ListBoard = [
 //   {
 //     _id: 'board-id-01',
 //     title: 'MERN Stack Board 1',
 //     description: 'MERN stack Course 1',
+//     type: 'public',
 //     color: 'red'
-//   }
+//   },
 // ]
+
+const ListBoard = mockData.boards
 
 function getRandomColor() {
   // Sinh ngẫu nhiên các giá trị RGB trong khoảng từ 0 đến 255
@@ -50,6 +47,7 @@ function BoardList() {
   const indexOfLastBoard = page * boardsPerPage
   const indexOfFirstBoard = indexOfLastBoard - boardsPerPage
   const currentBoards = listBoard.slice(indexOfFirstBoard, indexOfLastBoard)
+  // const currentBoards = ListBoard.slice(indexOfFirstBoard, indexOfLastBoard)
   const [auth, setAuth] = useState(false)
   const navigate = useNavigate()
   axios.defaults.withCredentials = true

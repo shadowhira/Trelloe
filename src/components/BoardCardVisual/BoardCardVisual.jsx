@@ -236,12 +236,13 @@ function BoardCardVisual({ title, description, color, boardId, type, updateBoard
           '&:hover': {
             color: (theme) => (theme.palette.mode === 'dark' ? '#1976d2' : '#1976d2'),
             cursor: 'pointer',
-            bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#d5e9fe' : '#d5e9fe')
+            bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#d5e9fe' : '#d5e9fe'),
+            borderRadius: '0 0 10px 10px'
           }
         }}
       >
-        <span style={{ marginLeft: 'auto' }}>Go to board</span>
-        <NavigateNextIcon style={{ marginLeft: '4px', marginRight: '8px' }}></NavigateNextIcon>
+        <Typography sx={{ marginLeft: 'auto', color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#000') }}>Go to board</Typography>
+        <NavigateNextIcon sx={{ marginLeft: '4px', marginRight: '8px', color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#000') }}></NavigateNextIcon>
       </Box>
     </Link>
     <Dialog

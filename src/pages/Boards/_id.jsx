@@ -28,6 +28,7 @@ import {
 } from '~/apis'
 import CategoryBar from '~/components/CategoryBar/CategoryBar'
 import { generatePlaceholderCard } from '~/utils/formatters'
+import { mockData } from '~/apis/mock-data'
 
 function Board() {
   const [board, setBoard] = useState(null)
@@ -291,8 +292,10 @@ function Board() {
       <Box sx={{ display: 'flex' }}>
         <CategoryBar nameActive="Boards"/>
         <Box sx={{ width: '100%' }}>
+          {/* <BoardBar board={mockData.board} /> */}
           <BoardBar board={board} />
           <BoardContent
+            // board={mockData.board}
             board={board}
             createNewColumn={createNewColumn}
             createNewCard={createNewCard}

@@ -1,5 +1,6 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import StarIcon from '@mui/icons-material/Star'
+import { ListItem } from '@mui/material'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
@@ -98,15 +99,16 @@ function Starred() {
         }}
       >
         {favoriteBoards.map((board) => (
-          <MenuItem key={board._id} >
-            <ListItemText onClick={handleOpenBoard}>
-              <StarIcon />
-              {board.title}
-            </ListItemText>
+          <MenuItem key={board._id}>
+            <ListItem
+              onClick={handleOpenBoard}
+              sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}
+            >
+              <StarIcon sx={{ marginRight: 1 }} />
+              <ListItemText primary={board.title}/>
+            </ListItem>
           </MenuItem>
         ))}
-        <Divider />
-        {/* Các MenuItem khác (nếu có) */}
       </Menu>
     </Box>
   )
