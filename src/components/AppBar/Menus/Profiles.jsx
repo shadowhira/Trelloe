@@ -111,9 +111,9 @@ function Profiles() {
           'aria-labelledby': 'basic-button-profiles'
         }}
       >
-        <MenuItem>
+        {/* <MenuItem>
           <Avatar sx={{ width: 28, height: 28, mr: 2 }}/> Profile
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem onClick={handleAccount}>
           <Avatar sx={{ width: 28, height: 28, mr: 2 }}/> My account
         </MenuItem>

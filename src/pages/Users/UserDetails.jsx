@@ -10,6 +10,7 @@ import Account from './Account'
 import Security from './Security'
 import axios from 'axios'
 import { getUserByIdAPI } from '~/apis'
+import AppBar from '~/components/AppBar/AppBar'
 
 export default function UserDetail() {
   const [value, setValue] = React.useState('1')
@@ -53,14 +54,15 @@ export default function UserDetail() {
       }
     }
     fetchData()
-      // Gọi fetchData khi component được render
+    // Gọi fetchData khi component được render
   }, []) // Chỉ gọi lại useEffect khi userId thay đổi
 
 
 
   return (
     <Box>
-      <TabContext value={value}>
+      <AppBar />
+      <TabContext value={value} >
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <TabList
             onChange={handleChange}

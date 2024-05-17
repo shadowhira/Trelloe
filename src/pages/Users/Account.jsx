@@ -16,6 +16,8 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { getUserByIdAPI, updateUserByIdAPI } from '~/apis'
 import CircularProgress from '@mui/material/CircularProgress'
+import defaultAvatar from '~/assets/profile.png'
+import AppBar from '~/components/AppBar/AppBar'
 
 
 let avatar = null
@@ -116,8 +118,8 @@ const CircularImageBox = ({ displayNameUser, userNameUser, userId }) => {
                 sx={{ objectFit: 'cover' }}
               />
             ) : (
-              <CardContent sx={{ textAlign: 'center', cursor: 'pointer' }}>
-                <Typography variant='body1'>No image selected</Typography>
+              <CardContent sx={{ textAlign: 'center', cursor: 'pointer', padding: 0 }}>
+                <CardMedia component='img' height='100%' image={defaultAvatar} alt='Default' sx={{ objectFit: 'cover' }} />
               </CardContent>
             )}
           </label>
@@ -129,11 +131,6 @@ const CircularImageBox = ({ displayNameUser, userNameUser, userId }) => {
             onChange={handleFileChange}
           />
         </Card>
-        {/* <form onSubmit={handleSubmit}>
-<Button type='submit' variant='contained' disabled={!selectedFile || uploading}>
-            Upload
-          </Button>
-        </form> */}
       </Box>
 
       <Box
@@ -208,7 +205,7 @@ export default function Account({
         sx={{
           display: 'flex',
           justifyContent: 'center',
-          height: (theme) => `calc(90vh -
+          height: (theme) => `calc(80vh -
             ${theme.trello.appBarHeight}
           )`,
           paddingTop: '50px',
@@ -230,7 +227,7 @@ export default function Account({
               width: '100%',
               display: 'flex',
               bgcolor: (theme) =>
-                theme.palette.mode === 'dark' ? '#545454' : '#ECEAF7',
+                theme.palette.mode === 'dark' ? '#rgba(0,0,0,0.12)' : '#fff',
               height: '80px',
               alignItems: 'center',
               justifyContent: 'center',
@@ -277,7 +274,7 @@ export default function Account({
               width: '100%',
               display: 'flex',
               bgcolor: (theme) =>
-                theme.palette.mode === 'dark' ? '#545454' : '#ECEAF7',
+                theme.palette.mode === 'dark' ? '#rgba(0,0,0,0.12)' : '#fff',
               height: '80px',
               alignItems: 'center',
               justifyContent: 'center',
@@ -318,6 +315,7 @@ export default function Account({
               }}
             />
           </Box>
+
           <Box
             sx={{
               width: '100%',

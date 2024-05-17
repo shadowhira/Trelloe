@@ -1,13 +1,14 @@
+import DesignServicesIcon from '@mui/icons-material/DesignServices'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts'
+import MenuBookIcon from '@mui/icons-material/MenuBook'
+import SplitscreenIcon from '@mui/icons-material/Splitscreen'
+import { Typography } from '@mui/material'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import * as React from 'react'
-import MenuBookIcon from '@mui/icons-material/MenuBook'
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts'
-import DesignServicesIcon from '@mui/icons-material/DesignServices'
-import SplitscreenIcon from '@mui/icons-material/Splitscreen'
 
 function Templates() {
   const [anchorEl, setAnchorEl] = React.useState(null)
@@ -44,19 +45,27 @@ function Templates() {
       >
         <MenuItem sx={{ gap: 1 }}>
           <SplitscreenIcon />
-          <a href="/boards/6642abf8f5ce444f1c33a836" style={{ textDecoration: 'none', color: 'black' }}>Phân chia công việc</a>
+          <a href="/boards/6642abf8f5ce444f1c33a836" style={{ textDecoration: 'none', color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#000') }}>
+            <Typography sx={{ color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#000') }}>Phân chia công việc</Typography>
+          </a>
         </MenuItem>
         <MenuItem sx={{ gap: 1 }}>
           <ManageAccountsIcon />
-          <a href="/boards/6642b11ff5ce444f1c33a846" style={{ textDecoration: 'none', color: 'black' }}>Project Management</a>
+          <a href="/boards/6642b11ff5ce444f1c33a846" style={{ textDecoration: 'none', color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#000') }}>
+            <Typography sx={{ color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#000') }}>Project Management</Typography>
+          </a>
         </MenuItem>
         <MenuItem sx={{ gap: 1 }}>
           <DesignServicesIcon />
-          <a href="/boards/6642b622f5ce444f1c33a850" style={{ textDecoration: 'none', color: 'black' }}>Design Huddle</a>
+          <a href="/boards/6642b622f5ce444f1c33a850" style={{ textDecoration: 'none', color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#000') }}>
+            <Typography sx={{ color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#000') }}>Design Huddle</Typography>
+          </a>
         </MenuItem>
         <MenuItem sx={{ gap: 1 }}>
           <MenuBookIcon />
-          <a href="/boards/6642b689f5ce444f1c33a856" style={{ textDecoration: 'none', color: 'black' }}>Dự án phần mềm</a>
+          <a href="/boards/6642b689f5ce444f1c33a856" style={{ textDecoration: 'none', color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#000') }}>
+            <Typography sx={{ color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#000') }}>Dự án phần mềm</Typography>
+          </a>
         </MenuItem>
       </Menu>
     </Box>

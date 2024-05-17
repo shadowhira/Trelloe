@@ -208,26 +208,6 @@ function Card({ card, deleteCardDetails }) {
 
           </IconButton>
         </CardContent>
-        {/* {isEditingCover && (
-            <form onSubmit={handleSubmit}
-              style = {{
-                position: 'absolute',
-                width: '500px',
-                top:"0",
-                left:"400px"
-              }}
-            >
-              <input
-                type="file"
-                label="Image"
-                name="myFile"
-                id='file-upload'
-                accept='.jpeg, .png, .jpg'
-                onChange={(e) => handleFileUpload(e)}
-              />
-              <button type='submit'>Submit</button>
-            </form>
-          )} */}
       </Box>
 
       <Menu
@@ -268,24 +248,6 @@ function Card({ card, deleteCardDetails }) {
             }}
           />
           <label htmlFor={`upload-cover-${card._id}`}>Change Cover</label>
-          {isEditingCover && (
-            <form onSubmit={handleSubmit}
-              style = {{
-                position: 'absolute',
-                zIndex: 1
-              }}
-            >
-              <input
-                type="file"
-                label="Image"
-                name="myFile"
-                id='file-upload'
-                accept='.jpeg, .png, .jpg'
-                onChange={(e) => handleFileUpload(e)}
-              />
-              <button type='submit'>Submit</button>
-            </form>
-          )}
         </MenuItem>
 
         <MenuItem onClick={handleDeleteCard}
@@ -299,7 +261,43 @@ function Card({ card, deleteCardDetails }) {
           />
           Delete card
         </MenuItem>
-
+        {isEditingCover && (
+          <form onSubmit={handleSubmit} style={{
+            position: 'absolute',
+            zIndex: 1,
+            background: 'white',
+            padding: '20px', // Tăng padding để tạo khoảng cách từ nội dung tới viền
+            boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
+            borderRadius: '5px',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '100%', // Đặt chiều rộng cố định để form không tràn ra ngoài
+            height: '100%', // Đặt chiều cao cố định để form không tràn ra ngoài
+            textAlign: 'center' // Căn giữa nội dung trong form
+          }}>
+            <input
+              type="file"
+              label="Image"
+              name="myFile"
+              id='file-upload'
+              accept='.jpeg, .png, .jpg'
+              onChange={(e) => handleFileUpload(e)}
+              style={{ marginBottom: '10px', backgroundColor: '#66C1E0', borderRadius: '5px' }} // Thêm margin dưới cho input
+            />
+            <button type='submit' style={{ // Thêm style cho button
+              backgroundColor: '#66C1E0', // Màu nền xanh
+              color: 'white', // Màu chữ trắng
+              padding: '10px 20px', // Kích thước nút
+              border: 'none', // Bỏ viền
+              borderRadius: '5px', // Bo góc
+              cursor: 'pointer', // Con trỏ khi hover
+              outline: 'none' // Bỏ đường viền khi focus
+            }}>
+            Submit
+            </button>
+          </form>
+        )}
       </Menu>
       {uploading && <CircularProgress size={24} />}
       {shouldShowCardActions() &&

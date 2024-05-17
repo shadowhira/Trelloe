@@ -19,12 +19,29 @@ này chuần chình cho các bạn. )
 let api_root = API_ROOT // http://localhost:8017
 // console.log('🐛: ➡️ api_root:', api_root)
 // api_root = 'https://trello-api-z8ri.onrender.com'
+const deployedBackendURL = 'https://trello-api-z8ri.onrender.com'
+
+const isLocalBackendRunning = () => {
+  // Thực hiện một request đến backend local
+  return axios.get(`${api_root}/v1/status`)
+    .then(response => {
+      // Nếu request thành công, backend local đang chạy
+      console.log('🐛: ➡️ isLocalBackendRunning ➡️ response:', response)
+      return true
+    })
+    .catch(error => {
+      // Nếu request gặp lỗi, backend local không hoạt động
+      return false
+    })
+}
+
+if (!isLocalBackendRunning()) api_root = deployedBackendURL
+console.log('🐛: ➡️ deployedBackendURL:', deployedBackendURL)
+
 
 /* Board */
 // Hậu tố là API để đánh dấu
 
-
-// Board
 export const createNewBoardAPI = async (title, description, type, userId) => {
   const response = await axios.post(`${api_root}/v1/boards`, { title, description, type, userId })
   // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
