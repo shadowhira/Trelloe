@@ -28,6 +28,7 @@
     "@mui/lab": "^5.0.0-alpha.170",
     "@mui/material": "^5.13.0",
     "@mui/styles": "^5.15.17",
+    "@mui/utils": "^5.15.14",
     "axios": "^1.5.1",
     "cloudinary": "^2.2.0",
     "cross-env": "^7.0.3",
