@@ -10,10 +10,10 @@
     "node": "18.x"
   },
   "scripts": {
-    "predeploy": "yarn run build",
+    "dev": "cross-env BUILD_MODE=dev vite --host",
     "deploy": "gh-pages -d dist",
-    "dev": "vite --host",
-    "build": "vite build --base=./",
+    "predeploy": "yarn run build",
+    "build": "cross-env BUILD_MODE=production vite build --base=./",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -30,6 +30,7 @@
     "@mui/styles": "^5.15.17",
     "axios": "^1.5.1",
     "cloudinary": "^2.2.0",
+    "cross-env": "^7.0.3",
     "gh-pages": "^6.1.1",
     "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",
