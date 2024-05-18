@@ -36,7 +36,7 @@ const isLocalBackendRunning = () => {
 }
 
 if (!isLocalBackendRunning()) api_root = deployedBackendURL
-console.log('🐛: ➡️ BackendURL:', deployedBackendURL)
+console.log('🐛: ➡️ BackendURL:', api_root)
 
 
 /* Board */

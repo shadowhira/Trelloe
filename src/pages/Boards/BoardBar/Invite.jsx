@@ -7,7 +7,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { TextField } from '@mui/material'
+import { CircularProgress, TextField } from '@mui/material'
 import { createNewInvitationAPI, fetchBoardDetailsAPI, getUserByEmailAPI, getUserByIdAPI, getUserIdByTokenAPI } from '~/apis'
 
 function Invite({ board }) {
@@ -17,6 +17,7 @@ function Invite({ board }) {
   const [inviteeId, setInviteeId] = useState(null) // ID của người được mời
   const [userId, setUserId] = useState(null)
   const menuRef = useRef(null)
+  const [uploading, setuploading] = useState(null)
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -109,6 +110,7 @@ function Invite({ board }) {
   const handleSendInvite = async () => {
     // Lấy inviteeId trước khi gửi lời mời
     await fetchInviteeId()
+    setuploading(true)
 
     if (inviteeId && userId) {
       try {
@@ -121,8 +123,10 @@ function Invite({ board }) {
             status: 'pending'
           }
         })
+        setuploading(false)
 
-        console.log('🐛: ➡️ handleSendInvite ➡️ response:', response)
+        // console.log('🐛: ➡️ handleSendInvite ➡️ response:', response)
+
         // const response = await axios.post('http://localhost:8017/v1/invitation', {
         //   inviterId: userId, // ID của người dùng hiện tại
         //   inviteeId, // Sử dụng ID đã lấy
@@ -136,13 +140,16 @@ function Invite({ board }) {
         if (response) {
           toast.success(`Invite ${email} success`)
           setEmail('')
+          setuploading(false)
         } else {
-          toast.error(response.status.message)
+          // toast.error(response.status.message)
           setEmail('')
+          setuploading(false)
         }
       } catch (error) {
         toast.error('Error sending invitation')
         setEmail('')
+        setuploading(false)
       }
 
       setShowInput(false) // Ẩn thanh input sau khi gửi
@@ -187,6 +194,7 @@ function Invite({ board }) {
           />
           <Button variant="contained" onClick={handleSendInvite}>
             Send
+            {uploading && <CircularProgress size={24} sx = {{ color: 'white', ml: 2 }} />}
           </Button>
         </Box>
       )}

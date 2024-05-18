@@ -106,7 +106,8 @@ function SignInSide() {
               mx: 4,
               display: 'flex',
               flexDirection: 'column',
-              alignItems: 'center'
+              alignItems: 'center',
+              justifyContent: 'center'
             }}
           >
             <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
@@ -119,7 +120,11 @@ function SignInSide() {
               component="form"
               noValidate
               onSubmit={handleSubmit}
-              sx={{ mt: 1, mr: 8, left: '80%', 'input[type="password"], input[type="text"]': { padding: '1.6em' } }}
+              sx={{ mt: 1, mr: 8,
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: 'auto'
+              }}
             >
               <TextField
                 margin="normal"
@@ -152,7 +157,7 @@ function SignInSide() {
                 Sign In
               </Button>
               <Grid container>
-                <Grid item>
+                <Grid item sx={{ margin: 'auto' }}>
                   <Link href="/signup" variant="body2">
                     {'Don\'t have an account? Sign Up'}
                   </Link>

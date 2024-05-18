@@ -287,19 +287,22 @@ function Card({ card, deleteCardDetails }) {
             />
             <button type='submit' style={{ // Thêm style cho button
               backgroundColor: '#66C1E0', // Màu nền xanh
-              color: 'white', // Màu chữ trắng
+              color: '#000', // Màu chữ trắng
               padding: '10px 20px', // Kích thước nút
               border: 'none', // Bỏ viền
               borderRadius: '5px', // Bo góc
               cursor: 'pointer', // Con trỏ khi hover
-              outline: 'none' // Bỏ đường viền khi focus
+              outline: 'none', // Bỏ đường viền khi focus
+              display: 'flex', // Hiển thị dạng flex
+              justifyContent: 'center', // Căn giữa theo chiều ngang
+              alignItems: 'center' // Căn giữa theo chiều dọc
             }}>
-            Submit
+              Submit
+              {uploading && <CircularProgress size={24} sx = {{ color: '#000', ml: 2 }} />}
             </button>
           </form>
         )}
       </Menu>
-      {uploading && <CircularProgress size={24} />}
       {shouldShowCardActions() &&
         <CardActions sx={{ p: '0 4px 8px 4px' }}>
           {!!card?.memberIds?.length &&

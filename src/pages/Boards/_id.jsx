@@ -35,6 +35,7 @@ function Board() {
   let { boardId } = useParams()
   const [auth, setAuth] = useState(false)
   const navigate = useNavigate()
+  const [isCategoryBarOpen, setCategoryBarOpen] = useState(false)
   axios.defaults.withCredentials = true
 
   useEffect(() => {
@@ -270,7 +271,6 @@ function Board() {
     }
   }
 
-
   if (!board) {
     return (
       <Box sx={{
@@ -287,8 +287,10 @@ function Board() {
   }
 
   return (
-    <Container disableGutters maxWidth={false} sx={{ height: '100vh', backgroundColor: 'primary.main' }}>
-      <AppBar/>
+    <Container disableGutters maxWidth={false}
+      sx={{ height: (theme) => theme.trello.boardContentHeight, backgroundColor: 'primary.main' }}
+    >
+      <AppBar />
       <Box sx={{ display: 'flex' }}>
         <CategoryBar nameActive="Boards"/>
         <Box sx={{ width: '100%' }}>
