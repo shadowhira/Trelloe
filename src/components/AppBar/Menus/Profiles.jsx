@@ -14,6 +14,7 @@ import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { checkLogoutAPI, getUserByIdAPI } from '~/apis'
+import { getUserIdByTokenAPI } from '../../../apis'
 
 function Profiles() {
   const navigate = useNavigate()
@@ -29,12 +30,12 @@ function Profiles() {
 
   const fetchUserId = async () => {
     try {
-      const response = await axios.get('http://localhost:8017/v1/authenticateToken/user-id', {
+      const response = await getUserIdByTokenAPI({
         headers: {
           Authorization: `Bearer ${token}` // Gửi token trong header
         }
       })
-      setUserId(response.data.userId) // Lấy userId từ phản hồi
+      setUserId(response.userId) // Lấy userId từ phản hồi
     } catch (error) {
       console.log('Error fetching userId')
     }

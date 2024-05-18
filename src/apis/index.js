@@ -26,7 +26,7 @@ const isLocalBackendRunning = () => {
   return axios.get(`${api_root}/v1/status`)
     .then(response => {
       // Nếu request thành công, backend local đang chạy
-      console.log('🐛: ➡️ isLocalBackendRunning ➡️ response:', response)
+      // console.log('🐛: ➡️ isLocalBackendRunning ➡️ response:', response)
       return true
     })
     .catch(error => {
@@ -36,7 +36,7 @@ const isLocalBackendRunning = () => {
 }
 
 if (!isLocalBackendRunning()) api_root = deployedBackendURL
-console.log('🐛: ➡️ deployedBackendURL:', deployedBackendURL)
+console.log('🐛: ➡️ BackendURL:', deployedBackendURL)
 
 
 /* Board */
@@ -69,7 +69,7 @@ export const updateBoardDetailsAPI = async (boardId, updateData) => {
 }
 
 export const getListBoardByUserId = async (userId) => {
-  const response = await axios.get(`${api_root}/v1/boards/userId/${userId}`, userId)
+  const response = await axios.get(`${api_root}/v1/boards/userId/${userId}`)
   return response.data
 }
 
@@ -108,6 +108,11 @@ export const createNewCardAPI = async (newCardData) => {
 
 export const deleteCardDetailsAPI = async (cardId) => {
   const response = await axios.delete(`${api_root}/v1/cards/${cardId}`)
+  return response.data
+}
+
+export const updateCardAPI = async (cardId, updateData) => {
+  const response = await axios.put(`${api_root}/v1/cards/${cardId}`, updateData)
   return response.data
 }
 
@@ -151,6 +156,11 @@ export const updateInvitationAPI = async (invitationId, updateData) => {
   return response.data
 }
 
+export const createNewInvitationAPI = async (newInviteData) => {
+  const response = await axios.post(`${api_root}/v1/invitation`, newInviteData)
+  return response.data
+}
+
 /* User */
 
 export const getUserByIdAPI = async (userId) => {
@@ -178,3 +188,13 @@ export const deleteUserAPI = async (userId) => {
   return response.data
 }
 
+export const getUserIdByTokenAPI = async (header) => {
+  const response = await axios.get(`${api_root}/v1/authenticateToken/user-id`, header)
+  return response.data
+}
+
+// Upload Image
+export const uploadImageAPI = async (file) => {
+  const response = await axios.post(`${api_root}/upload`, file)
+  return response.data
+}

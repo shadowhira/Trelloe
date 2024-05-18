@@ -75,14 +75,18 @@ function BoardCardVisual({ title, description, color, boardId, type, updateBoard
     try {
       // Gọi API để cập nhật trạng thái "yêu thích" của board
       // Ví dụ: Sử dụng axios để gửi request POST tới backend
-      console.log('🐛: ➡️ handleToggleFavorite ➡️ board._id:', board._id)
-      const response = await axios.put(`http://localhost:8017/v1/boards/boardId/${board._id}`, {
-        ...board,
-        favorite: !isFavorite
-      })
+      // console.log('🐛: ➡️ handleToggleFavorite ➡️ board._id:', board._id)
+      // updateBoardDetailsAPI(boardId, updateData)
+      let response
+      try {
+        response = await updateBoardDetailsAPI(board._id, { favorite: !isFavorite })
+        // Thực hiện các thao tác cần thiết sau khi cập nhật thành công
+      } catch (error) {
+        console.error('Error updating board details:', error)
+      }
 
       // Nếu API trả về thành công, cập nhật trạng thái "yêu thích" của board trên frontend
-      if (response.status === 200) {
+      if (response) {
         setIsFavorite(!isFavorite)
         // console.log('điiid')
         setBoardUpdated(true)

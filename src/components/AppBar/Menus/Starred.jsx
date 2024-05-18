@@ -9,6 +9,7 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import axios from 'axios'
 import * as React from 'react'
+import { getListBoardByUserId, getUserIdByTokenAPI } from '../../../apis'
 
 
 function Starred() {
@@ -26,12 +27,12 @@ function Starred() {
 
   const fetchUserId = async () => {
     try {
-      const response = await axios.get('http://localhost:8017/v1/authenticateToken/user-id', {
+      const response = await getUserIdByTokenAPI({
         headers: {
           Authorization: `Bearer ${token}` // Gửi token trong header
         }
       })
-      setUserId(response.data.userId) // Lấy userId từ phản hồi
+      setUserId(response.userId) // Lấy userId từ phản hồi
       // console.log('🐛: ➡️ fetchUserId ➡️ response.data.userId:', userId)
     } catch (error) {
       console.log('Error fetching userId')
@@ -49,19 +50,16 @@ function Starred() {
     try {
       // const userId = await fetchUserId() // Hàm này cần được định nghĩa trong file ~/apis hoặc ở nơi khác tương ứng
       // console.log(userId)
-      if (userId) { // Kiểm tra xem userId đã có giá trị hay chưa
-        // getListBoardByUserId(userId)
-        await fetch(`http://localhost:8017/v1/boards/userId/${userId}`)
-          .then(res => res.json())
-          .then(listBoard => {
-            setBoardList(listBoard)
-            // console.log('🐛: ➡️ useEffect ➡️ listBoard:', listBoard)
-          })
-          .catch(error => {
-            console.error('Error fetching boards:', error)
-          })
-        const filteredBoards = boardList.filter(board => board.favorite)
-        setFavoriteBoards(filteredBoards)
+      if (userId) {
+        try {
+          const listBoard = await getListBoardByUserId(userId)
+          setBoardList(listBoard)
+          // console.log('🐛: ➡️ useEffect ➡️ listBoard:', listBoard)
+          const filteredBoards = listBoard.filter(board => board.favorite)
+          setFavoriteBoards(filteredBoards)
+        } catch (error) {
+          console.error('Error fetching boards:', error)
+        }
       }
     } catch (error) {
       console.error('Error fetching favorite boards:', error)

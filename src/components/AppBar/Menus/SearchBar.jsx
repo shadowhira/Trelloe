@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import CloseIcon from '@mui/icons-material/Close'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import SearchIcon from '@mui/icons-material/Search'
@@ -10,6 +11,7 @@ import ListItemText from '@mui/material/ListItemText'
 import TextField from '@mui/material/TextField'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
+import { getListBoardByUserId, getUserIdByTokenAPI } from '../../../apis'
 
 function SearchBar({ updateBoardUpdated }) {
   const [searchValue, setSearchValue] = useState('')
@@ -28,36 +30,34 @@ function SearchBar({ updateBoardUpdated }) {
 
   const fetchUserId = async () => {
     try {
-      const response = await axios.get('http://localhost:8017/v1/authenticateToken/user-id', {
+      const response = await getUserIdByTokenAPI({
         headers: {
           Authorization: `Bearer ${token}` // Gửi token trong header
         }
       })
-      setUserId(response.data.userId) // Lấy userId từ phản hồi
+      setUserId(response.userId) // Lấy userId từ phản hồi
     } catch (error) {
       console.log('Error fetching userId')
     }
   }
 
-  useEffect(() => {
+  useEffect(  () => {
     fetchUserId()
     // console.log(userId)
     // fetchListBoardAPI()
     if (userId) { // Kiểm tra xem userId đã có giá trị hay chưa
-      // getListBoardByUserId(userId)
-      // console.log(boardUpdated)
-      fetch(`http://localhost:8017/v1/boards/userId/${userId}`)
-        .then(res => res.json())
+      getListBoardByUserId(userId)
         .then(listBoard => {
           setBoardList(listBoard)
           setBoardUpdated(true)
-          // updateBoardUpdated()
+        // updateBoardUpdated()
         })
         .catch(error => {
           console.error('Error fetching boards:', error)
         })
     }
   }, [userId, boardUpdated])
+  // console.log(boardList)
 
   const handleSearchChange = (e) => {
     const { value } = e.target

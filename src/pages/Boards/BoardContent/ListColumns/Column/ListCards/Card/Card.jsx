@@ -24,6 +24,7 @@ import { toast } from 'react-toastify'
 
 import ImageIcon from '@mui/icons-material/Image'
 import TitleIcon from '@mui/icons-material/Title'
+import { updateCardAPI, uploadImageAPI } from '~/apis'
 
 function Card({ card, deleteCardDetails }) {
   const [anchorEl, setAnchorEl] = useState(null)
@@ -41,8 +42,6 @@ function Card({ card, deleteCardDetails }) {
     id: card._id,
     data: { ...card }
   })
-
-  const url = 'http://localhost:8017'
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -100,7 +99,7 @@ function Card({ card, deleteCardDetails }) {
       return // Không cập nhật nếu tiêu đề trống
     }
     try {
-      await axios.put(`${url}/v1/cards/${card._id}`, { title: newTitle }) // API cập nhật
+      await updateCardAPI(card._id, { title: newTitle })
       if (!isHovered) {
         card.title = newTitle
         setIsEditingTitle(false)
@@ -127,8 +126,8 @@ function Card({ card, deleteCardDetails }) {
       const formData = new FormData()
       formData.append('file', file)
       try {
-        const response = await axios.post('http://localhost:8017/upload', formData)
-        newCoverLink = response.data // Lưu URL mới của ảnh
+        const response = await uploadImageAPI(formData)
+        newCoverLink = response // Lưu URL mới của ảnh
         setNewCoverLink(newCoverLink) // Cập nhật trạng thái của component với URL mới
       } catch (error) {
         toast.error('Error uploading file')
@@ -139,7 +138,8 @@ function Card({ card, deleteCardDetails }) {
 
     try {
       // Sau khi đã nhận được URL mới, cập nhật cover của card thông qua API
-      await axios.put(`${url}/v1/cards/${card._id}`, { cover: newCoverLink })
+      // updateCardAPI(cardId, updateData)
+      await updateCardAPI(card._id, { cover: newCoverLink })
       setUploading(false)
       setShowCoverDialog(false)
     } catch (error) {

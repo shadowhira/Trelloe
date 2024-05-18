@@ -13,6 +13,7 @@ import axios from 'axios'
 import * as React from 'react'
 import { toast } from 'react-toastify'
 import { createNewBoardAPI } from '~/apis'
+import { getUserIdByTokenAPI } from '../../../apis'
 
 function CreateNewBoard({ updateBoardUpdated }) {
   const [userId, setUserId] = React.useState(null)
@@ -34,12 +35,12 @@ function CreateNewBoard({ updateBoardUpdated }) {
 
   const fetchUserId = async () => {
     try {
-      const response = await axios.get('http://localhost:8017/v1/authenticateToken/user-id', {
+      const response = await getUserIdByTokenAPI({
         headers: {
           Authorization: `Bearer ${token}` // Gửi token trong header
         }
       })
-      setUserId(response.data.userId) // Lấy userId từ phản hồi
+      setUserId(response.userId) // Lấy userId từ phản hồi
     } catch (error) {
       console.log('Error fetching userId:', error.message)
     }

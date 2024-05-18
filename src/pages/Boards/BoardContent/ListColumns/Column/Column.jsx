@@ -29,7 +29,6 @@ import axios from 'axios'
 import { updateColumnDetailsAPI } from '~/apis'
 
 function Column({ column, createNewCard, deleteColumnDetails, deleteCardDetails, updateColumnDetails }) {
-  const url = 'http://localhost:8017'
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: column._id,
     data: { ...column }

@@ -6,6 +6,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import CancelIcon from '@mui/icons-material/Cancel'
 import { fetchBoardDetailsAPI, getInvitationByInviteeIdAPI, getUserByIdAPI, pushBoardAPI, updateInvitationAPI } from '~/apis'
 import axios from 'axios'
+import { getUserIdByTokenAPI } from '../../../apis'
 
 function Notification({ updateBoardUpdated }) {
   const [invitations, setInvitations] = useState([])
@@ -24,12 +25,12 @@ function Notification({ updateBoardUpdated }) {
         .split('; ')
         .find(row => row.startsWith('token='))
         ?.split('=')[1]
-      const response = await axios.get('http://localhost:8017/v1/authenticateToken/user-id', {
+      const response = await getUserIdByTokenAPI({
         headers: {
           Authorization: `Bearer ${token}` // Gửi token trong header
         }
       })
-      return response.data.userId // Lấy userId từ phản hồi
+      return response.userId // Lấy userId từ phản hồi
     } catch (error) {
       console.log('Error fetching userId')
     }

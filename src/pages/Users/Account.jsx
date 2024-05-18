@@ -14,7 +14,7 @@ import TextField from '@mui/material/TextField'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-import { getUserByIdAPI, updateUserByIdAPI } from '~/apis'
+import { getUserByIdAPI, updateUserByIdAPI, uploadImageAPI } from '~/apis'
 import CircularProgress from '@mui/material/CircularProgress'
 import defaultAvatar from '~/assets/profile.png'
 import AppBar from '~/components/AppBar/AppBar'
@@ -179,12 +179,13 @@ export default function Account({
 
   const handleSubmit = async () => {
     // Handle form submission here
-    setuploading(true);
+    setuploading(true)
     let url = null
+    // uploadImageAPI(file)
     if (avatar) {
-      const formdtata = new FormData()
-      formdtata.append('file', avatar)
-      url = await axios.post('http://localhost:8017/upload', formdtata)
+      const formData = new FormData()
+      formData.append('file', avatar)
+      url = await uploadImageAPI(formData)
     }
     const updateData = {
       displayName: displayName,

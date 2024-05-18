@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { TextField } from '@mui/material'
-import { fetchBoardDetailsAPI, getUserByIdAPI } from '~/apis'
+import { createNewInvitationAPI, fetchBoardDetailsAPI, getUserByEmailAPI, getUserByIdAPI, getUserIdByTokenAPI } from '~/apis'
 
 function Invite({ board }) {
   const [showInput, setShowInput] = useState(false) // Kiểm soát việc hiển thị input
@@ -43,12 +43,12 @@ function Invite({ board }) {
 
   const fetchUserId = async () => {
     try {
-      const response = await axios.get('http://localhost:8017/v1/authenticateToken/user-id', {
+      const response = await getUserIdByTokenAPI({
         headers: {
           Authorization: `Bearer ${token}` // Gửi token trong header
         }
       })
-      setUserId(response.data.userId) // Lấy userId từ phản hồi
+      setUserId(response.userId) // Lấy userId từ phản hồi
     } catch (error) {
       return
     }
@@ -62,8 +62,8 @@ function Invite({ board }) {
   // Gọi API để lấy ID của người dùng theo email
   const fetchInviteeId = async () => {
     try {
-      const response = await axios.get(`http://localhost:8017/v1/users/email?email=${email}`)
-      setInviteeId(response.data._id) // Lấy ID từ phản hồi
+      const user = await getUserByEmailAPI(email)
+      setInviteeId(user._id) // Lấy ID từ phản hồi
     } catch (error) {
       toast.error('Error fetching invitee ID:', error.message)
     }
@@ -112,7 +112,7 @@ function Invite({ board }) {
 
     if (inviteeId && userId) {
       try {
-        const response = await axios.post('http://localhost:8017/v1/invitation', {
+        const response = await createNewInvitationAPI({
           inviterId: userId, // ID của người dùng hiện tại
           inviteeId, // Sử dụng ID đã lấy
           type: 'board_invitation',
@@ -122,7 +122,18 @@ function Invite({ board }) {
           }
         })
 
-        if (response.status === 201) {
+        console.log('🐛: ➡️ handleSendInvite ➡️ response:', response)
+        // const response = await axios.post('http://localhost:8017/v1/invitation', {
+        //   inviterId: userId, // ID của người dùng hiện tại
+        //   inviteeId, // Sử dụng ID đã lấy
+        //   type: 'board_invitation',
+        //   boardInvitation: {
+        //     boardId: board._id,
+        //     status: 'pending'
+        //   }
+        // })
+
+        if (response) {
           toast.success(`Invite ${email} success`)
           setEmail('')
         } else {

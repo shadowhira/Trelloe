@@ -3,7 +3,6 @@ import Admin from '~/pages/Admin/Admin'
 import Board from '~/pages/Boards/_id'
 import BoardList from '~/pages/Boards/index'
 import UserDetails from '~/pages/Users/UserDetails'
-import Test from './test'
 import SignInSide from './pages/Auth/Login/SignInSide'
 import SignUpSide from './pages/Auth/SignUp/SignUpSide'
 
@@ -31,7 +30,6 @@ function App() {
           {/* Trang Users */}
           <Route path="/user" element={<UserDetails />} />
           <Route path="/admin" element={<Admin />} />
-          <Route path="/test" element={<Test />} />
           {/* <Route path="/side" element={<SignInSide />} />
           <Route path="/sideup" element={<SignUpSide />} /> */}
 

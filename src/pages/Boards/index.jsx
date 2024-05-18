@@ -7,7 +7,9 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  checkAuthAPI
+  checkAuthAPI,
+  getListBoardByUserId,
+  getUserIdByTokenAPI
 } from '~/apis'
 import { mockData } from '~/apis/mock-data'
 import AppBar from '~/components/AppBar/AppBar'
@@ -66,12 +68,12 @@ function BoardList() {
 
   const fetchUserId = async () => {
     try {
-      const response = await axios.get('http://localhost:8017/v1/authenticateToken/user-id', {
+      const response = await getUserIdByTokenAPI({
         headers: {
           Authorization: `Bearer ${token}` // Gửi token trong header
         }
       })
-      setUserId(response.data.userId) // Lấy userId từ phản hồi
+      setUserId(response.userId) // Lấy userId từ phản hồi
     } catch (error) {
       console.log('Error fetching userId')
     }
@@ -99,8 +101,7 @@ function BoardList() {
     // fetchListBoardAPI()
     if (userId) { // Kiểm tra xem userId đã có giá trị hay chưa
       // getListBoardByUserId(userId)
-      fetch(`http://localhost:8017/v1/boards/userId/${userId}`)
-        .then(res => res.json())
+      getListBoardByUserId(userId)
         .then(listBoard => {
           setListBoard(listBoard)
         })

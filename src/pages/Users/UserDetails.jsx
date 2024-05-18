@@ -9,7 +9,7 @@ import SecurityIcon from '@mui/icons-material/Security'
 import Account from './Account'
 import Security from './Security'
 import axios from 'axios'
-import { getUserByIdAPI } from '~/apis'
+import { getUserByIdAPI, getUserIdByTokenAPI } from '~/apis'
 import AppBar from '~/components/AppBar/AppBar'
 
 export default function UserDetail() {
@@ -30,12 +30,12 @@ export default function UserDetail() {
         .split('; ')
         .find(row => row.startsWith('token='))
         ?.split('=')[1];
-      const response = await axios.get('http://localhost:8017/v1/authenticateToken/user-id', {
+      const response = await getUserIdByTokenAPI({
         headers: {
           Authorization: `Bearer ${token}` // Gửi token trong header
         }
-      });
-      return response.data.userId // Lấy userId từ phản hồi
+      })
+      return response.userId // Lấy userId từ phản hồi
     } catch (error) {
       return
     }
