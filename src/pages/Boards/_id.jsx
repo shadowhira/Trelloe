@@ -24,6 +24,7 @@ import {
   fetchBoardDetailsAPI,
   moveCardToDifferentColumnAPI,
   updateBoardDetailsAPI,
+  updateCardDetailsAPI,
   updateColumnDetailsAPI
 } from '~/apis'
 import CategoryBar from '~/components/CategoryBar/CategoryBar'
@@ -271,6 +272,54 @@ function Board() {
     }
   }
 
+  const updateCardDetails = async (cardId, columnToUpdate, dataCardToUpdate) => {
+    try {
+      // Gọi API để cập nhật thông tin cột
+      const response = await updateCardDetailsAPI(cardId, dataCardToUpdate)
+
+      // Kiểm tra xem API đã trả về dữ liệu mới cho cột hay không
+      if (response) {
+
+        // Cập nhật thông tin thẻ trong cột
+        const updatedCards = columnToUpdate.cards.map(card => {
+          if (card._id === cardId) {
+            return {
+              ...card,
+              ...dataCardToUpdate // Cập nhật thông tin mới
+            }
+          }
+          return card
+        })
+
+        // Sao chép dữ liệu cũ của bảng
+        const updatedBoard = { ...board }
+
+        // Tìm và cập nhật thông tin của cột trong bảng
+        updatedBoard.columns = updatedBoard.columns.map(column => {
+          if (column._id === columnToUpdate._id) {
+            return {
+              ...column,
+              cards: updatedCards // Cập nhật thẻ mới
+            }
+          }
+          return column
+        })
+
+        // Cập nhật state của bảng với thông tin cột mới
+        setBoard(updatedBoard)
+
+        // Hiển thị thông báo cập nhật thành công
+        toast.success('Card details updated successfully')
+      } else {
+        // Hiển thị thông báo lỗi nếu không thành công
+        toast.error('Failed to update card details')
+      }
+    } catch (error) {
+      // Hiển thị thông báo lỗi nếu có lỗi trong quá trình gọi API
+      toast.error('Error updating card details: ' + error.message)
+    }
+  }
+
   if (!board) {
     return (
       <Box sx={{
@@ -307,6 +356,7 @@ function Board() {
             deleteColumnDetails={deleteColumnDetails}
             deleteCardDetails={deleteCardDetails}
             updateColumnDetails={updateColumnDetails}
+            updateCardDetails={updateCardDetails}
           />
         </Box>
       </Box>

@@ -9,7 +9,15 @@ import CloseIcon from '@mui/icons-material/Close'
 
 import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable'
 
-function ListColumns({ columns, createNewColumn, createNewCard, deleteColumnDetails, deleteCardDetails, updateColumnDetails }) {
+function ListColumns({
+  columns,
+  createNewColumn,
+  createNewCard,
+  deleteColumnDetails,
+  deleteCardDetails,
+  updateColumnDetails,
+  updateCardDetails
+}) {
 
   const [openNewColumnForm, setOpenNewColumnForm] = useState(false)
   const toggleOpenNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm)
@@ -66,6 +74,7 @@ function ListColumns({ columns, createNewColumn, createNewCard, deleteColumnDeta
             deleteColumnDetails={deleteColumnDetails}
             deleteCardDetails={deleteCardDetails}
             updateColumnDetails={updateColumnDetails}
+            updateCardDetails={updateCardDetails}
           />
         })}
 

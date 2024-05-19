@@ -28,7 +28,14 @@ import { CSS } from '@dnd-kit/utilities'
 import axios from 'axios'
 import { updateColumnDetailsAPI } from '~/apis'
 
-function Column({ column, createNewCard, deleteColumnDetails, deleteCardDetails, updateColumnDetails }) {
+function Column({
+  column,
+  createNewCard,
+  deleteColumnDetails,
+  deleteCardDetails,
+  updateColumnDetails,
+  updateCardDetails
+}) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: column._id,
     data: { ...column }
@@ -261,7 +268,7 @@ function Column({ column, createNewCard, deleteColumnDetails, deleteCardDetails,
         </Box>
 
         {/* List card */}
-        <ListCard cards={orderedCards} deleteCardDetails={deleteCardDetails} />
+        <ListCard cards={orderedCards} deleteCardDetails={deleteCardDetails} updateCardDetails={updateCardDetails} column={column} />
         {/* Footer */}
         <Box sx={{
           height: (theme) => theme.trello.columnFooterHeight,

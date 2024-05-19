@@ -111,7 +111,7 @@ export const deleteCardDetailsAPI = async (cardId) => {
   return response.data
 }
 
-export const updateCardAPI = async (cardId, updateData) => {
+export const updateCardDetailsAPI = async (cardId, updateData) => {
   const response = await axios.put(`${api_root}/v1/cards/${cardId}`, updateData)
   return response.data
 }

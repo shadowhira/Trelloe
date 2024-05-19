@@ -13,7 +13,6 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import axios from 'axios'
 import { useEffect, useRef, useState } from 'react'
 
 import CardActions from '@mui/material/CardActions'
@@ -24,9 +23,9 @@ import { toast } from 'react-toastify'
 
 import ImageIcon from '@mui/icons-material/Image'
 import TitleIcon from '@mui/icons-material/Title'
-import { updateCardAPI, uploadImageAPI } from '~/apis'
+import { updateCardDetailsAPI, uploadImageAPI } from '~/apis'
 
-function Card({ card, deleteCardDetails }) {
+function Card({ card, deleteCardDetails, updateCardDetails, column }) {
   const [anchorEl, setAnchorEl] = useState(null)
   const [isHovered, setIsHovered] = useState(false)
   const [isEditingTitle, setIsEditingTitle] = useState(false) // Để theo dõi trạng thái chỉnh sửa
@@ -99,7 +98,7 @@ function Card({ card, deleteCardDetails }) {
       return // Không cập nhật nếu tiêu đề trống
     }
     try {
-      await updateCardAPI(card._id, { title: newTitle })
+      await updateCardDetailsAPI(card._id, { title: newTitle })
       if (!isHovered) {
         card.title = newTitle
         setIsEditingTitle(false)
@@ -139,7 +138,8 @@ function Card({ card, deleteCardDetails }) {
     try {
       // Sau khi đã nhận được URL mới, cập nhật cover của card thông qua API
       // updateCardAPI(cardId, updateData)
-      await updateCardAPI(card._id, { cover: newCoverLink })
+      // await updateCardDetailsAPI(card._id, { cover: newCoverLink })
+      await updateCardDetails(card._id, column, { cover: newCoverLink })
       setUploading(false)
       setShowCoverDialog(false)
     } catch (error) {
