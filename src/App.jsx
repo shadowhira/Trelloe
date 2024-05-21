@@ -1,5 +1,5 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
-import Admin from '~/pages/Admin/Admin'
+// import Admin from '~/pages/Admin/Admin'
 import Board from '~/pages/Boards/_id'
 import BoardList from '~/pages/Boards/index'
 import UserDetails from '~/pages/Users/UserDetails'
@@ -29,7 +29,7 @@ function App() {
 
           {/* Trang Users */}
           <Route path="/user" element={<UserDetails />} />
-          <Route path="/admin" element={<Admin />} />
+          {/* <Route path="/admin" element={<Admin />} /> */}
           {/* <Route path="/side" element={<SignInSide />} />
           <Route path="/sideup" element={<SignUpSide />} /> */}
 

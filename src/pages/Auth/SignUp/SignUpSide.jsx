@@ -27,7 +27,7 @@ function SignUpSide() {
         if (res.status === 'Success') {
           setAuth(true)
           if (res.role === 'user' ) navigate('/')
-          else navigate('/admin')
+          // else navigate('/admin')
         } else {
           setAuth(false)
         }

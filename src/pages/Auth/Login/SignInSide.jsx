@@ -27,7 +27,7 @@ function SignInSide() {
         if (res.status === 'Success') {
           setAuth(true)
           if (res.role === 'user') navigate('/')
-          else navigate('/admin')
+          // else navigate('/admin')
         } else {
           setAuth(false)
         }
@@ -68,7 +68,7 @@ function SignInSide() {
             navigate('/boards')
           } else if (res.status === 'Success' && res.role === 'admin') {
             Cookies.set('token', res.accessToken, { expires: 7 })
-            navigate('/admin')
+            // navigate('/admin')
           } else {
             setMessage(res.error)
           }
