@@ -6,7 +6,7 @@ export const WHITELIST_DOMAINS = [
   'http://192.168.1.222:5173',
   'http://192.168.154.1:5173',
   'http://192.168.239.1:5173',
-  'trelloe.vercel.app'
+  'https://trelloe.vercel.app'
   // ... các domain khác
 ]
 
