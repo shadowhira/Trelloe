@@ -44,7 +44,7 @@ function BoardList() {
   const [listBoard, setListBoard] = useState([])
   const [userId, setUserId] = useState(null)
   const [page, setPage] = useState(1)
-  const boardsPerPage = 9 // Số lượng boards hiển thị trên mỗi trang
+  const boardsPerPage = 8 // Số lượng boards hiển thị trên mỗi trang
 
   const indexOfLastBoard = page * boardsPerPage
   const indexOfFirstBoard = indexOfLastBoard - boardsPerPage
