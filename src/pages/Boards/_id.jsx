@@ -39,22 +39,22 @@ function Board() {
   const [isCategoryBarOpen, setCategoryBarOpen] = useState(false)
   axios.defaults.withCredentials = true
 
-  useEffect(() => {
-    // Check authentication on component mount
-    checkAuthAPI()
-      .then((res) => {
-        if (res.status === 'Success' && res.role === 'user') {
-          setAuth(true)
-        } else {
-          navigate('/login')
-          setAuth(false)
-        }
-      })
-      .catch(() => {
-        navigate('/login')
-        setAuth(false)
-      })
-  }, [navigate])
+  // useEffect(() => {
+  //   // Check authentication on component mount
+  //   checkAuthAPI()
+  //     .then((res) => {
+  //       if (res.status === 'Success' && res.role === 'user') {
+  //         setAuth(true)
+  //       } else {
+  //         navigate('/login')
+  //         setAuth(false)
+  //       }
+  //     })
+  //     .catch(() => {
+  //       navigate('/login')
+  //       setAuth(false)
+  //     })
+  // }, [navigate])
 
   useEffect(() => {
     // Tạm thời fix cứng boardId, phần nâng cao sẽ sử dụng react-router-dom để lấy chuẩn boardId từ URL

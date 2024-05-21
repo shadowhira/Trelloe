@@ -21,21 +21,21 @@ function SignInSide() {
   const [formErrors, setFormErrors] = useState({})
   const navigate = useNavigate()
 
-  useEffect(() => {
-    checkAuthAPI()
-      .then((res) => {
-        if (res.status === 'Success') {
-          setAuth(true)
-          if (res.role === 'user') navigate('/')
-          // else navigate('/admin')
-        } else {
-          setAuth(false)
-        }
-      })
-      .catch(() => {
-        setAuth(false)
-      })
-  }, [navigate])
+  // useEffect(() => {
+  //   checkAuthAPI()
+  //     .then((res) => {
+  //       if (res.status === 'Success') {
+  //         setAuth(true)
+  //         if (res.role === 'user') navigate('/')
+  //         // else navigate('/admin')
+  //       } else {
+  //         setAuth(false)
+  //       }
+  //     })
+  //     .catch(() => {
+  //       setAuth(false)
+  //     })
+  // }, [navigate])
 
   const validate = (email, password) => {
     const errors = {}

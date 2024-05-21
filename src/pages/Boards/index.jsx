@@ -79,22 +79,22 @@ function BoardList() {
     }
   }
 
-  useEffect(() => {
-    // Check authentication on component mount
-    checkAuthAPI()
-      .then((res) => {
-        if (res.status === 'Success') {
-          setAuth(true)
-        } else {
-          navigate('/login')
-          setAuth(false)
-        }
-      })
-      .catch(() => {
-        navigate('/login')
-        setAuth(false)
-      })
-  }, [navigate])
+  // useEffect(() => {
+  //   // Check authentication on component mount
+  //   checkAuthAPI()
+  //     .then((res) => {
+  //       if (res.status === 'Success') {
+  //         setAuth(true)
+  //       } else {
+  //         navigate('/login')
+  //         setAuth(false)
+  //       }
+  //     })
+  //     .catch(() => {
+  //       navigate('/login')
+  //       setAuth(false)
+  //     })
+  // }, [navigate])
 
   useEffect(() => {
     fetchUserId()

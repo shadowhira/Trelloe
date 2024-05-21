@@ -21,22 +21,22 @@ function SignUpSide() {
   const navigate = useNavigate()
   axios.defaults.withCredentials = true
 
-  useEffect(() => {
-    checkAuthAPI()
-      .then((res) => {
-        if (res.status === 'Success') {
-          setAuth(true)
-          if (res.role === 'user' ) navigate('/')
-          // else navigate('/admin')
-        } else {
-          setAuth(false)
-        }
-      })
-      .catch((err) => {
-        console.error('Lỗi khi kiểm tra xác thực:', err)
-        setAuth(false)
-      })
-  }, [navigate])
+  // useEffect(() => {
+  //   checkAuthAPI()
+  //     .then((res) => {
+  //       if (res.status === 'Success') {
+  //         setAuth(true)
+  //         if (res.role === 'user' ) navigate('/')
+  //         // else navigate('/admin')
+  //       } else {
+  //         setAuth(false)
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.error('Lỗi khi kiểm tra xác thực:', err)
+  //       setAuth(false)
+  //     })
+  // }, [navigate])
 
   const [formValues, setFormValues] = useState({
     username: '',

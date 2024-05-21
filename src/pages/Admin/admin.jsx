@@ -50,22 +50,22 @@ export default function Admin() {
   const navigate = useNavigate()
   axios.defaults.withCredentials = true
 
-  React.useEffect(() => {
-    // Check authentication on component mount
-    checkAuthAPI()
-      .then((res) => {
-        if (res.status === 'Success' && res.role === 'admin') {
-          setAuth(true)
-        } else {
-          navigate('/login')
-          setAuth(false)
-        }
-      })
-      .catch(() => {
-        navigate('/login')
-        setAuth(false)
-      })
-  }, [navigate])
+  // React.useEffect(() => {
+  //   // Check authentication on component mount
+  //   checkAuthAPI()
+  //     .then((res) => {
+  //       if (res.status === 'Success' && res.role === 'admin') {
+  //         setAuth(true)
+  //       } else {
+  //         navigate('/login')
+  //         setAuth(false)
+  //       }
+  //     })
+  //     .catch(() => {
+  //       navigate('/login')
+  //       setAuth(false)
+  //     })
+  // }, [navigate])
 
   const handleEdit = (id) => {
     // Tìm hàng được chọn để chỉnh sửa
