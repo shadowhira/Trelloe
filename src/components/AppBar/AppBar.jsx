@@ -13,11 +13,24 @@ import SearchBar from './Menus/SearchBar'
 import Starred from './Menus/Starred'
 import Templates from './Menus/Templates'
 import Workspaces from './Menus/Workspaces'
+import { useParams } from 'react-router-dom'
 
 function AppBar({ updateBoardUpdated }) {
+  const { boardId } = useParams()
+
+  const getWidth = () => {
+    if (!boardId) {
+      return '100%'
+    // } else if (!isCategoryBarOpen) {
+    //   return 'calc(100% + 180px)'
+    // } else {
+    //   return 'calc(100% + 65px)'
+    }
+  }
+
   return (
     <Box sx={{
-      width: '100%',
+      width: getWidth(), // 65px or 180px
       height: (theme) => theme.trello.appBarHeight,
       display: 'flex',
       alignItems: 'center',

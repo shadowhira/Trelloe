@@ -341,7 +341,7 @@ function Board() {
     >
       <AppBar />
       <Box sx={{ display: 'flex' }}>
-        <CategoryBar nameActive="Boards"/>
+        <CategoryBar nameActive="Boards" />
         <Box sx={{ width: '100%' }}>
           {/* <BoardBar board={mockData.board} /> */}
           <BoardBar board={board} />

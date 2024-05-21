@@ -85,8 +85,8 @@ export default function Security({ userId, password }) {
         sx={{
           display: 'flex',
           justifyContent: 'center',
-          height: (theme) => `calc(80vh -
-            ${theme.trello.appBarHeight}
+          height: (theme) => `calc(100vh -
+            ${theme.trello.appBarHeight} - 72px
           )`,
           paddingTop: '50px',
           bgcolor: (theme) =>

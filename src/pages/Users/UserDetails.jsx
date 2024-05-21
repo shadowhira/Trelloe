@@ -58,7 +58,6 @@ export default function UserDetail() {
   }, []) // Chỉ gọi lại useEffect khi userId thay đổi
 
 
-
   return (
     <Box>
       <AppBar />

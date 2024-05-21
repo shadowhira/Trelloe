@@ -26,21 +26,25 @@ const CircularImageBox = ({ displayNameUser, userNameUser, userId }) => {
   const [image, setImage] = useState(null)
   const [selectedFile, setSelectedFile] = useState(null)
 
-  useEffect(() => {
-    const fetchUserAvatar = async () => {
-      try {
-        const response = await getUserByIdAPI(userId)
-        const user = response
-        if (user.avatar) {
-          setImage(user.avatar)
-        }
-      } catch (error) {
-        return
+  const fetchUserAvatar = async () => {
+    try {
+      const response = await getUserByIdAPI(userId)
+      const user = response
+      if (user.avatar) {
+        setImage(user.avatar)
+      } else {
+        setImage(defaultAvatar)
       }
+    } catch (error) {
+      return
     }
+  }
 
+  if (userId) fetchUserAvatar()
+
+  useEffect(() => {
     if (userId) fetchUserAvatar()
-  }, [userId])
+  }, [image])
 
 
   const handleFileChange = (event) => {
@@ -55,27 +59,6 @@ const CircularImageBox = ({ displayNameUser, userNameUser, userId }) => {
   useEffect(() => {
     avatar = selectedFile
   }, [selectedFile])
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault()
-  //   if (!selectedFile) {
-  //     return
-  //   }
-  //   setUploading(true)
-  //   try {
-  //     const base64 = await convertToBase64(selectedFile)
-  //     // Call your API to upload the file
-  //     const response = await axios.put(
-  //       `http://localhost:8017/v1/users/${userId}`,
-  //       { avatar: base64 }
-  //     )
-  //     console.log('Uploaded successfully:', response.data)
-  //     setUploading(false)
-  //   } catch (error) {
-  //     console.error('Error uploading file:', error)
-  //     setUploading(false)
-  //   }
-  // }
 
   return (
     <Container
@@ -109,19 +92,13 @@ const CircularImageBox = ({ displayNameUser, userNameUser, userId }) => {
           }}
         >
           <label htmlFor='avatar-input'>
-            {image ? (
-              <CardMedia
-                component='img'
-                height='100%'
-                image={image}
-                alt='Selected'
-                sx={{ objectFit: 'cover' }}
-              />
-            ) : (
-              <CardContent sx={{ textAlign: 'center', cursor: 'pointer', padding: 0 }}>
-                <CardMedia component='img' height='100%' image={defaultAvatar} alt='Default' sx={{ objectFit: 'cover' }} />
-              </CardContent>
-            )}
+            <CardMedia
+              component='img'
+              height='100%'
+              image={image}
+              alt='Selected'
+              sx={{ objectFit: 'cover' }}
+            />
           </label>
           <input
             accept='image/*'
@@ -189,7 +166,7 @@ export default function Account({
     }
     const updateData = {
       displayName: displayName,
-      avatar: url.data
+      avatar: url
     }
     try {
       await updateUserByIdAPI(userId, updateData)
@@ -206,8 +183,8 @@ export default function Account({
         sx={{
           display: 'flex',
           justifyContent: 'center',
-          height: (theme) => `calc(80vh -
-            ${theme.trello.appBarHeight}
+          height: (theme) => `calc(100vh -
+            ${theme.trello.appBarHeight} - 72px
           )`,
           paddingTop: '50px',
           bgcolor: (theme) =>
@@ -380,15 +357,3 @@ export default function Account({
   )
 }
 
-// function convertToBase64(file) {
-//   return new Promise((resolve, reject) => {
-//     const fileReader = new FileReader()
-//     fileReader.readAsDataURL(file)
-//     fileReader.onload = () => {
-//       resolve(fileReader.result)
-//     }
-//     fileReader.onerror = (error) => {
-//       reject(error)
-//     }
-//   })
-// }

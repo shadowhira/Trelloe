@@ -100,41 +100,11 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 function CategoryBar(nameActive) {
   const theme = useTheme()
   const [open, setOpen] = React.useState(false)
-  const [openDialog, setOpenDialog] = React.useState('')
-  const [newBoardInfo, setNewBoardInfo] = React.useState({
-    title: ''
-  })
-
-  // const handleDrawerOpen = () => {
-  //   setOpen(true)
-  // }
-
-  // const handleDrawerClose = () => {
-  //   setOpen(false)
-  // }
-
-  // const handleOpenDiaglog = () => {
-  //   setOpenDialog(true)
-  // }
-
-  // const handleCloseDiaglog = () => {
-  //   setOpenDialog(false)
-  // }
 
   const handleOpenLink = (text) => {
     window.location.href = '/boards'
   }
 
-  // const handleOpenLink = (text) => {
-  //   if (text === 'Boards') {
-  //     window.location.href = '/boards'
-  //   } else if (text === 'Create a new board') {
-  //     handleOpenDiaglog()
-  //     console.log(text)
-  //   }
-  // }
-
-  // const isListBoard = true
   let { boardId } = useParams()
 
   return (
