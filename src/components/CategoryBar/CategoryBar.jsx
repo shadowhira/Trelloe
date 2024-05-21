@@ -109,7 +109,13 @@ function CategoryBar(nameActive) {
 
   return (
     <Box sx={{ display: 'flex',
-      height: (theme) => `calc(${theme.trello.boardBarHeight} + ${theme.trello.boardContentHeight})`,
+      height: (theme) => {
+        if (boardId) {
+          return theme.trello.boardContentHeight + theme.trello.boardBarHeight
+        } else {
+          return `calc(100vh - ${theme.trello.appBarHeight})`
+        }
+      },
       // width: '100%',
       bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495E' : '#fff')
     }}>
