@@ -17,22 +17,20 @@ import { styled, useTheme } from '@mui/material/styles'
 import * as React from 'react'
 import { useParams } from 'react-router-dom'
 
-let drawerWidth = 360
-
 const openedMixin = (theme) => ({
-  '@media (min-width: 807px)': { // Thêm media query để điều chỉnh số cột trên mỗi hàng cho các kích thước màn hình lớn hơn 768px
+  '@media (min-width: 807px)': {
     drawerWidth: 120,
     width: 150
   },
-  '@media (min-width: 997px)': { // Thêm media query để điều chỉnh số cột trên mỗi hàng cho các kích thước màn hình lớn hơn 768px
+  '@media (min-width: 997px)': {
     drawerWidth: 180,
     width: 180
   },
-  '@media (min-width: 1221px)': { // Thêm media query để điều chỉnh số cột trên mỗi hàng cho các kích thước màn hình lớn hơn 992px
+  '@media (min-width: 1221px)': {
     drawerWidth: 240,
     width: 210
   },
-  '@media (min-width: 1600px)': { // Thêm media query để điều chỉnh số cột trên mỗi hàng cho các kích thước màn hình lớn hơn 1200px
+  '@media (min-width: 1600px)': {
     drawerWidth: 360,
     width: 240
   },
@@ -66,19 +64,19 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
-    '@media (min-width: 807px)': { // Thêm media query để điều chỉnh số cột trên mỗi hàng cho các kích thước màn hình lớn hơn 768px
+    '@media (min-width: 807px)': {
       drawerWidth: 120,
       width: 200
     },
-    '@media (min-width: 997px)': { // Thêm media query để điều chỉnh số cột trên mỗi hàng cho các kích thước màn hình lớn hơn 768px
+    '@media (min-width: 997px)': {
       drawerWidth: 180,
       width: 240
     },
-    '@media (min-width: 1221px)': { // Thêm media query để điều chỉnh số cột trên mỗi hàng cho các kích thước màn hình lớn hơn 992px
+    '@media (min-width: 1221px)': {
       drawerWidth: 240,
       width: 280
     },
-    '@media (min-width: 1600px)': { // Thêm media query để điều chỉnh số cột trên mỗi hàng cho các kích thước màn hình lớn hơn 1200px
+    '@media (min-width: 1600px)': {
       drawerWidth: 360,
       width: 360
     },
@@ -96,8 +94,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   })
 )
 
-
-function CategoryBar(nameActive) {
+function CategoryBar({ nameActive, boardCount, boardsPerRow, gap }) {
   const theme = useTheme()
   const [open, setOpen] = React.useState(false)
 
@@ -105,36 +102,23 @@ function CategoryBar(nameActive) {
     window.location.href = '/boards'
   }
 
-  let { boardId } = useParams()
+  const boardHeight = 200 // Adjust this to the actual height of your board cards
+  const rows = Math.ceil(boardCount / boardsPerRow)
+
+  const totalHeight = theme.trello.boardBarHeight + theme.trello.boardContentHeight + rows * boardHeight + (rows - 1) * gap
 
   return (
-    <Box sx={{ display: 'flex',
-      height: (theme) => {
-        if (boardId) {
-          return theme.trello.boardContentHeight + theme.trello.boardBarHeight
-        } else {
-          return `calc(100vh - ${theme.trello.appBarHeight})`
-        }
-      },
-      // width: '100%',
-      bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495E' : '#fff')
-    }}>
-
+    <Box sx={{ display: 'flex', height: totalHeight }}>
       <Drawer variant="permanent" open={open}
         sx={{
           '& .MuiDrawer-paper': {
             bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495E' : '#fff'),
-            // width: open ? "100%" : 64,
             boxSizing: 'border-box',
             position: 'relative'
           }
         }}
       >
-        <DrawerHeader
-          sx={{
-            border: 'none'
-          }}
-        >
+        <DrawerHeader sx={{ border: 'none' }}>
           <IconButton onClick={() => { setOpen(!open) }}>
             {!open ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
@@ -145,11 +129,25 @@ function CategoryBar(nameActive) {
             { text: 'Boards', icon: <SpaceDashboardIcon />, onClick: handleOpenLink },
             { text: 'Templates', icon: <ListAltIcon /> },
             { text: 'Home', icon: <HomeIcon />, onClick: handleOpenLink }
-          ].map(({ text, icon, onClick }, index) =>
-            (
-              <ListItem key={text} disablePadding onClick={onClick}
+          ].map(({ text, icon, onClick }) => (
+            <ListItem key={text} disablePadding onClick={onClick}
+              sx={{
+                display: 'block',
+                color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#333'),
+                color: text === nameActive ? '#1976d2' : 'inherit',
+                bgcolor: text === nameActive ? '#e3f2fd' : 'inherit',
+                '&:hover': {
+                  color: (theme) => (theme.palette.mode === 'dark' ? '#1976d2' : '#1976d2'),
+                  cursor: 'pointer',
+                  bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#e3f2fd' : '#e3f2fd')
+                }
+              }}
+            >
+              <ListItemButton
                 sx={{
-                  display: 'block',
+                  minHeight: 60,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
                   color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#333'),
                   color: text === nameActive ? '#1976d2' : 'inherit',
                   bgcolor: text === nameActive ? '#e3f2fd' : 'inherit',
@@ -160,14 +158,13 @@ function CategoryBar(nameActive) {
                   }
                 }}
               >
-                <ListItemButton
+                <ListItemIcon
                   sx={{
-                    minHeight: 60,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
                     color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#333'),
                     color: text === nameActive ? '#1976d2' : 'inherit',
-                    bgcolor: text === nameActive ? '#e3f2fd' : 'inherit',
                     '&:hover': {
                       color: (theme) => (theme.palette.mode === 'dark' ? '#1976d2' : '#1976d2'),
                       cursor: 'pointer',
@@ -175,26 +172,12 @@ function CategoryBar(nameActive) {
                     }
                   }}
                 >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
-                      color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#333'),
-                      color: text === nameActive ? '#1976d2' : 'inherit',
-                      '&:hover': {
-                        color: (theme) => (theme.palette.mode === 'dark' ? '#1976d2' : '#1976d2'),
-                        cursor: 'pointer',
-                        bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#e3f2fd' : '#e3f2fd')
-                      }
-                    }}
-                  >
-                    {icon}
-                  </ListItemIcon>
-                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-                </ListItemButton>
-              </ListItem>
-            ))}
+                  {icon}
+                </ListItemIcon>
+                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+            </ListItem>
+          ))}
         </List>
       </Drawer>
     </Box>
