@@ -1,6 +1,3 @@
-/* eslint-disable no-trailing-spaces */
-// Boards list
-
 import { Box, Stack, Typography } from '@mui/material'
 import Pagination from '@mui/material/Pagination'
 import axios from 'axios'
@@ -16,27 +13,13 @@ import AppBar from '~/components/AppBar/AppBar'
 import BoardCardVisual from '~/components/BoardCardVisual/BoardCardVisual'
 import CategoryBar from '~/components/CategoryBar/CategoryBar'
 
-// const ListBoard = [
-//   {
-//     _id: 'board-id-01',
-//     title: 'MERN Stack Board 1',
-//     description: 'MERN stack Course 1',
-//     type: 'public',
-//     color: 'red'
-//   },
-// ]
-
 const ListBoard = mockData.boards
 
 function getRandomColor() {
-  // Sinh ngẫu nhiên các giá trị RGB trong khoảng từ 0 đến 255
   const r = Math.floor(Math.random() * 256)
   const g = Math.floor(Math.random() * 256)
   const b = Math.floor(Math.random() * 256)
-  
-  // Tạo mã màu từ các giá trị RGB
   const color = `rgb(${r}, ${g}, ${b})`
-
   return color
 }
 
@@ -44,19 +27,18 @@ function BoardList() {
   const [listBoard, setListBoard] = useState([])
   const [userId, setUserId] = useState(null)
   const [page, setPage] = useState(1)
-  const boardsPerPage = 9 // Số lượng boards hiển thị trên mỗi trang
+  const boardsPerPage = 9
+  const gap = 20 // khoảng cách giữa các thẻ
 
   const indexOfLastBoard = page * boardsPerPage
   const indexOfFirstBoard = indexOfLastBoard - boardsPerPage
   const currentBoards = listBoard.slice(indexOfFirstBoard, indexOfLastBoard)
-  // const currentBoards = ListBoard.slice(indexOfFirstBoard, indexOfLastBoard)
   const [auth, setAuth] = useState(false)
   const navigate = useNavigate()
   axios.defaults.withCredentials = true
 
   const [boardUpdated, setBoardUpdated] = useState(false)
 
-  // Render Board khi update
   const updateBoardUpdated = () => {
     setBoardUpdated(prevState => !prevState)
   }
@@ -70,17 +52,16 @@ function BoardList() {
     try {
       const response = await getUserIdByTokenAPI({
         headers: {
-          Authorization: `Bearer ${token}` // Gửi token trong header
+          Authorization: `Bearer ${token}`
         }
       })
-      setUserId(response.userId) // Lấy userId từ phản hồi
+      setUserId(response.userId)
     } catch (error) {
       console.log('Error fetching userId')
     }
   }
 
   useEffect(() => {
-    // Check authentication on component mount
     checkAuthAPI()
       .then((res) => {
         if (res.status === 'Success') {
@@ -98,9 +79,7 @@ function BoardList() {
 
   useEffect(() => {
     fetchUserId()
-    // fetchListBoardAPI()
-    if (userId) { // Kiểm tra xem userId đã có giá trị hay chưa
-      // getListBoardByUserId(userId)
+    if (userId) {
       getListBoardByUserId(userId)
         .then(listBoard => {
           setListBoard(listBoard)
@@ -109,23 +88,32 @@ function BoardList() {
           console.error('Error fetching boards:', error)
         })
     }
-  }, [userId, boardUpdated]) // Chạy khi userId thay đổi
+  }, [userId, boardUpdated])
 
+  const boardsPerRow = {
+    807: 2,
+    997: 3,
+    1221: 4,
+    1600: 5
+  }
 
   return (
     <div>
       <AppBar updateBoardUpdated={updateBoardUpdated}></AppBar>
-      <Stack direction="row" justifyContent="space-between"
-      >
+      <Box display="flex" flexDirection="row" sx={{ minHeight: (theme) => `calc(${theme.trello.boardBarHeight} + ${theme.trello.boardContentHeight})` }}>
         <CategoryBar
           nameActive="Boards"
+          boardCount={listBoard.length}
+          boardsPerRow={boardsPerRow}
+          gap={gap}
         />
-        <Box flex={5}
+        <Box 
+          flex={1}
           sx={{
             pt: 2,
             pl: 5,
             pr: 5,
-            bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495E' : '#fff')
+            bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495E' : '#fff'),
           }}
         >
           <Typography variant="h6"
@@ -134,23 +122,23 @@ function BoardList() {
               mb: 5
             }}
           >
-                        Your boards
+            Your boards
           </Typography>
           <Box
             sx={{
               display: 'grid',
-              gap: '20px', // Khoảng cách giữa các thẻ
-              '@media (min-width: 807px)': { // Thêm media query để điều chỉnh số cột trên mỗi hàng cho các kích thước màn hình lớn hơn 768px
-                gridTemplateColumns: 'repeat(2, 1fr)' // Hiển thị 5 phần tử trên một hàng
+              gap: `${gap}px`,
+              '@media (min-width: 807px)': {
+                gridTemplateColumns: 'repeat(2, 1fr)'
               },
-              '@media (min-width: 997px)': { // Thêm media query để điều chỉnh số cột trên mỗi hàng cho các kích thước màn hình lớn hơn 768px
-                gridTemplateColumns: 'repeat(3, 1fr)' // Hiển thị 5 phần tử trên một hàng
+              '@media (min-width: 997px)': {
+                gridTemplateColumns: 'repeat(3, 1fr)'
               },
-              '@media (min-width: 1221px)': { // Thêm media query để điều chỉnh số cột trên mỗi hàng cho các kích thước màn hình lớn hơn 992px
-                gridTemplateColumns: 'repeat(4, 1fr)' // Hiển thị 4 phần tử trên một hàng
+              '@media (min-width: 1221px)': {
+                gridTemplateColumns: 'repeat(4, 1fr)'
               },
-              '@media (min-width: 1600px)': { // Thêm media query để điều chỉnh số cột trên mỗi hàng cho các kích thước màn hình lớn hơn 1200px
-                gridTemplateColumns: 'repeat(5, 1fr)' // Hiển thị 3 phần tử trên một hàng
+              '@media (min-width: 1600px)': {
+                gridTemplateColumns: 'repeat(5, 1fr)'
               }
             }}
           >
@@ -160,13 +148,12 @@ function BoardList() {
                 title={board.title}
                 description={board.description}
                 type={board.type}
-                color= {getRandomColor()}
+                color={getRandomColor()}
                 boardId={board._id}
                 updateBoardUpdated={updateBoardUpdated} 
                 board={board}
               />
             ))}
-
           </Box>
           <Pagination
             count={Math.ceil(listBoard.length / boardsPerPage)}
@@ -174,9 +161,8 @@ function BoardList() {
             onChange={(event, value) => setPage(value)}
             sx={{ position: 'fixed', bottom: 0, right: 0, margin: '20px' }}
           />
-
         </Box>
-      </Stack>
+      </Box>
     </div>
   )
 }

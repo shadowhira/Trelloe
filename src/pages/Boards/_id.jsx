@@ -327,7 +327,8 @@ function Board() {
         alignItems: 'center',
         justifyContent: 'center',
         gap: 2, width: '100vw',
-        height:'100vh'
+        height:'100vh',
+        overflow: 'hidden'
       }}>
         <CircularProgress />
         <Typography>Loading Content...</Typography>
