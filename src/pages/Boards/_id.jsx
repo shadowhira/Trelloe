@@ -337,7 +337,7 @@ function Board() {
 
   return (
     <Container disableGutters maxWidth={false}
-      sx={{ height: (theme) => theme.trello.boardContentHeight, backgroundColor: 'primary.main' }}
+      sx={{ height: '100vh', backgroundColor: 'primary.main' }}
     >
       <AppBar />
       <Box sx={{ display: 'flex' }}>
