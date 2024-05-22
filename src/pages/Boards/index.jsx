@@ -27,7 +27,7 @@ function BoardList() {
   const [listBoard, setListBoard] = useState([])
   const [userId, setUserId] = useState(null)
   const [page, setPage] = useState(1)
-  const boardsPerPage = 9
+  const boardsPerPage = 8
   const gap = 20 // khoảng cách giữa các thẻ
 
   const indexOfLastBoard = page * boardsPerPage
@@ -61,21 +61,21 @@ function BoardList() {
     }
   }
 
-  useEffect(() => {
-    checkAuthAPI()
-      .then((res) => {
-        if (res.status === 'Success') {
-          setAuth(true)
-        } else {
-          navigate('/login')
-          setAuth(false)
-        }
-      })
-      .catch(() => {
-        navigate('/login')
-        setAuth(false)
-      })
-  }, [navigate])
+  // useEffect(() => {
+  //   checkAuthAPI()
+  //     .then((res) => {
+  //       if (res.status === 'Success') {
+  //         setAuth(true)
+  //       } else {
+  //         navigate('/login')
+  //         setAuth(false)
+  //       }
+  //     })
+  //     .catch(() => {
+  //       navigate('/login')
+  //       setAuth(false)
+  //     })
+  // }, [navigate])
 
   useEffect(() => {
     fetchUserId()
