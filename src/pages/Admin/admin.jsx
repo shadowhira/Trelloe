@@ -232,17 +232,18 @@ export default function Admin() {
   return (
     <Box
       sx={{
-        height: (theme) => {
-          if (boardId) {
-            return `calc(100vh -
-              ${theme.trello.appBarHeight}
-            )`
-          } else {
-            return `calc(100vh -
-              ${theme.trello.appBarHeight}
-            )`
-          }
-        },
+        // height: (theme) => {
+        //   if (boardId) {
+        //     return `calc(100vh -
+        //       ${theme.trello.appBarHeight} - ${theme.trello.boardBarHeight}
+        //     )`
+        //   } else {
+        //     return `calc(100vh -
+        //       ${theme.trello.appBarHeight}
+        //     )`
+        //   }
+        // },
+        height: (theme) => `calc(100vh - ${theme.trello.appBarHeight} + ${theme.trello.boardBarHeight})`,
         bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495E' : '#fff')
       }}
     >
