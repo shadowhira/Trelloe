@@ -100,20 +100,28 @@ function BoardList() {
   return (
     <div>
       <AppBar updateBoardUpdated={updateBoardUpdated}></AppBar>
-      <Box display="flex" flexDirection="row" sx={{ minHeight: (theme) => `calc(${theme.trello.boardBarHeight} + ${theme.trello.boardContentHeight})` }}>
+      <Box display="flex" flexDirection="row"
+        sx={{
+          minHeight: (theme) => `calc(${theme.trello.boardBarHeight} + ${theme.trello.boardContentHeight})`,
+          bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495E' : '#fff')
+        }}>
         <CategoryBar
           nameActive="Boards"
           boardCount={listBoard.length}
           boardsPerRow={boardsPerRow}
           gap={gap}
         />
-        <Box 
+        <Box
           flex={1}
           sx={{
             pt: 2,
             pl: 5,
             pr: 5,
             bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495E' : '#fff'),
+            overflowY: 'auto',
+            margin: '0 5px',
+            '&::-webkit-scrollbar-track': { m: 2 },
+            maxHeight: 'calc(100vh)' // Đặt chiều cao tối đa để có khoảng trống cho thanh cuộn
           }}
         >
           <Typography variant="h6"
