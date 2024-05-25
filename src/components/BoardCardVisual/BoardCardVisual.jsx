@@ -142,7 +142,6 @@ function BoardCardVisual({ title, description, color, boardId, type, updateBoard
         </Typography>
       </Box>
 
-
       <Box>
         <Tooltip title="More options"
           sx={{
@@ -286,7 +285,6 @@ function BoardCardVisual({ title, description, color, boardId, type, updateBoard
         minHeight: '80vh'
       }}
     >
-
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <LibraryAddIcon />
         Update Board
@@ -324,7 +322,6 @@ function BoardCardVisual({ title, description, color, boardId, type, updateBoard
           >
             <FormControlLabel value="public" control={<Radio />} label="Public" />
             <FormControlLabel value="private" control={<Radio />} label="Private" />
-
           </RadioGroup>
         </Box>
       </DialogContent>

@@ -105,7 +105,11 @@ function CategoryBar({ nameActive, boardCount, boardsPerRow, gap }) {
   const boardHeight = 200 // Adjust this to the actual height of your board cards
   const rows = Math.ceil(boardCount / boardsPerRow)
 
-  const totalHeight = theme.trello.boardBarHeight + theme.trello.boardContentHeight + rows * boardHeight + (rows - 1) * gap
+  let totalHeight = `calc(${theme.trello.boardBarHeight} + ${theme.trello.boardContentHeight} + ${rows * boardHeight + (rows - 1) * gap})`
+  const { boardId } = useParams()
+  if (boardId) {
+    totalHeight = `calc(${theme.trello.boardBarHeight} + ${theme.trello.boardContentHeight})`
+  }
 
   return (
     <Box sx={{ display: 'flex', height: totalHeight }}>

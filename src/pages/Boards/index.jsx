@@ -27,7 +27,7 @@ function BoardList() {
   const [listBoard, setListBoard] = useState([])
   const [userId, setUserId] = useState(null)
   const [page, setPage] = useState(1)
-  const boardsPerPage = 9
+  const boardsPerPage = 8
   const gap = 20 // khoảng cách giữa các thẻ
 
   const indexOfLastBoard = page * boardsPerPage
@@ -98,22 +98,38 @@ function BoardList() {
   }
 
   return (
-    <div>
+    <div
+      // style={{
+      //   '*::-webkit-scrollbar': {
+      //     display: 'none'
+      //   },
+      //   '-ms-overflow-style': 'none',
+      //   overflow: 'hidden',
+      //   scrollbarWidth: 'none' // Firefox
+      // }}
+    >
       <AppBar updateBoardUpdated={updateBoardUpdated}></AppBar>
-      <Box display="flex" flexDirection="row" sx={{ minHeight: (theme) => `calc(${theme.trello.boardBarHeight} + ${theme.trello.boardContentHeight})` }}>
+      <Box display="flex" flexDirection="row"
+        sx={{
+          minHeight: (theme) => `calc(${theme.trello.boardBarHeight} + ${theme.trello.boardContentHeight})`,
+          bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495E' : '#fff')
+        }}>
         <CategoryBar
           nameActive="Boards"
           boardCount={listBoard.length}
           boardsPerRow={boardsPerRow}
           gap={gap}
         />
-        <Box 
+        <Box
           flex={1}
           sx={{
             pt: 2,
             pl: 5,
             pr: 5,
-            bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495E' : '#fff'),
+            overflowY: 'auto',
+            margin: '0 5px',
+            '&::-webkit-scrollbar-track': { m: 2 },
+            maxHeight: 'calc(100vh)' // Đặt chiều cao tối đa để có khoảng trống cho thanh cuộn
           }}
         >
           <Typography variant="h6"
@@ -150,7 +166,7 @@ function BoardList() {
                 type={board.type}
                 color={getRandomColor()}
                 boardId={board._id}
-                updateBoardUpdated={updateBoardUpdated} 
+                updateBoardUpdated={updateBoardUpdated}
                 board={board}
               />
             ))}

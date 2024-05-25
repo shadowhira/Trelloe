@@ -268,7 +268,7 @@ function Column({
         </Box>
 
         {/* List card */}
-        <ListCard cards={orderedCards} deleteCardDetails={deleteCardDetails} updateCardDetails={updateCardDetails} column={column} />
+        <ListCard cards={orderedCards} deleteCardDetails={deleteCardDetails} updateCardDetails={updateCardDetails} column={column} sx={{ p: 5 }}/>
         {/* Footer */}
         <Box sx={{
           height: (theme) => theme.trello.columnFooterHeight,
