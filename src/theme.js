@@ -45,8 +45,8 @@ const theme = extendTheme({
           },
           '*::-webkit-scrollbar-thumb:hover': {
             backgroundColor: 'white'
-          },
-          '-ms-overflow-style': 'none'
+          }
+          // '-ms-overflow-style': 'none'
         }
       }
     },

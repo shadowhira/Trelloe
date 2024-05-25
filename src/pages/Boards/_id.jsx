@@ -338,9 +338,7 @@ function Board() {
 
   return (
     <Container disableGutters maxWidth={false}
-      sx={{ height: '100vh', backgroundColor: 'primary.main',  '&::-webkit-scrollbar': {
-        display: 'none'
-      } }}
+      sx={{ height: '100vh', backgroundColor: 'primary.main' }}
     >
       <AppBar />
       <Box sx={{ display: 'flex' }}>
