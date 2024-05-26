@@ -337,10 +337,10 @@ function Board() {
 
   return (
     <Container disableGutters maxWidth={false}
-      sx={{ height: '100vh', backgroundColor: 'primary.main' }}
+      sx={{ height: '100vh', backgroundColor: 'primary.main', overflow: 'hidden' }}
     >
       <AppBar />
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex', overflow: 'hidden' }}>
         <CategoryBar nameActive="Boards" />
         <Box sx={{ width: '100%' }}>
           {/* <BoardBar board={mockData.board} /> */}

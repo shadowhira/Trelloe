@@ -103,6 +103,7 @@ function BoardList() {
       <Box display="flex" flexDirection="row"
         sx={{
           minHeight: (theme) => `calc(${theme.trello.boardBarHeight} + ${theme.trello.boardContentHeight})`,
+          maxHeight: (theme) => `calc(100vh - ${theme.trello.appBarHeight})`,
           bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495E' : '#fff')
         }}>
         <CategoryBar
