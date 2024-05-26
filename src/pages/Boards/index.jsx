@@ -98,20 +98,22 @@ function BoardList() {
   }
 
   return (
-    <div
-      // style={{
-      //   '*::-webkit-scrollbar': {
-      //     display: 'none'
-      //   },
-      //   '-ms-overflow-style': 'none',
-      //   overflow: 'hidden',
-      //   scrollbarWidth: 'none' // Firefox
-      // }}
+    <Box
+      sx={{
+        // '*::-webkit-scrollbar': {
+        //   display: 'none'
+        // },
+        // '-ms-overflow-style': 'none',
+        // overflow: 'hidden',
+        // scrollbarWidth: 'none', // Firefox
+        // maxHeight: (theme) => `calc(100vh - ${theme.trello.appBarHeight})`
+      }}
     >
       <AppBar updateBoardUpdated={updateBoardUpdated}></AppBar>
       <Box display="flex" flexDirection="row"
         sx={{
           minHeight: (theme) => `calc(${theme.trello.boardBarHeight} + ${theme.trello.boardContentHeight})`,
+          maxHeight: (theme) => `calc(100vh - ${theme.trello.appBarHeight})`,
           bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495E' : '#fff')
         }}>
         <CategoryBar
@@ -179,7 +181,7 @@ function BoardList() {
           />
         </Box>
       </Box>
-    </div>
+    </Box>
   )
 }
 

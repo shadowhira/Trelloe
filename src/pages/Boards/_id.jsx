@@ -336,12 +336,18 @@ function Board() {
     )
   }
 
+
   return (
     <Container disableGutters maxWidth={false}
-      sx={{ height: '100vh', backgroundColor: 'primary.main' }}
+      sx={{ height: '100vh', backgroundColor: 'primary.main', overflow: 'hidden' }}
     >
       <AppBar />
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{
+        display: 'flex',
+        // maxHeight: (theme) => `calc(100vh - ${theme.trello.appBarHeight})`,
+        // maxWidth: maxWidth,
+        overflow: 'hidden' // Add this to ensure no scrollbar appears
+      }}>
         <CategoryBar nameActive="Boards" />
         <Box sx={{ width: '100%' }}>
           {/* <BoardBar board={mockData.board} /> */}
