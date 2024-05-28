@@ -30,6 +30,7 @@ import {
 import CategoryBar from '~/components/CategoryBar/CategoryBar'
 import { generatePlaceholderCard } from '~/utils/formatters'
 import { mockData } from '~/apis/mock-data'
+import { MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core'
 
 function Board() {
   const [board, setBoard] = useState(null)
@@ -38,6 +39,16 @@ function Board() {
   const navigate = useNavigate()
   const [isCategoryBarOpen, setCategoryBarOpen] = useState(false)
   axios.defaults.withCredentials = true
+
+  // const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
+  const mouseSensor = useSensor(MouseSensor, { activationConstraint: { distance: 10 } })
+
+  // Nhận giữ 250ms và dung sai (tolerance) của cảm ứng (dễ hiểu là di chuyển/chênh lệch 5px) thì mới kích hoạt event
+  const touchSensor = useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 500 } })
+
+  // const mySensors = useSensors(pointerSensor)
+  // Ưu tiên sử dụng kết hợp 2 loại sensors là mouse và touch để có trải nghiệm trên mobile tốt nhất, không bị bug
+  const mySensors = useSensors(mouseSensor, touchSensor)
 
   useEffect(() => {
     // Check authentication on component mount
@@ -340,6 +351,7 @@ function Board() {
   return (
     <Container disableGutters maxWidth={false}
       sx={{ height: '100vh', backgroundColor: 'primary.main', overflow: 'hidden' }}
+      sensors={mySensors}
     >
       <AppBar />
       <Box sx={{
