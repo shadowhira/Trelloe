@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { checkAuthAPI, checkLoginAPI } from '~/apis'
 import Cookies from 'js-cookie'
+import wallpaper from '~/assets/groot_wallpaper.jpg'
 
 function SignInSide() {
   const [auth, setAuth] = useState(false)
@@ -91,7 +92,8 @@ function SignInSide() {
           sm={4}
           md={7}
           sx={{
-            backgroundImage: 'url(https://source.unsplash.com/random?wallpapers)',
+            // backgroundImage: 'url(https://source.unsplash.com/random?wallpapers)',
+            backgroundImage: `url(${wallpaper})`,
             backgroundRepeat: 'no-repeat',
             backgroundColor: (t) =>
               t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],

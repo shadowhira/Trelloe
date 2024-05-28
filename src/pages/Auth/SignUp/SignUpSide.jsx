@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { checkAuthAPI, checkSignupAPI } from '~/apis'
 import Paper from '@mui/material/Paper'
+import wallpaper from '~/assets/spiderman_wallpaper.jpg'
 
 function SignUpSide() {
   const [auth, setAuth] = useState(false)
@@ -114,7 +115,8 @@ function SignUpSide() {
           sm={4}
           md={7}
           sx={{
-            backgroundImage: 'url(https://source.unsplash.com/random?wallpapers)',
+            // backgroundImage: 'url(https://source.unsplash.com/random?wallpapers)',
+            backgroundImage: `url(${wallpaper})`,
             backgroundRepeat: 'no-repeat',
             backgroundColor: (t) =>
               t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
