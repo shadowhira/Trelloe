@@ -1,0 +1,14 @@
+{
+  // Một smart preset tự động sử dụng phiên bản Javascript mới nhất
+  // mà không cần khai báo cụ thể từng phiên bản một
+  "presets": ["@babel/preset-env"],
+
+  "plugins": [
+    // Tái sử dụng lại code của chính nó để giảm kích thước code
+    ["@babel/transform-runtime"],
+
+    // Đơn giản hóa đường dẫn tương đối
+    ["module-resolver", { "alias": { "~": "./src" } }]
+  ]
+}
+// zz
